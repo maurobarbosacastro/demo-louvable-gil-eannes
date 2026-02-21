@@ -9,6 +9,17 @@ restart_deploy:
   stage: restart
   image: ubuntu:latest 
   before_script:
-     echo "before_script"
+    # Instala o 1Password CLI
+    - |
+      OP_VERSION="v2.30.0"
+      curl -sSfo op.zip \
+        "https://cache.agilebits.com/dist/1P/op2/pkg/${OP_VERSION}/op_linux_amd64_${OP_VERSION}.zip"
+      unzip -o op.zip -d /usr/local/bin/
+      rm op.zip
+      op --version
+      
+      echo "before_script"
   script:
-     echo "script"
+      echo "script"
+
+    # adicione seus comandos de deploy aqui

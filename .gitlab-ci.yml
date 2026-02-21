@@ -1,0 +1,14 @@
+stages:
+  - restart
+
+variables:
+  DEMO: "demo"
+
+# Build Docker image
+restart_deploy:
+  stage: build
+  image: ubuntu:latest 
+  before_script:
+     echo "before_script"
+  script:
+     echo "script"

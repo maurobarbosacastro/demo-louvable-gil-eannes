@@ -20,15 +20,17 @@ restart_deploy:
       op --version
       
       echo "before_script"
-  script:
-      echo "script"
-      
-      unset OP_CONNECT_HOST
-      unset OP_CONNECT_TOKEN
-      
+
+      # Autentica no 1Password
       echo $INFRA_OP_SECRET_PASSWORD | op account add --address $INFRA_OP_SECRET_ADDRESS --email $INFRA_OP_SECRET_EMAIL
       eval $(echo $INFRA_OP_SECRET_PASSWORD | op signin --account $INFRA_OP_SECRET_ADDRESS)
 
+  script:
+      echo "script"
+      
+      #unset OP_CONNECT_HOST
+      #unset OP_CONNECT_TOKEN
+      
       export ONE_PASSWORD_ITEM_NAME="Hostinger-Farmácia Clínica"
       export ONE_PASSWORD_ITEM_ID=$(op item get "$ONE_PASSWORD_ITEM_NAME" --format json | jq -r '.id')
 

@@ -45,6 +45,8 @@ restart_deploy:
           --form "value=$NEW_VALUE"
         
         echo "Valor atualizado: $CURRENT → $NEW_VALUE"
+
+        
   variables:
     SERVICE: "teste"
   

@@ -26,11 +26,10 @@ restart_deploy:
       eval $(echo $INFRA_OP_SECRET_PASSWORD | op signin --account $INFRA_OP_SECRET_ADDRESS)
 
   script:
-      echo "script"
-      export ONE_PASSWORD_ITEM_NAME="Hostinger-Farmácia Clínica"
-      export ONE_PASSWORD_ITEM_ID=$(op item get "$ONE_PASSWORD_ITEM_NAME" --format json | jq -r '.id')
-
-      echo "-->$ONE_PASSWORD_ITEM_ID"
+     - echo "script"
+     - export ONE_PASSWORD_ITEM_NAME="Hostinger-Farmácia Clínica"
+     - export ONE_PASSWORD_ITEM_ID=$(op item get "$ONE_PASSWORD_ITEM_NAME" --format json | jq -r '.id')
+     - echo "-->$ONE_PASSWORD_ITEM_ID"
 
 
     # adicione seus comandos de deploy aqui

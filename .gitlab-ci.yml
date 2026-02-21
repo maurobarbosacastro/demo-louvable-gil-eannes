@@ -51,7 +51,7 @@ restart_deploy:
             --header "PRIVATE-TOKEN: $GITLAB_API_TOKEN" \
             "$CI_API_V4_URL/projects/$CI_PROJECT_ID/variables/$SERVICE" \
             --form "value=$NEW_VALUE"
-        
+        fi
         echo "Valor atualizado: $CURRENT → $NEW_VALUE"
 
         

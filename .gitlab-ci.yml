@@ -32,17 +32,25 @@ restart_deploy:
      - echo "-->$ONE_PASSWORD_ITEM_ID"
      - |
         # Busca o valor atual
-        CURRENT=$(curl -s --header "PRIVATE-TOKEN: $GITLAB_API_TOKEN" \
-          "$CI_API_V4_URL/projects/$CI_PROJECT_ID/variables/$SERVICE" | jq -r '.value')
+        RESPONSE=$(curl -s --header "PRIVATE-TOKEN: $GITLAB_API_TOKEN" \
+          "$CI_API_V4_URL/projects/$CI_PROJECT_ID/variables/$SERVICE")
         
-        # Incrementa
-        NEW_VALUE=$((CURRENT + 1))
-        
-        # Atualiza no GitLab
-        curl -s --request PUT \
-          --header "PRIVATE-TOKEN: $GITLAB_API_TOKEN" \
-          "$CI_API_V4_URL/projects/$CI_PROJECT_ID/variables/$SERVICE" \
-          --form "value=$NEW_VALUE"
+        CURRENT=$(echo $RESPONSE | jq -r '.value')
+
+        # Se não existe, cria com POST, senão atualiza com PUT
+        if [ "$CURRENT" = "null" ] || [ -z "$CURRENT" ]; then
+          NEW_VALUE=1
+          curl -s --request POST \
+            --header "PRIVATE-TOKEN: $GITLAB_API_TOKEN" \
+            "$CI_API_V4_URL/projects/$CI_PROJECT_ID/variables" \
+            --form "key=$SERVICE" \
+            --form "value=$NEW_VALUE"
+        else
+          NEW_VALUE=$((CURRENT + 1))
+          curl -s --request PUT \
+            --header "PRIVATE-TOKEN: $GITLAB_API_TOKEN" \
+            "$CI_API_V4_URL/projects/$CI_PROJECT_ID/variables/$SERVICE" \
+            --form "value=$NEW_VALUE"
         
         echo "Valor atualizado: $CURRENT → $NEW_VALUE"
 

@@ -9,6 +9,7 @@ restart_deploy:
   stage: restart
   image: ubuntu:latest 
   before_script:
+    - apt-get update -y && apt-get install -y curl unzip
     # Instala o 1Password CLI
     - |
       OP_VERSION="v2.30.0"

@@ -1,0 +1,115 @@
+<div
+    class="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0 bg-white rounded-[2.5rem]">
+    <div
+        class="w-1/2 relative rounded-[2rem] md:flex flex-auto overflow-hidden dark:border-l flex-col h-[88vh]">
+        <tagpeak-carousel #carousel class="w-full h-full "
+                          [$templates]="[slide1, slide2, slide3, slide4, slide5]"
+                          [$bgClassSlideIndicator]="'!bg-[#4237DA]'"
+                          [$slideAutomatically]="false"
+                          [$action]="header" />
+
+    </div>
+    <ng-template #header>
+        <div class="flex w-full justify-end pr-3 !mt-[-24px] right-0 absolute">
+            <mat-icon class="cursor-pointer" mat-dialog-close [svgIcon]="'close'"></mat-icon>
+        </div>
+    </ng-template>
+
+    <ng-template #slide1>
+        <div class="flex  flex-col bg-white items-start h-full mt-[-4px]">
+            <img class="scale-95" [ngSrc]="'../../assets/images/carousel/onboarding/slide1.svg'" width="90"
+                 height="90"
+                 alt="slide1">
+
+            <span class="text-center text-[32px] leading-[41.6px] mt-[2.5rem]">
+                {{ 'onboarding.slide1.title' | transloco }}
+            </span>
+
+            <span class="text-[15px] leading-[19.5px] text-[#7A7B92] mt-[1.875rem]">
+                {{ 'onboarding.slide1.message' | transloco }}
+            </span>
+
+            <button class="darkButton w-fit mt-5" (click)="goNextStep()">
+                {{ 'onboarding.slide1.button' | transloco }}
+            </button>
+        </div>
+    </ng-template>
+
+    <ng-template #slide2>
+        <div class="flex  flex-col bg-white items-start h-full mt-[-6px]">
+            <img class="scale-95" [ngSrc]="'../../assets/images/carousel/onboarding/slide2.svg'" width="90" height="90"
+                 alt="slide2">
+
+            <span class="text-center text-[32px] leading-[41.6px] mt-[4.6rem]">
+                {{ 'onboarding.slide2.title' | transloco }}
+            </span>
+
+            <span class="text-[15px] leading-[19.5px] text-[#7A7B92] mt-[1.875rem]">
+                {{ 'onboarding.slide2.message' | transloco }}
+            </span>
+
+            <button class="whiteButton w-fit mt-5" (click)="goNextStep()">
+                {{ 'onboarding.slide2.button' | transloco }}
+            </button>
+        </div>
+    </ng-template>
+
+    <ng-template #slide3>
+        <div class="flex  flex-col bg-white items-start h-full mt-[-24px]">
+            <img class="scale-95" [ngSrc]="'../../assets/images/carousel/onboarding/slide3.svg'" width="90" height="90"
+                 alt="slide3">
+
+            <span class="text-center text-[32px] leading-[41.6px] mt-[2.5rem]">
+                {{ 'onboarding.slide3.title' | transloco }}
+            </span>
+
+            <span class="text-[15px] leading-[19.5px] text-[#7A7B92] mt-[1.875rem]">
+                {{ 'onboarding.slide3.message' | transloco }}
+            </span>
+
+            <button class="whiteButton w-fit mt-7" (click)="goNextStep()">
+                {{ 'onboarding.slide3.button' | transloco }}
+            </button>
+        </div>
+    </ng-template>
+
+    <ng-template #slide4>
+        <div class="flex  flex-col bg-white items-start h-full mt-[-6px]">
+            <img class="scale-95" [ngSrc]="'../../assets/images/carousel/onboarding/slide4.svg'" width="90" height="90"
+                 alt="slide4">
+
+            <span class="text-center text-[32px] leading-[41.6px] mt-[2.5rem]">
+                {{ 'onboarding.slide4.title' | transloco }}
+            </span>
+
+            <span class="text-[15px] leading-[19.5px] text-[#7A7B92] mt-[1.875rem]">
+                {{ 'onboarding.slide4.message' | transloco }}
+            </span>
+
+            <button class="whiteButton w-fit mt-7" (click)="goNextStep()">
+                {{ 'onboarding.slide4.button' | transloco }}
+            </button>
+        </div>
+    </ng-template>
+
+    <ng-template #slide5>
+        <div class="flex  flex-col bg-white items-start h-full mt-[-6px]">
+            <img class="scale-95" [ngSrc]="'../../assets/images/carousel/onboarding/slide5.svg'" width="90" height="90"
+                 alt="slide5">
+
+            <span class="text-center text-[32px] leading-[41.6px] mt-[2rem]">
+                {{ 'onboarding.slide5.title' | transloco }}
+            </span>
+
+            <span class="text-[15px] leading-[19.5px] text-[#7A7B92] mt-[1.875rem]">
+                {{ 'onboarding.slide5.message' | transloco }}
+            </span>
+
+            <button mat-dialog-close class="darkButton w-fit mt-5 flex flex-row gap-1 items-center">
+                <mat-icon class="text-white scale-95" [svgIcon]="'checked'"></mat-icon>
+                <span> {{ 'onboarding.slide5.button' | transloco }}</span>
+            </button>
+        </div>
+    </ng-template>
+
+</div>

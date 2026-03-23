@@ -1,0 +1,60 @@
+<div class="flex flex-col w-full h-full p-2">
+    <div class="flex justify-end mb-15">
+        <mat-icon svgIcon="close-modal" class="cursor-pointer" (click)="closeModal()"></mat-icon>
+    </div>
+
+    <h2 class="text-4xl text-project-licorice-500">{{ 'configurations.edit-title' | transloco }}</h2>
+
+    <form [formGroup]="form" class="flex flex-col gap-4 mt-12 h-full">
+        <div class="mb-6">
+            <label for="name"
+                   class="block text-project-waterloo font-normal text-md">{{ 'configurations.details.name' | transloco }} *</label>
+            <div class="relative">
+                <input type="text" id="name"
+                       [formControl]="nameControl"
+                       [ngClass]="{'border-project-red placeholder:text-project-red': nameControl.invalid && !nameControl.untouched}"
+                       class="w-full pb-2 pt-1 border-b border-project-brand-500 placeholder:text-project-waterloo focus:outline-none  focus:border-licorice text-licorice">
+
+                <div class="absolute right-0 top-0 flex ">
+                    <div class="tooltip tooltip-error tooltip-left" *ngIf="nameControl.invalid && !nameControl.untouched"
+                         [attr.data-tip]="nameControl.hasError('required') ? ('configurations.details.name-required' | transloco) : ('configurations.details.name-invalid' | transloco)">
+                        <mat-icon
+                            class="icon-size-4 cursor-pointer text-project-red"
+                            [svgIcon]="'error'"
+                        ></mat-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <label for="value"
+                   class="block text-project-waterloo font-normal text-md">{{ 'configurations.details.value' | transloco }} *</label>
+            <div class="relative">
+                <input type="text" id="value"
+                       [formControl]="valueControl"
+                       [ngClass]="{'border-project-red placeholder:text-project-red': valueControl.invalid && !valueControl.untouched}"
+                       class="w-full pb-2 pt-1 border-b border-project-brand-500 placeholder:text-project-waterloo focus:outline-none  focus:border-licorice text-licorice">
+
+                <div class="absolute right-0 top-0 flex ">
+                    <div class="tooltip tooltip-error tooltip-left" *ngIf="valueControl.invalid && !valueControl.untouched"
+                         [attr.data-tip]="valueControl.hasError('required') ? ('configurations.details.value-required' | transloco) : ('configurations.details.value-invalid' | transloco)">
+                        <mat-icon
+                            class="icon-size-4 cursor-pointer text-project-red"
+                            [svgIcon]="'error'"
+                        ></mat-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-row justify-between items-end h-full">
+            <button class="btn border-project-licorice-900 bg-white text-project-licorice-900 text-lg font-normal"
+                    (click)="closeModal()">{{ 'misc.cancel' | transloco }}
+            </button>
+            <button class="btn bg-project-licorice-900 text-white text-lg font-normal"
+                    (click)="save()">{{ 'misc.save' | transloco }}
+            </button>
+        </div>
+    </form>
+</div>

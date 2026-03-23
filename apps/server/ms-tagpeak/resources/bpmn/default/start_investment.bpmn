@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0dwjjxd" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.39.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+  <bpmn:collaboration id="Collaboration_1bv41mv">
+    <bpmn:participant id="Participant_07wxoi1" name="CASHBACK PROCESS / START INVESTMENT" processRef="start-investment" />
+    <bpmn:textAnnotation id="TextAnnotation_1ossf96">
+      <bpmn:text>Transactions changes state from TRACKED to REJECTED or VALIDATED</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1sdzq4t">
+      <bpmn:text>Manual task to start the investment
+
+Investment state - LIVE</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1sepds7">
+      <bpmn:text>Also to check if the investment is saved in the DB</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_03l6f65" associationDirection="None" sourceRef="Activity_1s29m0v" targetRef="TextAnnotation_1ossf96" />
+    <bpmn:association id="Association_1ea60ef" associationDirection="None" sourceRef="start_investment" targetRef="TextAnnotation_1sdzq4t" />
+    <bpmn:association id="Association_1xci3dy" associationDirection="None" sourceRef="Activity_0q9e72d" targetRef="TextAnnotation_1sepds7" />
+  </bpmn:collaboration>
+  <bpmn:process id="start-investment" name="Start Investment" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_0mk407t">
+      <bpmn:lane id="Lane_1i90bsg" name="MS-TAGPEAK">
+        <bpmn:flowNodeRef>Event_0f4zrh4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1s29m0v</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>transaction_validated</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_06uu9ob</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1rzb1ma</bpmn:flowNodeRef>
+        <bpmn:childLaneSet id="LaneSet_0bal7wv">
+          <bpmn:lane id="Lane_0nftjgt">
+            <bpmn:flowNodeRef>Event_0f4zrh4</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Activity_1s29m0v</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>transaction_validated</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Activity_06uu9ob</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Activity_1rzb1ma</bpmn:flowNodeRef>
+            <bpmn:childLaneSet id="LaneSet_03mxvq5" />
+          </bpmn:lane>
+        </bpmn:childLaneSet>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0smvhez" name="TAGPEAK ACTOR">
+        <bpmn:flowNodeRef>start_investment</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0q9e72d</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1p75hsc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_12o8dix</bpmn:flowNodeRef>
+        <bpmn:childLaneSet id="LaneSet_099eald">
+          <bpmn:lane id="Lane_14jxhzl">
+            <bpmn:flowNodeRef>start_investment</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Activity_0q9e72d</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Activity_1p75hsc</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Activity_12o8dix</bpmn:flowNodeRef>
+          </bpmn:lane>
+        </bpmn:childLaneSet>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:endEvent id="Event_0f4zrh4">
+      <bpmn:incoming>Flow_1pd2pbu</bpmn:incoming>
+      <bpmn:incoming>Flow_0mfwx90</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0io8z2q" name="VALIDATED" sourceRef="transaction_validated" targetRef="Activity_06uu9ob">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=transactionState = "VALIDATED"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_11rnryp" sourceRef="StartEvent_1" targetRef="Activity_1s29m0v" />
+    <bpmn:sequenceFlow id="Flow_07trsez" sourceRef="Activity_1s29m0v" targetRef="transaction_validated" />
+    <bpmn:sequenceFlow id="Flow_1pd2pbu" name="REJECTED" sourceRef="transaction_validated" targetRef="Event_0f4zrh4">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=transactionState = "REJECTED"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_1s29m0v" name="Transactions change state">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="transaction-change-state" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_11rnryp</bpmn:incoming>
+      <bpmn:outgoing>Flow_07trsez</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_11rnryp</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="transaction_validated" name="Validate Transaction">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_07trsez</bpmn:incoming>
+      <bpmn:outgoing>Flow_1pd2pbu</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0io8z2q</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0mfwx90" sourceRef="Activity_1p75hsc" targetRef="Event_0f4zrh4" />
+    <bpmn:serviceTask id="Activity_06uu9ob" name="Check Membership Level">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="check-membership-level" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0io8z2q</bpmn:incoming>
+      <bpmn:outgoing>Flow_1prmm3w</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="start_investment" name="Start Investment">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_19488xo</bpmn:incoming>
+      <bpmn:outgoing>Flow_10jedop</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_0q9e72d" name="Save Investment info BD">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="check-if-investment-exists" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_10jedop</bpmn:incoming>
+      <bpmn:outgoing>Flow_0uxphrb</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:callActivity id="Activity_1p75hsc" name="Send Email&#10;Cashback Live">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="send-email" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;casback-live&#34;" target="template_code" />
+          <zeebe:input source="=false" target="isNewsletter" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0uxphrb</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mfwx90</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="Activity_12o8dix" name="Review Us Email">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="send-email" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=true" target="isNewsletter" />
+          <zeebe:input source="=&#34;about-your-journey-with-tagpeak&#34;" target="template_code" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0j277wd</bpmn:incoming>
+      <bpmn:outgoing>Flow_19488xo</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_19488xo" sourceRef="Activity_12o8dix" targetRef="start_investment" />
+    <bpmn:sequenceFlow id="Flow_10jedop" sourceRef="start_investment" targetRef="Activity_0q9e72d" />
+    <bpmn:sequenceFlow id="Flow_0uxphrb" sourceRef="Activity_0q9e72d" targetRef="Activity_1p75hsc" />
+    <bpmn:sequenceFlow id="Flow_0j277wd" sourceRef="Activity_1rzb1ma" targetRef="Activity_12o8dix" />
+    <bpmn:sequenceFlow id="Flow_1prmm3w" sourceRef="Activity_06uu9ob" targetRef="Activity_1rzb1ma" />
+    <bpmn:callActivity id="Activity_1rzb1ma" name="Credit Influencer referral">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="credit-influencer-referral" propagateAllChildVariables="false" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1prmm3w</bpmn:incoming>
+      <bpmn:outgoing>Flow_0j277wd</bpmn:outgoing>
+    </bpmn:callActivity>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1bv41mv">
+      <bpmndi:BPMNShape id="Participant_07wxoi1_di" bpmnElement="Participant_07wxoi1" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="950" height="810" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0smvhez_di" bpmnElement="Lane_0smvhez" isHorizontal="true">
+        <dc:Bounds x="190" y="560" width="920" height="330" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_14jxhzl_di" bpmnElement="Lane_14jxhzl" isHorizontal="true">
+        <dc:Bounds x="220" y="560" width="890" height="330" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1i90bsg_di" bpmnElement="Lane_1i90bsg" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="920" height="480" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0nftjgt_di" bpmnElement="Lane_0nftjgt" isHorizontal="true">
+        <dc:Bounds x="220" y="80" width="890" height="480" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0f4zrh4_di" bpmnElement="Event_0f4zrh4">
+        <dc:Bounds x="992" y="292" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1roq4bb_di" bpmnElement="Activity_1s29m0v">
+        <dc:Bounds x="380" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="282" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1wo19wi_di" bpmnElement="transaction_validated" isMarkerVisible="true">
+        <dc:Bounds x="565" y="195" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="561" y="158" width="58" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09tz2mo_di" bpmnElement="Activity_06uu9ob">
+        <dc:Bounds x="540" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qvh4zg_di" bpmnElement="start_investment">
+        <dc:Bounds x="530" y="770" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_158c1z1_di" bpmnElement="Activity_0q9e72d">
+        <dc:Bounds x="700" y="770" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vjbszs_di" bpmnElement="Activity_1p75hsc">
+        <dc:Bounds x="870" y="770" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1g7rfc7_di" bpmnElement="Activity_12o8dix">
+        <dc:Bounds x="530" y="640" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1rzb1ma_di" bpmnElement="Activity_1rzb1ma">
+        <dc:Bounds x="540" y="430" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0io8z2q_di" bpmnElement="Flow_0io8z2q">
+        <di:waypoint x="590" y="245" />
+        <di:waypoint x="590" y="300" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="595" y="261" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11rnryp_di" bpmnElement="Flow_11rnryp">
+        <di:waypoint x="318" y="220" />
+        <di:waypoint x="380" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07trsez_di" bpmnElement="Flow_07trsez">
+        <di:waypoint x="480" y="220" />
+        <di:waypoint x="565" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pd2pbu_di" bpmnElement="Flow_1pd2pbu">
+        <di:waypoint x="615" y="220" />
+        <di:waypoint x="1010" y="220" />
+        <di:waypoint x="1010" y="292" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="747" y="206" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mfwx90_di" bpmnElement="Flow_0mfwx90">
+        <di:waypoint x="970" y="810" />
+        <di:waypoint x="1010" y="810" />
+        <di:waypoint x="1010" y="328" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19488xo_di" bpmnElement="Flow_19488xo">
+        <di:waypoint x="580" y="720" />
+        <di:waypoint x="580" y="770" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10jedop_di" bpmnElement="Flow_10jedop">
+        <di:waypoint x="630" y="810" />
+        <di:waypoint x="700" y="810" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uxphrb_di" bpmnElement="Flow_0uxphrb">
+        <di:waypoint x="800" y="810" />
+        <di:waypoint x="870" y="810" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0j277wd_di" bpmnElement="Flow_0j277wd">
+        <di:waypoint x="590" y="510" />
+        <di:waypoint x="590" y="585" />
+        <di:waypoint x="580" y="585" />
+        <di:waypoint x="580" y="640" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1prmm3w_di" bpmnElement="Flow_1prmm3w">
+        <di:waypoint x="590" y="380" />
+        <di:waypoint x="590" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_1ossf96_di" bpmnElement="TextAnnotation_1ossf96">
+        <dc:Bounds x="450" y="90" width="100" height="84" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1sdzq4t_di" bpmnElement="TextAnnotation_1sdzq4t">
+        <dc:Bounds x="360" y="640" width="100" height="98" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1sepds7_di" bpmnElement="TextAnnotation_1sepds7">
+        <dc:Bounds x="810" y="654" width="100" height="70" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_03l6f65_di" bpmnElement="Association_03l6f65">
+        <di:waypoint x="456" y="180" />
+        <di:waypoint x="460" y="174" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1ea60ef_di" bpmnElement="Association_1ea60ef">
+        <di:waypoint x="537" y="771" />
+        <di:waypoint x="460" y="701" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1xci3dy_di" bpmnElement="Association_1xci3dy">
+        <di:waypoint x="781" y="770" />
+        <di:waypoint x="822" y="724" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,20 @@
+<div class="bg-white flex flex-wrap rounded relative"
+>
+    @if (data.image) {
+        <div class="w-full flex mt-8 justify-center ">
+            <img class="w-36 h-36 justify-center" [src]="data.image" alt="img">
+        </div>
+    }
+    <div class="flex justify-center mx-2">
+        <span
+            class="text-project-licorice-500 font-bold text-center text-xl">{{ data.text }}</span>
+    </div>
+    <div class="flex justify-between gap-16 mx-2 w-full flex-row-reverse">
+        <button [mat-dialog-close]="true"
+                class="bg-project-licorice-500 w-full items-center justify-evenly text-lg font-black rounded text-white h-10">{{ data.positiveButton }}
+        </button>
+        <button (click)="onNegativeClick()"
+                class="bg-white w-full border-project-waterloo border items-center justify-evenly text-lg font-black rounded h-10">{{ data.negativeButton }}
+        </button>
+    </div>
+</div>

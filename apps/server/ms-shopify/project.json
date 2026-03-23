@@ -1,0 +1,59 @@
+{
+  "name": "ms-shopify",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/server/ms-shopify",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx-go/nx-go:build",
+      "options": {
+        "main": "{projectRoot}/main.go"
+      }
+    },
+    "serve": {
+      "executor": "@nx-go/nx-go:serve",
+      "options": {
+        "main": "{projectRoot}/main.go"
+      }
+    },
+    "test": {
+      "executor": "@nx-go/nx-go:test"
+    },
+    "lint": {
+      "executor": "@nx-go/nx-go:lint"
+    },
+    "openapi": {
+      "command": "cd {projectRoot} && swag init && cd -"
+    },
+    "migrate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": [
+          "cd {projectRoot} && GOOSE_DRIVER=postgres GOOSE_DBSTRING=\"user={args.user} password={args.password} dbname={args.db} sslmode={args.sslmode} host={args.host} port={args.port}\" goose -dir migrations up && cd -"
+        ],
+        "parallel": false
+      },
+      "configurations": {
+        "default": {
+          "user": "postgres",
+          "host": "localhost",
+          "port": 5432,
+          "password": "postgres",
+          "db": "shopify",
+          "sslmode": "disable"
+        }
+      },
+      "defaultConfiguration": "default"
+    },
+    "create-migration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": [
+          "cd {projectRoot} && goose -dir migrations create {args.name} sql && cd -"
+        ],
+        "parallel": false
+      }
+    }
+  }
+}

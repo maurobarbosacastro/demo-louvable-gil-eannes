@@ -1,0 +1,56 @@
+plugins {
+	id("groovy")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.micronaut.application") version "4.0.0"
+}
+
+version = "0.1"
+group = "pt.atlanse.event"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Regular
+    implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut:micronaut-jackson-databind")
+    implementation("io.micronaut.groovy:micronaut-runtime-groovy")
+    implementation("jakarta.annotation:jakarta.annotation-api")
+    compileOnly("io.micronaut:micronaut-http-validation")
+    runtimeOnly("ch.qos.logback:logback-classic")
+    implementation("io.micronaut.validation:micronaut-validation")
+
+    // Google
+    implementation('com.google.firebase:firebase-admin:9.0.0')
+    implementation('com.google.cloud:google-cloud-storage:1.114.5')
+
+    // Keycloak client
+    implementation 'org.keycloak:keycloak-admin-client:19.0.3'
+
+    // Security
+    implementation("io.micronaut.security:micronaut-security")
+    implementation("io.micronaut.security:micronaut-security-jwt")
+    implementation("io.micronaut.security:micronaut-security-oauth2")
+    runtimeOnly("org.yaml:snakeyaml")
+
+}
+
+
+application {
+    mainClass.set("pt.atlanse.event.Application")
+}
+java {
+    sourceCompatibility = JavaVersion.toVersion("17")
+    targetCompatibility = JavaVersion.toVersion("17")
+}
+
+graalvmNative.toolchainDetection = false
+micronaut {
+    runtime("netty")
+    testRuntime("spock2")
+    processing {
+        incremental(true)
+        annotations("pt.atlanse.event.*")
+    }
+}

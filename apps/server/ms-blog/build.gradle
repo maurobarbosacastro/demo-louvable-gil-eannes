@@ -1,0 +1,77 @@
+plugins {
+	id("groovy")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.micronaut.application") version "4.4.2"
+	id 'maven-publish'
+}
+
+version = "0.1"
+group = "pt.atlanse.blog"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut:micronaut-jackson-databind")
+    implementation("io.micronaut.groovy:micronaut-runtime-groovy")
+    implementation("jakarta.annotation:jakarta.annotation-api")
+    compileOnly("io.micronaut:micronaut-http-validation")
+    runtimeOnly("ch.qos.logback:logback-classic")
+    implementation("io.micronaut.validation:micronaut-validation")
+    compileOnly("io.micronaut.openapi:micronaut-openapi")
+    compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
+
+    // Database migrations
+    implementation("io.micronaut.sql:micronaut-hibernate-jpa")
+    implementation("io.micronaut.sql:micronaut-jdbc-hikari")
+    runtimeOnly("org.postgresql:postgresql")
+    implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
+    annotationProcessor("io.micronaut.data:micronaut-data-hibernate-jpa")
+    implementation("io.micronaut.liquibase:micronaut-liquibase")
+    annotationProcessor("io.micronaut.data:micronaut-data-processor")
+    implementation("io.micronaut.data:micronaut-data-jdbc")
+
+    implementation("io.swagger.core.v3:swagger-annotations")
+    // Keycloak client
+    implementation 'org.keycloak:keycloak-admin-client:19.0.3'
+
+    // Security
+    implementation("io.micronaut.security:micronaut-security")
+    implementation("io.micronaut.security:micronaut-security-jwt")
+    implementation("io.micronaut.security:micronaut-security-oauth2")
+
+    runtimeOnly("org.yaml:snakeyaml")
+
+}
+
+
+application {
+    mainClass.set("pt.atlanse.blog.Application")
+}
+java {
+    sourceCompatibility = JavaVersion.toVersion("17")
+    targetCompatibility = JavaVersion.toVersion("17")
+}
+
+graalvmNative.toolchainDetection = false
+micronaut {
+    runtime("netty")
+    testRuntime("spock2")
+    processing {
+        incremental(true)
+        annotations("pt.atlanse.blog.*")
+    }
+}
+
+
+
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifact jar
+		}
+	}
+}

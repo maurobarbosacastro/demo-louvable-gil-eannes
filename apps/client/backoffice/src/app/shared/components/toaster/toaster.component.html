@@ -1,0 +1,20 @@
+<div class="fixed right-5 z-99999 space-y-4 w-fit"
+     [ngClass]=" toasts?.[0]?.position === 'top' ? 'top-8' : 'bottom-8'">
+    <div *ngFor="let toast of toasts" [ngClass]="getToastClass(toast.type)"
+         class="shadow-lg w-full rounded py-2.5 pl-2.5 pr-1.5">
+        <div class="flex justify-between w-full items-center">
+            <div class="flex items-center">
+                <mat-icon [ngClass]="getToastClass(toast.type)" [svgIcon]="actionIcon" class="icon-size-5"/>
+                <span class="text-lg font-semibold px-1.5">{{ toastAction }}! </span>
+                <span class="text-lg "> {{ toast.message }}</span>
+            </div>
+            @if (toast.action != null) {
+                <button class="flex items-center justify-center px-1" (click)="closeToast(toast.id)">
+                    <mat-icon [ngClass]="getToastClass(toast.type)" [svgIcon]="toast.action?.icon"
+                              class="icon-size-4"/>
+                    <span class="text-lg pl-1"> {{ toast.action?.message }}</span>
+                </button>
+            }
+        </div>
+    </div>
+</div>

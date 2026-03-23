@@ -1,0 +1,47 @@
+micronaut:
+  application:
+    name: msWSockets
+  router:
+    static-resources:
+      default:
+        enabled: true
+        mapping: /**
+        paths: classpath:public
+  security:
+    authentication: bearer
+    token:
+      jwt:
+        enabled: true
+        signatures:
+          jwks:
+            keycloak:
+              url: http://${KEYCLOAK_HOST:localhost}:${KEYCLOAK_PORT:8090}/realms/${KEYCLOAK_REALM:gof}/protocol/openid-connect/certs
+    oauth2.clients.keycloak:
+      grant-type: password
+      client-id: ${KEYCLOAK_CLIENT_ID:gof-backend-client}
+      client-secret: ${KEYCLOAK_CLIENT_SECRET:i92qJZicvQ3nIci8qmZD1J2G9HxKik5V}
+      authorization:
+        url: http://${KEYCLOAK_HOST:localhost}:${KEYCLOAK_PORT:8090}/realms/${KEYCLOAK_REALM:gof}/protocol/openid-connect/auth
+    enabled: ${WSOCKETS_SECURITY:false}
+  server:
+    port: ${WSOCKETS_PORT:8094}
+    cors:
+      enabled: true
+      configurations:
+        ui:
+          allowed-origins:
+            - http://localhost:4200
+            - http://localhost:65511
+            - ${HOST_ORIGIN:`https://game.gof.pre.atlanse.ddns.net`}
+    netty:
+      session:
+        read-timeout: 30000 # Read timeout in milliseconds (30 seconds)
+    idle-timeout: 120m
+    read-idle-timeout: 120m
+    write-idle-timeout: 120m
+
+netty:
+  default:
+    allocator:
+      max-order: 3
+

@@ -1,0 +1,40 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "4b4e861d960ee12c8f4cebfa613d97a0"
+name = "diogo-tp"
+handle = "diogo-tp"
+application_url = "https://seo-july-vincent-adware.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+
+[webhooks]
+api_version = "2025-04"
+
+[[webhooks.subscriptions]]
+topics = [
+  "orders/cancelled",
+  "orders/create",
+  "orders/delete",
+  "orders/updated",
+]
+uri = "https://azg80f-ip-188-251-82-149.tunnelmole.net/ms-shopify/public/webhook"
+
+[[webhooks.subscriptions]]
+topics = ["app/uninstalled"]
+uri = "https://azg80f-ip-188-251-82-149.tunnelmole.net/ms-shopify/public/webhook-uninstall"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_discounts,read_orders,read_products,read_publications,write_discounts,write_products,write_publications,read_customers"
+
+[auth]
+redirect_urls = [
+  "https://seo-july-vincent-adware.trycloudflare.com/auth/callback",
+  "https://seo-july-vincent-adware.trycloudflare.com/auth/shopify/callback",
+  "https://seo-july-vincent-adware.trycloudflare.com/api/auth/callback",
+]
+
+[pos]
+embedded = false

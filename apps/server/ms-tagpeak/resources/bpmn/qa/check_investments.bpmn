@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_16rry65" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.30.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+  <bpmn:collaboration id="Collaboration_100flgc">
+    <bpmn:participant id="Participant_0tgt27h" name="MS-TAGPEAK" processRef="QA_Check_Investments" />
+    <bpmn:textAnnotation id="TextAnnotation_0aqbh8y">
+      <bpmn:text>The Expired verification is done in the code</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1lgb045">
+      <bpmn:text>Updates the State with FINISHED or EXPIRED (If the expire flag is on)</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_00uhlmb" associationDirection="None" sourceRef="TextAnnotation_0aqbh8y" targetRef="Gateway_1n23tht" />
+  </bpmn:collaboration>
+  <bpmn:process id="QA_Check_Investments" name="QA_Check Investments" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements />
+      <bpmn:outgoing>Flow_0rujaka</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1cgr5sb">
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">00 01 00 * * *</bpmn:timeCycle>
+      </bpmn:timerEventDefinition>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="QA_check-expired-rewards" name="Verify Expired Rewards">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="QA_check-expired-rewards" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0rujaka</bpmn:incoming>
+      <bpmn:outgoing>Flow_0amw7ae</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0rujaka" sourceRef="StartEvent_1" targetRef="QA_check-expired-rewards" />
+    <bpmn:exclusiveGateway id="Gateway_1n23tht" default="Flow_167piqc">
+      <bpmn:incoming>Flow_0amw7ae</bpmn:incoming>
+      <bpmn:outgoing>Flow_167piqc</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0sy3y5n</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0amw7ae" sourceRef="QA_check-expired-rewards" targetRef="Gateway_1n23tht" />
+    <bpmn:sequenceFlow id="Flow_167piqc" name="Don&#39;t have rewards" sourceRef="Gateway_1n23tht" targetRef="Event_16e50bi" />
+    <bpmn:sequenceFlow id="Flow_0sy3y5n" name="Have rewards" sourceRef="Gateway_1n23tht" targetRef="QA_update-expired-rewards">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=not(is empty(rewards))</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_16e50bi">
+      <bpmn:incoming>Flow_167piqc</bpmn:incoming>
+      <bpmn:incoming>Flow_0w6ci65</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="QA_update-expired-rewards" name="Update Rewards with State">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="QA_update-expired-rewards" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0sy3y5n</bpmn:incoming>
+      <bpmn:outgoing>Flow_0u6xqtn</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0u6xqtn" sourceRef="QA_update-expired-rewards" targetRef="Activity_1rn7dee" />
+    <bpmn:sequenceFlow id="Flow_0w6ci65" sourceRef="Activity_1rn7dee" targetRef="Event_16e50bi" />
+    <bpmn:callActivity id="Activity_1rn7dee" name="End Investment">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="QA_end-investment" propagateAllChildVariables="false" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0u6xqtn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0w6ci65</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics>
+        <bpmn:extensionElements>
+          <zeebe:loopCharacteristics inputCollection="=rewards" inputElement="rewardUuid" />
+        </bpmn:extensionElements>
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:callActivity>
+    <bpmn:association id="Association_1900m2e" associationDirection="None" sourceRef="QA_update-expired-rewards" targetRef="TextAnnotation_1lgb045" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_100flgc">
+      <bpmndi:BPMNShape id="Participant_0tgt27h_di" bpmnElement="Participant_0tgt27h" isHorizontal="true">
+        <dc:Bounds x="132" y="80" width="1098" height="332" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1747mkc_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="182" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0s0zivc_di" bpmnElement="QA_check-expired-rewards">
+        <dc:Bounds x="320" y="250" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1n23tht_di" bpmnElement="Gateway_1n23tht" isMarkerVisible="true">
+        <dc:Bounds x="525" y="265" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_16e50bi_di" bpmnElement="Event_16e50bi">
+        <dc:Bounds x="1092" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0l0q4xl_di" bpmnElement="QA_update-expired-rewards">
+        <dc:Bounds x="710" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13pws2q_di" bpmnElement="Activity_1rn7dee">
+        <dc:Bounds x="910" y="250" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0rujaka_di" bpmnElement="Flow_0rujaka">
+        <di:waypoint x="218" y="290" />
+        <di:waypoint x="320" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0amw7ae_di" bpmnElement="Flow_0amw7ae">
+        <di:waypoint x="420" y="290" />
+        <di:waypoint x="525" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_167piqc_di" bpmnElement="Flow_167piqc">
+        <di:waypoint x="550" y="315" />
+        <di:waypoint x="550" y="360" />
+        <di:waypoint x="1110" y="360" />
+        <di:waypoint x="1110" y="308" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="787" y="366" width="53" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0sy3y5n_di" bpmnElement="Flow_0sy3y5n">
+        <di:waypoint x="575" y="290" />
+        <di:waypoint x="710" y="290" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="609" y="272" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0u6xqtn_di" bpmnElement="Flow_0u6xqtn">
+        <di:waypoint x="810" y="290" />
+        <di:waypoint x="910" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0w6ci65_di" bpmnElement="Flow_0w6ci65">
+        <di:waypoint x="1010" y="290" />
+        <di:waypoint x="1092" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1900m2e_di" bpmnElement="Association_1900m2e">
+        <di:waypoint x="770" y="250" />
+        <di:waypoint x="779" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_0aqbh8y_di" bpmnElement="TextAnnotation_0aqbh8y">
+        <dc:Bounds x="501" y="134" width="100" height="70" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1lgb045_di" bpmnElement="TextAnnotation_1lgb045">
+        <dc:Bounds x="750" y="120" width="100" height="98" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_00uhlmb_di" bpmnElement="Association_00uhlmb">
+        <di:waypoint x="551" y="204" />
+        <di:waypoint x="550" y="265" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

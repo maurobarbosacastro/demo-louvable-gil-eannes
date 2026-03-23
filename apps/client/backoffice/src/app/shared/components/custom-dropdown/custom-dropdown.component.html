@@ -1,0 +1,68 @@
+<div class="relative mx-auto cursor-pointer" #inputDropdown
+     [ngClass]="css?.styleHeader"
+     cdkOverlayOrigin
+     #trigger="cdkOverlayOrigin">
+    <div class="w-full h-full flex justify-between items-center"
+         [ngClass]="css?.styleInput"
+         (click)="toggleDropdown($event)">
+        <div class="flex items-center gap-1 flex-grow cursor-text">
+            @if (!isDisabled && iconInput.position === 'left') {
+                <mat-icon class="icon-size-5 mr-2" [svgIcon]="iconInput.iconName"></mat-icon>
+            }
+            <input class="text-[15px] cursor-text w-full"
+                   #input
+                   [value]="value"
+                   [readonly]="isReadonly"
+                   (keyup)="control.setValue(input.value); isOpen = true"
+                   placeholder="{{ placeholder | transloco }}"/>
+        </div>
+        <div class="flex items-center gap-3">
+            @if (value && iconResetValue) {
+                <mat-icon svgIcon="close-modal" class="icon-size-4 cursor-pointer"
+                          (click)="setValue(null)"></mat-icon>
+            }
+            @if (!isDisabled && iconInput.position === 'right') {
+                <mat-icon class="icon-size-5" [svgIcon]="iconInput.iconName"></mat-icon>
+            }
+        </div>
+    </div>
+
+    <ng-template cdkConnectedOverlay
+                 [cdkConnectedOverlayOrigin]="trigger"
+                 [cdkConnectedOverlayOpen]="isOpen"
+                 [cdkConnectedOverlayFlexibleDimensions]="true"
+                 [cdkConnectedOverlayMinWidth]="inputDropdown.offsetWidth"
+                 (backdropClick)="isOpen = false"
+                 (overlayOutsideClick)="isOpen = false">
+        <div class="mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200"
+             [ngClass]="css?.styleList">
+            <div class="max-h-60 overflow-y-auto">
+                @if (showDefaultValue) {
+                    <div class="flex items-center gap-2 p-2 cursor-pointer" (click)="setValue(null)">
+                        <span class="text-project-waterloo"> -- {{ 'misc.select' | transloco }} -- </span>
+                    </div>
+                }
+                @for (option of $options(); track option.value) {
+                    <ng-container *ngTemplateOutlet="customListTemplate ?? defaultTemplate;
+                         context: {
+                            value: option
+                         }"></ng-container>
+
+                    <ng-template #defaultTemplate>
+                        <div class="flex items-center gap-2 p-2 cursor-pointer hover:bg-[#4237DA33] rounded hover:text-project-youngBlue justify-between"
+                             (click)="setValue(option)">
+                            {{ option.label }}
+                            @if (validateOptionCheck(option)) {
+                                <mat-icon svgIcon="{{iconCheckOption.iconName}}" class="icon-size-4"
+                                          [class]="iconCheckOption?.iconStyle"
+                                          [style]="{'color': iconCheckOption?.iconColor}"></mat-icon>
+                            }
+                        </div>
+                    </ng-template>
+                } @empty {
+                    <span class="px-2 text[15px] text-project-waterloo">No content</span>
+                }
+            </div>
+        </div>
+    </ng-template>
+</div>

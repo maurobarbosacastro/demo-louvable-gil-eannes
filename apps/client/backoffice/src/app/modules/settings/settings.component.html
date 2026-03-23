@@ -1,0 +1,29 @@
+<div class="flex flex-col w-full p-8">
+    <div class="pb-7">
+        <h2 class="leading-none text-6xl text-project-licorice-500 mb-10">Settings</h2>
+        <div class="w-full border-b border-project-brand-500 flex gap-10 pb-5">
+            @for (tab of tabs; track tab) {
+                <a class="cursor-pointer lg:text-2xl text-lg"
+                   [ngClass]="{'text-project-licorice-500 text-opacity-100': $selectedTab() == tab , 'text-project-waterloo text-opacity-60': $selectedTab() != tab}"
+                   (click)="goToTab(tab)">
+                    {{ getTabName(tab) }}
+                </a>
+            }
+        </div>
+    </div>
+    <div class="w-full">
+        @switch ($selectedTab()) {
+            @case (SettingsTabEnum.PROFILE) {
+                <tagpeak-profile
+                    [$preLoadedCountry]="$preLoadedCountry()" />
+            }
+            @case (SettingsTabEnum.WITHDRAWAL_SETTINGS) {
+                <tagpeak-withdrawal-settings />
+            }
+            @case (SettingsTabEnum.PRIVACY) {
+                <tagpeak-privacy-details />
+            }
+        }
+    </div>
+
+</div>

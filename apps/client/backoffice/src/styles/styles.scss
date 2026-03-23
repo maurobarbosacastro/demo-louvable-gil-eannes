@@ -1,0 +1,224 @@
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Import/write your custom styles here.
+/*  @ Styles from this file will override 'vendors.scss' and Fuse's base styles.
+/* ----------------------------------------------------------------------------------------------------- */
+
+@import "../assets/fonts/IBM_Plex_Sans/ibm_plex_sans.css";
+
+* {
+    font-feature-settings: normal !important;
+}
+
+@layer{
+    body{
+        font-feature-settings: normal !important;
+    }
+}
+
+
+html, body {
+    font-family: 'IBM Plex Sans', sans-serif !important;
+    font-feature-settings: normal;
+    @apply bg-project-brand-500;
+}
+
+body fuse-splash-screen {
+    @apply bg-project-splashScreen text-white;
+
+    .spinner > div {
+        @apply bg-white;
+    }
+}
+
+.fuse-horizontal-navigation-item-active {
+    font-weight: 600 !important;
+}
+
+.fuse-vertical-navigation-content-footer {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.fuse-vertical-navigation-wrapper {
+    box-shadow: none !important;
+}
+
+.fuse-vertical-navigation-item-wrapper {
+    color: theme('colors.primary');
+}
+
+fuse-vertical-navigation-basic-item .fuse-vertical-navigation-item-wrapper .fuse-vertical-navigation-item .fuse-vertical-navigation-item-icon {
+    opacity: 1 !important;
+}
+
+fuse-vertical-navigation-basic-item > .fuse-vertical-navigation-item-wrapper .fuse-vertical-navigation-item:not(.fuse-vertical-navigation-item-disabled).fuse-vertical-navigation-item-active {
+    color: #9C98D1 !important;
+    background: white !important;
+    border-radius: 40px !important;
+}
+
+.verify-dialog-panel {
+    width: 26rem;
+    border-radius: 20px;
+    top: 50%;
+    left: 50%;
+}
+
+.dialog-panel {
+    width: 26rem;
+    height: 10rem;
+    border-radius: 20px;
+    top: 50%;
+    left: 50%;
+}
+
+.upload-csv-dialog-panel {
+    width: 26rem;
+    height: 13rem;
+    border-radius: 20px;
+    top: 50%;
+    left: 50%;
+}
+
+.onboarding-dialog-panel {
+    @media only screen and (max-width: 600px) {
+        width: 100%;
+    }
+
+    @media only screen and (max-width: 960px) and (min-width: 600px) {
+        width: 50%;
+    }
+    width: 33%;
+    height: 95%;
+    border-radius: 20px;
+
+    .smaller {
+        height: 60%;
+    }
+}
+
+.darkButton {
+    width: 7rem;
+    height: 2.2rem;
+    padding: 8px 20px 10px 20px;
+    border-radius: 4px;
+    font-size: 15px;
+    line-height: 19.5px;
+    background: #32334C;
+    color: white;
+}
+
+.whiteButton {
+    width: 7rem;
+    height: 2.2rem;
+    padding: 8px 20px 10px 20px;
+    border-radius: 4px;
+    border-style: solid;
+    border-color: #32334C;
+    border-width: 1px;
+    font-size: 15px;
+    line-height: 19.5px;
+    background: white;
+    color: #32334C;
+}
+
+.dialog-panel-details {
+    box-shadow: none;
+    position: fixed !important;
+    height: 100%;
+    padding: 0.75rem;
+    border-radius: 20px;
+    top: 0;
+    right: 0;
+
+    @media only screen and (max-width: 960px) and (min-width: 600px) {
+        width: 50% !important;
+    }
+
+}
+
+.dialog-panel-details-mobile {
+    box-shadow: none;
+    height: 100%;
+    padding: 0.75rem;
+    border-radius: 20px;
+    position: fixed !important;
+    max-width: 100% !important;
+    bottom: 0;
+
+    .mat-mdc-dialog-container .mdc-dialog__surface {
+        padding: 1rem !important;
+    }
+}
+
+.dialog-panel-store-details {
+
+    @media only screen and (max-width: 600px) {
+        width: 100% !important;
+    }
+
+    @media only screen and (max-width: 960px) and (min-width: 600px) {
+        width: 50% !important;
+        right: 0;
+    }
+
+    @media only screen and (max-width: 1024px) and (min-width: 961px) {
+        right: 0;
+        width: 40% !important;
+    }
+
+    @media only screen and (max-width: 1440px) and (min-width: 1025px) {
+        right: 0;
+        width: 30% !important;
+    }
+
+    @media only screen and (min-width: 1441px) {
+        right: 0;
+        width: 25% !important;
+    }
+
+
+    box-shadow: none;
+    position: fixed !important;
+    height: 100%;
+    padding: 0.75rem;
+    border-radius: 20px;
+    top: 0;
+    background: transparent !important;
+
+    .mat-mdc-dialog-container .mdc-dialog__container .mat-mdc-dialog-surface {
+        background-color: transparent !important;
+        box-shadow: none !important;
+    }
+}
+
+//Global select style
+select {
+    @apply border-b border-project-licorice-500 pl-0 ml-0 bg-transparent;
+}
+
+select:focus {
+    @apply bg-transparent;
+}
+
+// Add fonts to Quill editor
+.ql-editor p, .ql-editor h1, .ql-editor h2, .ql-editor h3, .ql-editor h4, .ql-editor h5, .ql-editor h6 {
+    font-family: 'IBM Plex Sans', sans-serif !important; // Set default font
+}
+
+.ql-snow .ql-picker-options .ql-picker-item {
+    font-family: #{attr(data-value)}, sans-serif !important;
+
+    &::before {
+        content: attr(data-value) !important;
+    }
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item::before {
+    content: attr(data-value) !important;
+}
+

@@ -1,0 +1,58 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Description",
+        "title": "ms-shopify Swagger API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "paths": {
+        "/hello": {
+            "get": {
+                "description": "Get Hello",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users -\u003e Groups in swagger"
+                ],
+                "summary": "Get Hello",
+                "responses": {
+                    "200": {
+                        "description": "Hello, World!",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/hellos": {
+            "get": {
+                "description": "Get Hellos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    ""
+                ],
+                "summary": "Get Hellos",
+                "responses": {
+                    "200": {
+                        "description": "Hello, World!",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

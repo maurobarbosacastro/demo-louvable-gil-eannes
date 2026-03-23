@@ -1,0 +1,21 @@
+.progress-custom::-moz-progress-bar {
+    border-radius: var(--rounded-box, 1rem);
+    --tw-bg-opacity: 1;
+    background-color: theme('colors.project.youngBlue');
+}
+
+.progress-custom:indeterminate {
+    --progress-color: theme('colors.project.youngBlue');
+}
+
+.progress-custom::-webkit-progress-value {
+    --tw-bg-opacity: 1;
+    background-color: theme('colors.project.youngBlue');
+}
+.icon-color {
+    color: theme('colors.project.youngBlue');
+}
+
+.icon-color-credit-score {
+    color: theme('colors.project.lavender');
+}

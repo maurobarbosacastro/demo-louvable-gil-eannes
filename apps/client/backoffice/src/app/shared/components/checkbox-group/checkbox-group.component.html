@@ -1,0 +1,80 @@
+<div class="relative w-full mx-auto mb-6 cursor-pointer">
+    <div (click)="toggleDropdown()"
+         class="w-full flex justify-between pb-2 pt-1 border-b focus:outline-none  border-project-licorice-500 text-project-licorice-500"
+         [ngClass]="{'border-project-red placeholder:text-project-red': $error()}"
+    >
+        @if ($selectedValues().length > 0) {
+            <div class="flex">
+                @for (item of $selectedValues().slice(0, 5); track item.key; let idx = $index) {
+                    <span class="text-white px-2 bg-project-licorice-500 rounded-full mr-2">{{ item.name }}</span>
+                }
+                @if ($selectedValues().length > 5) {
+                    <span class="text-black pl-1">{{ $selectedValues().length - 3 }} {{ 'misc.more' | transloco }}
+                        ... </span>
+                }
+            </div>
+        } @else {
+            <div class="text-project-waterloo">
+                {{ $placeholder() }}
+            </div>
+        }
+        <div class="flex gap-1">
+            @if ($error()) {
+                <div class="tooltip tooltip-error flex items-center tooltip-left"
+                     [attr.data-tip]="'store.field-required' | transloco">
+                    <mat-icon
+                        class="icon-size-4 cursor-pointer text-project-red"
+                        [svgIcon]="'error'"
+                    ></mat-icon>
+                </div>
+            }
+            <mat-icon class="ml-2 text-project-licorice-500">arrow_drop_down</mat-icon>
+        </div>
+    </div>
+
+
+    <!-- Dropdown Menu -->
+    <div
+        class="absolute top-full mt-2 w-full bg-white shadow-lg rounded-lg p-4 z-10"
+        *ngIf="$isDropdownOpen()"
+    >
+        <!-- Search Field -->
+        <input
+            type="text"
+            placeholder="{{'misc.search' | transloco}}..."
+            class="input input-bordered w-full mb-2"
+            [(ngModel)]="searchQuery"
+            (input)="filterValues()"
+        />
+        @if (!$hideSelectAll()) {
+            <!-- Select All -->
+            <label class="label cursor-pointer flex items-center mb-2">
+                <span class="label-text">{{ 'misc.select-all' | transloco }}</span>
+                <input
+                    type="checkbox"
+                    class="checkbox checkbox-sm border-project-licorice-500 [--chkbg:#32334C] [--chkfg:white] checked:border-project-licorice-500"
+                    [checked]="$areAllSelected()"
+                    (change)="toggleSelectAll(!$areAllSelected())"
+                />
+            </label>
+        }
+
+        <!-- List -->
+        <div class="max-h-60 overflow-y-auto">
+            <div
+                *ngFor="let val of $filteredValues()"
+                class="mb-1"
+            >
+                <label class="label cursor-pointer flex items-center">
+                    <span class="label-text">{{ val.name }}</span>
+                    <input
+                        type="checkbox"
+                        class="checkbox checkbox-sm border-project-licorice-500 [--chkbg:#32334C] [--chkfg:white] checked:border-project-licorice-500"
+                        [checked]="val.selected"
+                        (click)="selectValue(val)"
+                    />
+                </label>
+            </div>
+        </div>
+    </div>
+</div>

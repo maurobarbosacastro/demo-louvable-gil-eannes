@@ -1,0 +1,351 @@
+@if ($isMobile()) {
+    <div class="flex flex-col-reverse w-full my-5 gap-5">
+        @defer {
+            <div class="flex flex-col w-full gap-8">
+                <form [formGroup]="filtersForm" class="w-full">
+                    <div class="flex flex-col gap-2">
+                        <div class="flex gap-2.5">
+                            <div class="w-1/2">
+                                <label class="input input-bordered flex items-center gap-2 w-full h-[34px] min-h-[34px]">
+                                    <mat-icon svgIcon="calender" class="icon-size-5"></mat-icon>
+                                    <input [matDatepicker]="pickerStart" (click)="pickerStart.open()"
+                                           formControlName="startDate"
+                                           class="grow max-w-2/3 cursor-pointer" readonly
+                                           placeholder="{{ 'store-visits.date-from' | transloco }}"
+                                           [max]="filtersForm.value.endDate"/>
+                                    <mat-datepicker #pickerStart class="custom-picker"></mat-datepicker>
+                                    @if (filtersForm?.value?.startDate) {
+                                        <mat-icon svgIcon="close-modal" class="icon-size-4 cursor-pointer"
+                                                  (click)="resetFormControl('startDate')"></mat-icon>
+                                    }
+                                </label>
+                            </div>
+                            <div class="w-1/2 pr-2">
+                                <label class="input input-bordered flex items-center gap-2 w-full h-[34px] min-h-[34px]">
+                                    <mat-icon svgIcon="arrow-right" class="icon-size-4"></mat-icon>
+                                    <input [matDatepicker]="pickerEnd" (click)="pickerEnd.open()" formControlName="endDate"
+                                           class="grow max-w-2/3 cursor-pointer" readonly
+                                           placeholder="{{ 'store-visits.date-to' | transloco }}"
+                                           [min]="filtersForm.value.startDate"/>
+                                    <mat-datepicker #pickerEnd></mat-datepicker>
+                                    @if (filtersForm?.value?.endDate) {
+                                        <mat-icon svgIcon="close-modal" class="icon-size-4 cursor-pointer"
+                                                  (click)="resetFormControl('endDate')"></mat-icon>
+                                    }
+                                </label>
+                            </div>
+                        </div>
+                        <button
+                            class="btn border-project-licorice-900 bg-white text-project-licorice-900 text-lg font-normal px-5 font-plex w-full h-[34px] min-h-[34px]"
+                            (click)="searchByFilter()">{{ 'misc.search' | transloco }}
+                        </button>
+                    </div>
+                </form>
+
+                <div class="w-full">
+                    @if ($dataNew() && $dataNew().length > 0) {
+                        <atl-ng-table class="custom-table table-client-withdrawals"
+                                      [tableConfiguration]="$tableConfig()"
+                                      [bodyCustomTemplate]="bodyCustomTemplate"
+                                      [totalPages]="totalPages"
+                                      [resetPaginator]="page$ | async"
+                                      (onSortAndPageChange)="onSortAndPageChange($event)"
+                                      [totalSize]="totalSize"/>
+
+                        <ng-template #bodyCustomTemplate let-implicit>
+                            @switch (implicit.column.id) {
+                                @case ('uuid') {
+                                    <span [matTooltip]="implicit.row.uuid" class="cursor-copy text-xl"
+                                          [cdkCopyToClipboard]="implicit.row.uuid" (click)="informCopy()">
+                                {{ implicit.row.uuid }}
+                            </span>
+                                }
+                                @case ('amountSource') {
+                                    <span
+                                        class="text-lg font-semibold">{{ implicit.rowVal | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}</span>
+                                }
+                                @case ('state') {
+                                    <tagpeak-status-container [$status]="implicit.rowVal" [$withdrawal]="true"/>
+                                }
+                                @case ('completionDate') {
+                                    @if (implicit.rowVal) {
+                                        <span
+                                            class="text-lg text-project-waterloo"> {{ implicit.rowVal | date: 'dd/MM/yyyy' }} </span>
+                                    } @else {
+                                        <span>-</span>
+                                    }
+                                }
+                                @case ('details') {
+                                    @if (implicit.rowVal) {
+                                        <span class="text-lg text-project-waterloo"> {{ implicit.rowVal }} </span>
+                                    } @else {
+                                        <span></span>
+                                    }
+                                    <span
+                                        class="text-md text-project-waterloo"> {{ implicit.row.dateVisited | date: 'MMM d, yyyy · HH:mm:ss' }} </span>
+                                }
+                                @case ('createdAt') {
+                                    <span
+                                        class="text-md text-project-waterloo"> {{ implicit.rowVal | date: 'MMM d, yyyy · HH:mm:ss' }} </span>
+                                }
+                            }
+                        </ng-template>
+                    } @else {
+                        <div class="flex flex-col gap-5">
+                    <span class="text-xl text-project-licorice-900 font-semibold">
+                        {{ 'balance-withdrawals.nothing-here' | transloco }}
+                    </span>
+                            <span class="text-md text-project-waterloo w-80">
+                        {{ 'balance-withdrawals.nothing-here-body' | transloco }}
+                    </span>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+            <div class="flex mx-auto gap-5 flex-row items-center w-full">
+                <tagpeak-info-card class="w-1/2"
+                                   [styleClass]="'bg-project-youngBlue rounded-[10px]'"
+                                   [templateCardBody]="cardBody"/>
+
+                <ng-template #cardBody>
+                    <div class="p-2.5">
+                        <div class="min-h-56 h-56 text-white">
+                            <div class="flex flex-col gap-4 h-full">
+                                <div class="flex flex-col gap-1">
+                                    <mat-icon svgIcon="credit-score" class="icon-size-4 icon-color"></mat-icon>
+                                    <span
+                                        class="text-md">{{ 'balance-withdrawals.available-rewards' | transloco }}</span>
+                                </div>
+                                <div class="mt-4">
+                                    <span
+                                        class="text-4xl leading-none">{{ $user()?.balance | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}</span>
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex flex-col gap-2.5 text-sm text-project-lavender leading-none">
+                                            <span
+                                                class="text-lg">{{ $balance()?.amountRewards | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}
+                                                <span
+                                                    class="text-md">{{ 'balance-withdrawals.rewards' | transloco }}</span></span>
+                                        <span
+                                            class="text-lg">{{ $balance()?.amountReferrals | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}
+                                            <span
+                                                class="text-md">{{ 'balance-withdrawals.referrals' | transloco }}</span></span>
+                                    </div>
+                                    <div
+                                        class="divider after:bg-project-sideMenu after:h-[1px] before:h-[1px] before:bg-project-sideMenu !my-0"></div>
+                                    <div class="flex gap-2.5">
+                                        <button
+                                            class="btn border-white bg-project-youngBlue text-white rounded font-normal text-md tooltip tooltip-bottom h-7 min-h-7 px-2"
+                                            [ngClass]="$canWithdraw() ? 'text-white' : '!text-project-lavender cursor-default'"
+                                            matTooltip="{{'balance-withdrawals.cannot-withdrawal' | transloco : {value: $valueToWithdraw() | currency: $user().currency : 'symbol-narrow' : '1.2-2' } }}"
+                                            matTooltipPosition="below" [matTooltipDisabled]="$canWithdraw()"
+                                            (click)="$canWithdraw() ? createNewWithdrawal() : null">
+                                            {{ 'balance-withdrawals.withdraw' | transloco }}
+                                        </button>
+                                        <button class="btn bg-white text-project-youngBlue font-normal rounded text-md h-7 min-h-7 px-2"
+                                                (click)="goToSettings()">
+                                            {{ 'balance-withdrawals.withdrawals-settings-mobile' | transloco }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+
+                <div class="w-1/2 min-h-60 h-60">
+                    <div class="flex flex-col gap-8 border-b border-project-brand-500 h-full">
+                        <div class="flex flex-col gap-1">
+                            <mat-icon svgIcon="wallet" class="icon-size-4 icon-color-paid-rewards"></mat-icon>
+                            <span
+                                class="text-md text-project-licorice-900">{{ 'balance-withdrawals.paid-rewards' | transloco }}</span>
+                        </div>
+                        <span
+                            class="text-4xl text-project-licorice-900 leading-none">{{ $balance()?.paidWithdrawals | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}</span>
+                    </div>
+                </div>
+            </div>
+        } @loading (minimum 500ms) {
+            <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+                <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+            </div>
+        }
+    </div>
+} @else {
+    <div class="flex flex-col-reverse lg:flex-row w-full my-5 gap-10 lg:gap-4 xl:gap-26">
+
+        @defer {
+            <div class="flex flex-col w-3/4 gap-8">
+                <form [formGroup]="filtersForm" class="flex w-full gap-5">
+                    <div class="w-80">
+                        <label class="input input-bordered flex items-center gap-2 w-full">
+                            <mat-icon svgIcon="calender" class="icon-size-5"></mat-icon>
+                            <input [matDatepicker]="pickerStart" (click)="pickerStart.open()"
+                                   formControlName="startDate"
+                                   class="grow max-w-full cursor-pointer" readonly
+                                   placeholder="{{ 'store-visits.date-from' | transloco }}"
+                                   [max]="filtersForm.value.endDate"/>
+                            <mat-datepicker #pickerStart class="custom-picker"></mat-datepicker>
+                            @if (filtersForm?.value?.startDate) {
+                                <mat-icon svgIcon="close-modal" class="icon-size-4 cursor-pointer"
+                                          (click)="resetFormControl('startDate')"></mat-icon>
+                            }
+                        </label>
+                    </div>
+                    <div class="w-80">
+                        <label class="input input-bordered flex items-center gap-2 w-full">
+                            <mat-icon svgIcon="arrow-right" class="icon-size-4"></mat-icon>
+                            <input [matDatepicker]="pickerEnd" (click)="pickerEnd.open()" formControlName="endDate"
+                                   class="grow max-w-full cursor-pointer" readonly
+                                   placeholder="{{ 'store-visits.date-to' | transloco }}"
+                                   [min]="filtersForm.value.startDate"/>
+                            <mat-datepicker #pickerEnd></mat-datepicker>
+                            @if (filtersForm?.value?.endDate) {
+                                <mat-icon svgIcon="close-modal" class="icon-size-4 cursor-pointer"
+                                          (click)="resetFormControl('endDate')"></mat-icon>
+                            }
+                        </label>
+                    </div>
+                    <button
+                        class="btn border-project-licorice-900 bg-white text-project-licorice-900 text-lg font-normal px-5"
+                        (click)="searchByFilter()">{{ 'misc.search' | transloco }}
+                    </button>
+                </form>
+
+                <div class="w-full">
+                    @if ($dataNew() && $dataNew().length > 0) {
+                        <atl-ng-table class="custom-table table-client-withdrawals"
+                                      [tableConfiguration]="$tableConfig()"
+                                      [bodyCustomTemplate]="bodyCustomTemplate"
+                                      [totalPages]="totalPages"
+                                      [resetPaginator]="page$ | async"
+                                      (onSortAndPageChange)="onSortAndPageChange($event)"
+                                      [totalSize]="totalSize"/>
+
+                        <ng-template #bodyCustomTemplate let-implicit>
+                            @switch (implicit.column.id) {
+                                @case ('uuid') {
+                                    <span [matTooltip]="implicit.row.uuid" class="cursor-copy text-xl"
+                                          [cdkCopyToClipboard]="implicit.row.uuid" (click)="informCopy()">
+                                {{ implicit.row.uuid }}
+                            </span>
+                                }
+                                @case ('amountSource') {
+                                    <span
+                                        class="text-xl font-semibold">{{ implicit.rowVal | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}</span>
+                                }
+                                @case ('state') {
+                                    <tagpeak-status-container [$status]="implicit.rowVal" [$withdrawal]="true"/>
+                                }
+                                @case ('completionDate') {
+                                    @if (implicit.rowVal) {
+                                        <span
+                                            class="text-xl text-project-waterloo"> {{ implicit.rowVal | date: 'dd/MM/yyyy' }} </span>
+                                    } @else {
+                                        <span>-</span>
+                                    }
+                                }
+                                @case ('details') {
+                                    @if (implicit.rowVal) {
+                                        <span class="text-xl text-project-waterloo"> {{ implicit.rowVal }} </span>
+                                    } @else {
+                                        <span></span>
+                                    }
+                                    <span
+                                        class="text-xl text-project-waterloo"> {{ implicit.row.dateVisited | date: 'MMM d, yyyy · HH:mm:ss' }} </span>
+                                }
+                                @case ('createdAt') {
+                                    <span
+                                        class="text-xl text-project-waterloo"> {{ implicit.rowVal | date: 'MMM d, yyyy · HH:mm:ss' }} </span>
+                                }
+                            }
+                        </ng-template>
+                    } @else {
+                        <div class="flex flex-col gap-5">
+                    <span class="text-xl text-project-licorice-900 font-semibold">
+                        {{ 'balance-withdrawals.nothing-here' | transloco }}
+                    </span>
+                            <span class="text-md text-project-waterloo w-80">
+                        {{ 'balance-withdrawals.nothing-here-body' | transloco }}
+                    </span>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+            <div class="flex flex-row mx-auto gap-28 lg:gap-0 lg:flex-col items-center lg:w-1/4">
+                <tagpeak-info-card [templateCardBody]="cardBody"/>
+
+                <ng-template #cardBody>
+                    <div class="p-7">
+                        <div class="min-h-60 h-60 text-white relative">
+                            <div class="absolute -top-7 overflow-hidden right-0">
+                                <mat-icon svgIcon="budget" class="opacity-40 icon-size-24"></mat-icon>
+                            </div>
+                            <div class="flex flex-col justify-between h-full">
+                                <div class="flex gap-2.5">
+                                    <mat-icon svgIcon="credit-score" class="icon-size-5 icon-color"></mat-icon>
+                                    <span
+                                        class="text-md">{{ 'balance-withdrawals.available-rewards' | transloco }}</span>
+                                </div>
+                                <div class="flex flex-col gap-2.5">
+                                    <div class="mb-2.5">
+                                        <span
+                                            class="text-6xl">{{ $user()?.balance | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}</span>
+                                    </div>
+                                    <div>
+                                        <div class="flex gap-8 text-sm text-project-lavender">
+                                            <span
+                                                class="text-lg">{{ $balance()?.amountRewards | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}
+                                                <span
+                                                    class="text-md">{{ 'balance-withdrawals.rewards' | transloco }}</span></span>
+                                            <span
+                                                class="text-lg">{{ $balance()?.amountReferrals | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}
+                                                <span
+                                                    class="text-md">{{ 'balance-withdrawals.referrals' | transloco }}</span></span>
+                                        </div>
+                                        <div
+                                            class="divider after:bg-project-sideMenu after:h-[1px] before:h-[1px] before:bg-project-sideMenu !my-0"></div>
+                                    </div>
+                                    <div class="flex gap-2.5">
+                                        <button
+                                            class="btn border-white bg-project-youngBlue text-white font-normal text-md tooltip tooltip-bottom"
+                                            [ngClass]="$canWithdraw() ? 'text-white' : '!text-project-lavender cursor-default'"
+                                            matTooltip="{{'balance-withdrawals.cannot-withdrawal' | transloco : {value: $valueToWithdraw() | currency: $user().currency : 'symbol-narrow' : '1.2-2' } }}"
+                                            matTooltipPosition="below" [matTooltipDisabled]="$canWithdraw()"
+                                            (click)="$canWithdraw() ? createNewWithdrawal() : null">
+                                            {{ 'balance-withdrawals.withdraw' | transloco }}
+                                        </button>
+                                        <button class="btn bg-white text-project-youngBlue font-normal text-md"
+                                                (click)="goToSettings()">
+                                            {{ 'balance-withdrawals.withdrawals-settings' | transloco }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+
+                <div class="mt-8">
+                    <div class="flex flex-col gap-11 border-b border-project-brand-500">
+                        <div class="flex flex-row gap-2.5 items-center">
+                            <mat-icon svgIcon="wallet" class="icon-size-5 icon-color-paid-rewards"></mat-icon>
+                            <span
+                                class="text-md text-project-licorice-900">{{ 'balance-withdrawals.paid-rewards' | transloco }}</span>
+                        </div>
+                        <span
+                            class="text-6xl text-project-licorice-900 leading-none mb-5">{{ $balance()?.paidWithdrawals | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}</span>
+                    </div>
+                </div>
+            </div>
+        } @loading (minimum 500ms) {
+            <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+                <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+            </div>
+        }
+    </div>
+}

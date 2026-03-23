@@ -1,0 +1,31 @@
+{
+  "name": "shopify-plugin",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/client/shopify-plugin/app",
+  "prefix": "tp-shopify",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "remix vite:build",
+        "cwd": "apps/client/shopify-plugin"
+      }
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "shopify app dev",
+        "cwd": "apps/client/shopify-plugin"
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "shopify app deploy",
+        "cwd": "apps/client/shopify-plugin"
+      }
+    }
+  }
+}

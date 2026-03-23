@@ -1,0 +1,35 @@
+micronaut:
+    application:
+        name: msFirebase
+    security:
+        authentication: bearer
+        token:
+            jwt:
+                enabled: true
+                signatures:
+                    jwks:
+                        keycloak:
+                            url: http://${KEYCLOAK_HOST:localhost}:${KEYCLOAK_PORT:8090}/realms/${KEYCLOAK_REALM:gof}/protocol/openid-connect/certs
+        oauth2.clients.keycloak:
+            grant-type: password
+            client-id: ${KEYCLOAK_CLIENT_ID:gof-backend-client}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET:CHANGE_ME_KEYCLOAK_CLIENT_SECRET}
+            authorization:
+                url: http://${KEYCLOAK_HOST:localhost}:${KEYCLOAK_PORT:8090}/realms/${KEYCLOAK_REALM:gof}/protocol/openid-connect/auth
+        enabled: ${FIREBASE_SECURITY:true}
+    server:
+        port: ${FIREBASE_PORT:8092}
+        cors:
+            enabled: true
+            configurations:
+                ui:
+                    allowed-origins:
+                        - http://localhost:4200
+netty:
+    default:
+        allocator:
+            max-order: 3
+
+firebase:
+    credentials:
+        file: ${FIREBASE_CREDENTIALS:`CHANGE_ME_TO_DIRECTORY/ms-firebase/src/main/resources/CHANGE_ME_firebase-credentials.json`}

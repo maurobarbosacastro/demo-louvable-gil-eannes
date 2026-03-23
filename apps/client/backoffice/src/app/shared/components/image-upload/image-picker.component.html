@@ -1,0 +1,64 @@
+@if (miniView) {
+    <div class="rounded bg-project-waterloo flex py-1 pr-4 pl-2 items-center justify-between border border-project-mediumGray mr-5">
+        <div class="flex items-center">
+            <div class="h-7 w-12 rounded mr-2 bg-contain bg-center bg-no-repeat "
+                 [ngStyle]="{ 'background-image': 'url(' + fileUrl + ')' }"></div>
+            <span class="text-primary text-md">{{ fileName }}</span>
+        </div>
+        <span class="text-primary text-md"> {{ fileSize }} </span>
+    </div>
+} @else {
+    <div class="w-full h-18 rounded border flex flex-row px-3 py-1 justify-between items-center"
+         [ngClass]="{'cursor-not-allowed border-gray-400': disabled, 'border-red-500': required, 'border-project-waterloo': !required}">
+        <div class="w-full flex justify-between relative items-center">
+            <input
+                #fileInput
+                type="file"
+                (change)="handleChange($event)"
+                [accept]="allowedFileTypes"
+                [disabled]="disabled"
+                class="absolute w-full h-full cursor-pointer opacity-0 top-0 left-0"
+                [ngClass]="{'hidden': fileUrl }"
+            />
+            <div class="w-[80%] flex">
+                @if ($isLoading()) {
+                    <div class=" min-h-[22rem] flex items-center">
+                        <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+                    </div>
+                } @else {
+                    @if (!fileUrl) {
+                        <img ngSrc="../../../../assets/images/placeholders/placeholder_image.png"
+                             height="200" width="200"
+                             alt="placeholder" class="w-12 h-12"/>
+                    } @else {
+                        <div [ngStyle]="{ 'background-image': 'url(' + fileUrl + ')' }"
+                             class="w-14 h-12 bg-cover bg-center"></div>
+                    }
+                }
+
+                <div class="ml-3 flex flex-col justify-center">
+                    @if (!fileUrl) {
+                        <h6 class=" font-normal text-base leading-none pb-1">{{ 'image-upload.image-title' | transloco }}</h6>
+                        <h6 class=" font-normal text-sm text-project-waterloo leading-none pt-1">{{ 'image-upload.image-description' | transloco }}</h6>
+                    } @else {
+                        <h6 class="font-bold text-base">{{ fileName }}</h6>
+                        <h6 class="font-normal text-project-waterloo text-sm">{{ fileSize }}</h6>
+                    }
+                </div>
+            </div>
+
+            @if (!fileUrl) {
+                <button (click)="fileInput.click()"
+                        class="bg-white items-center flex justify-evenly text-primary text-sm font-bold rounded  dark px-4 h-8 border border-project-licorice-500 ">
+                    {{ 'image-upload.upload' | transloco }}
+                </button>
+            } @else {
+                <button (click)="handleRemovesFile()" [disabled]="disabled"
+                        class="bg-white items-center flex justify-evenly text-primary text-base font-bold px-4 h-8 ">
+                    <mat-icon class="text-gray-500" [ngClass]="{'text-gray-400': disabled}" svgIcon="trash"></mat-icon>
+                </button>
+            }
+        </div>
+    </div>
+
+}

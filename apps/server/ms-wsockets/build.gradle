@@ -1,0 +1,67 @@
+plugins {
+    id("groovy")
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("io.micronaut.application") version "3.7.4"
+}
+
+version = "0.1"
+group = "pt.atlanse.wsockets"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Regular
+    implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut:micronaut-jackson-databind")
+    implementation("io.micronaut.groovy:micronaut-runtime-groovy")
+    implementation("jakarta.annotation:jakarta.annotation-api")
+    compileOnly("io.micronaut:micronaut-http-validation")
+    runtimeOnly("ch.qos.logback:logback-classic")
+    implementation("io.micronaut:micronaut-validation")
+    annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
+    implementation("io.micronaut.serde:micronaut-serde-jackson")
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+    // Keycloak client
+    implementation 'org.keycloak:keycloak-admin-client:19.0.3'
+
+    // Security
+    implementation("io.micronaut.security:micronaut-security")
+    implementation("io.micronaut.security:micronaut-security-jwt")
+    implementation("io.micronaut.security:micronaut-security-oauth2")
+
+    // Test
+    testImplementation("io.micronaut.test:micronaut-test-core")
+    testImplementation("io.micronaut.test:micronaut-test-spock")
+    testImplementation("org.spockframework:spock-core")
+}
+
+
+application {
+    mainClass.set("pt.atlanse.wsockets.Application")
+}
+java {
+    sourceCompatibility = JavaVersion.toVersion("17")
+    targetCompatibility = JavaVersion.toVersion("17")
+}
+
+graalvmNative.toolchainDetection = false
+micronaut {
+    runtime("netty")
+    testRuntime("spock2")
+    processing {
+        incremental(true)
+        annotations("pt.atlanse.wsockets.*")
+    }
+}
+
+
+//publishing {
+//	publications {
+//		mavenJava(MavenPublication) {
+//			artifact jar
+//		}
+//	}
+//}

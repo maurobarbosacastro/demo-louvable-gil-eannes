@@ -1,0 +1,482 @@
+@if ($isMobile()) {
+    @defer {
+
+        <div class="flex flex-col gap-5 my-2.5">
+            <div class="rounded-[20px] p-2.5 bg-project-grandis">
+                <div class="flex flex-col gap-1 mb-5">
+                    <mat-icon svgIcon="two_persons" class="icon-size-5"></mat-icon>
+                    <span class="text-md font-plex text-project-licorice-500 leading-none">
+                        {{ 'referrals.your-referrals.earnings' | transloco }}
+                    </span>
+                </div>
+                <span class="text-4xl font-plex text-project-licorice-500">
+                    {{ $totalRevenue() | number: '1.2-2' | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }}
+                </span>
+            </div>
+
+            <!--    GRAPHICS -->
+            <div class="flex justify-center w-full">
+
+                @if ($referralInfo().totalClicks) {
+                    <div class="flex flex-col gap-15 w-full">
+
+                        <div class="flex flex-col w-full gap-3">
+
+                            <!--                    Link clicks-->
+                            <div class="w-full border-r border-project-wildsand h-fit">
+                                <div class="flex flex-col gap-[30px]">
+                                <span class="text-md font-plex text-project-waterloo">
+                                    {{ 'referrals.your-referrals.link-clicks' | transloco }}
+                                </span>
+                                    <span class="text-4xl font-plex text-project-licorice-500">
+                                      {{ $referralInfo().totalClicks }}
+                                </span>
+                                </div>
+
+                                <tagpeak-line-chart [$chartOptions]="$chartOptionsClicks()"/>
+                            </div>
+
+
+                            <!--                    Registered referrals-->
+                            <div class="w-full border-r border-r-project-wildsand h-fit">
+                                <div class="flex flex-col gap-[30px]">
+                                <span class="text-md font-plex text-project-waterloo">
+                                    {{ 'referrals.your-referrals.registered-referrals' | transloco }}
+                                </span>
+                                    <span class="text-4xl font-plex text-project-licorice-500">
+                                    {{ $referralInfo().totalUserRegistered }}
+                                </span>
+                                </div>
+                                <tagpeak-line-chart [$chartOptions]="$chartOptionsRegistered()"/>
+                            </div>
+
+                            <!--                    Referrals who made a purchase-->
+                            <div class="w-full h-fit">
+                                <div class="flex flex-col gap-[30px]">
+                                <span class="text-md font-plex text-project-waterloo">
+                                    {{ 'referrals.your-referrals.referrals-who-made-a-purchase' | transloco }}
+                                </span>
+                                    <span class="text-4xl font-plex text-project-licorice-500">
+                                    {{ $referralInfo().totalFirstPurchase }}
+                                </span>
+                                </div>
+                                <tagpeak-line-chart [$chartOptions]="$chartOptionsPurchases()"/>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col w-full">
+
+                            <!--                        GRAPHIC-->
+                            <div class="flex flex-col w-full">
+                            <span class="font-plex text-[25px] text-project-licorice-500 pl-2.5">
+                                {{ 'referrals.your-referrals.revenue' | transloco }}
+                            </span>
+
+                                <span class="font-plex text-md text-project-waterloo mt-2 mb-2.5 pl-2.5">
+                                {{ 'referrals.your-referrals.total-generated' | transloco : {currency: getCurrencySymbol($user().currency)} }}
+                            </span>
+
+                                <tagpeak-line-chart [$chartOptions]="$chartOptionsRevenue()"/>
+                            </div>
+
+                            <!--                        USERS TABLE-->
+                            <div
+                                class="w-full rounded-[20px] border border-project-wildsand px-[25px] pt-[25px] max-h-[440px] mr-5 overflow-y-scroll">
+
+                                <div
+                                    class="flex flex-row justify-between items-center border-b border-b-project-wildsand">
+                                    <div class="flex flex-row gap-2.5">
+                                        <mat-icon svgIcon="stars"
+                                                  class="icon-size-4 text-project-licorice-500"></mat-icon>
+
+                                        <span
+                                            class="font-plex text-md text-project-waterloo"> {{ 'referrals.referrals' | transloco }} </span>
+                                    </div>
+
+                                    <span
+                                        class="font-plex text-4xl text-project-licorice-500"> {{ $users().length }} </span>
+                                </div>
+
+                                <div class="relative">
+                                    <div class="flex flex-col justify-center">
+
+                                        @for (user of $users(); track user) {
+                                            <div class="flex flex-row justify-between items-center py-3"
+                                                 [ngClass]="{
+                                             'border-b border-b-project-wildsand': $index !== $users().length - 1,
+
+                                         }">
+
+                                                <!--                    Image and user name-->
+                                                <div class="flex flex-row gap-2.5 items-center">
+                                                    <div class="h-[33px] w-[33px] rounded-full">
+                                                        @if (user.profilePicture) {
+                                                            <img [ngSrc]="user.profilePicture" width="33" height="33"
+                                                                 class="rounded-full w-8 h-8"
+                                                                 alt="user-image">
+                                                        } @else {
+                                                            <div
+                                                                class="w-8 h-8 bg-project-youngBlue flex justify-center items-center rounded-full">
+                                                                <img src="assets/icons/tgpk.svg" width="17" height="17"
+                                                                     alt="default_icon"
+                                                                     class="w-4 h-4"/>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                    <span class="font-plex text-[15px] text-project-waterloo">
+                                                    @if (user?.displayName) {
+                                                        {{ user.displayName }}
+                                                    } @else {
+                                                        {{ user.firstName }} {{ user.lastName }}
+                                                    }
+                                                    </span>
+                                                </div>
+
+                                                <span
+                                                    class="font-plex text-xl font-semibold text-project-licorice-500">
+                                                {{ user.firstTransactionSuccessful ? (user.referredValue | number: '1.2-2' | currency: $user().currency : 'symbol-narrow' : '1.2-2') : '-' }}
+                                                </span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div *ngIf="$users().length > 6"
+                                     class="bottom-6 !h-[68px] !w-[24%] opacity-70 bg-white absolute z-1">
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                } @else {
+                    <!--                NO CONTENT-->
+                    <div class="flex flex-col items-center mt-20 mb-30">
+
+                        <div class="w-[250px] h-[190px]">
+                            <img [ngSrc]="'../../../../../../assets/images/referrals/nocontent.webp'" width="20"
+                                 height="10"
+                                 alt="referrals-info" class="scale-90">
+                        </div>
+                        <span class="font-plex font-bold text-project-licorice-500 text-xl mt-[35px]">
+                        {{ 'referrals.your-referrals.nothing-here' | transloco }}
+                    </span>
+
+                        <span class="font-plex text-project-waterloo text-md mt-5">
+                        {{ 'referrals.your-referrals.nothing-here-subtitle' | transloco }}
+                    </span>
+                    </div>
+                }
+            </div>
+
+            <div class="flex flex-col bg-project-youngBlue p-6 rounded-[20px]">
+                @if ($revenueInfo().totalRevenue) {
+
+                    <span class="font-plex text-white text-4xl mb-5 font-extralight">
+                        Reach <span
+                        class="text-project-grandis"> {{ ('membership-level.' + getNextMembershipLevel($userLevel().level)) | transloco }}</span> and unlock an extra {{ $totalRevenue() | number: '1.2-2' | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}
+                        .
+                    </span>
+
+                    <span class="font-plex text-white text-[15px] text-justify font-extralight">
+                    As your status is {{ ('membership-level.' + $userLevel().level) | transloco }}
+                        , you earn {{ getInfoBaseOnMembershipLevel($userLevel().level)?.percentageOnReward }}% of your friends' all-time cashback.
+                    Reach {{ ('membership-level.' + getInfoBaseOnMembershipLevel(getNextMembershipLevel($userLevel().level))?.level) | transloco }}
+                        to unlock {{ getInfoBaseOnMembershipLevel(getNextMembershipLevel($userLevel().level))?.percentageOnReward }}
+                        % ({{ $doubleValue() | number: '1.2-2' | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}
+                        ).
+                    <span (click)="howItWorks()" class="underline cursor-pointer"> How to reach next level?</span>
+          </span>
+
+                    <progress class="progress progress-warning w-full mt-[25px] my-1 bg-white"
+                              [value]="progressMinValue"
+                              [max]="progressMaxValue"></progress>
+
+                    <div class="flex justify-between w-full mb-8">
+                        <span class="text-project-wildsand text-sm font-plex">
+                            {{ $userLevel().valueSpent | currency: $user().currency : 'symbol-narrow' : '1.2-2' }} spent
+                        </span>
+                        <span class="text-project-wildsand text-sm font-plex">
+                            {{ $goalValue() | currency: $user().currency : 'symbol-narrow' : '1.2-2' }} Goal
+                        </span>
+                    </div>
+
+                    <img [ngSrc]="'../../../../../../assets/images/referrals/info.webp'" width="20" height="10"
+                         alt="ref-info-cont" class="pl-3">
+
+                } @else {
+
+                    <span class="font-plex text-white text-[25px] mb-5">
+                        {{ 'referrals.your-referrals.your-friends' | transloco: {value: 10000 | currency: $user().currency : 'symbol-narrow' : '1.2-2'} }}
+                    </span>
+
+                    <span class="font-plex text-white text-[13px] text-justify mb-[30px]">
+                        {{ 'referrals.your-referrals.win' | transloco }}
+                    </span>
+
+                    <button
+                        class="bg-white border flex items-center gap-1 border-project-licorice-500 rounded p-2.5 text-md font-plex text-project-licorice-500 cursor-copy w-fit h-7 min-h-7"
+                        [cdkCopyToClipboard]="$referralLink()" (click)="informCopy()">
+                        <mat-icon svgIcon="duplicate" class="icon-size-4"></mat-icon>
+                        {{ 'referrals.copy' | transloco }}
+                    </button>
+                }
+            </div>
+
+        </div>
+    } @loading (minimum 1000ms) {
+        <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+            <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+        </div>
+    }
+
+} @else {
+    <div class="grid grid-cols-[1fr_320px] py-7">
+
+        @defer {
+
+            <!--    GRAPHICS -->
+            <div class="flex justify-center w-full">
+
+                @if ($referralInfo().totalClicks) {
+                    <div class="flex flex-col gap-15 w-full">
+
+                        <div class="flex flex-row w-full pr-8 gap-x-3">
+
+                            <!--                    Link clicks-->
+                            <div class="w-1/3 border-r border-project-wildsand h-fit">
+                                <div class="flex flex-col gap-[30px]">
+                                <span class="text-md font-plex text-project-waterloo">
+                                    {{ 'referrals.your-referrals.link-clicks' | transloco }}
+                                </span>
+                                    <span class="text-4xl font-plex text-project-licorice-500">
+                                      {{ $referralInfo().totalClicks }}
+                                </span>
+                                </div>
+
+                                <tagpeak-line-chart [$chartOptions]="$chartOptionsClicks()"/>
+                            </div>
+
+
+                            <!--                    Registered referrals-->
+                            <div class="w-1/3 border-r border-r-project-wildsand h-fit">
+                                <div class="flex flex-col gap-[30px]">
+                                <span class="text-md font-plex text-project-waterloo">
+                                    {{ 'referrals.your-referrals.registered-referrals' | transloco }}
+                                </span>
+                                    <span class="text-4xl font-plex text-project-licorice-500">
+                                    {{ $referralInfo().totalUserRegistered }}
+                                </span>
+                                </div>
+                                <tagpeak-line-chart [$chartOptions]="$chartOptionsRegistered()"/>
+                            </div>
+
+                            <!--                    Referrals who made a purchase-->
+                            <div class="w-1/3 h-fit">
+                                <div class="flex flex-col gap-[30px]">
+                                <span class="text-md font-plex text-project-waterloo">
+                                    {{ 'referrals.your-referrals.referrals-who-made-a-purchase' | transloco }}
+                                </span>
+                                    <span class="text-4xl font-plex text-project-licorice-500">
+                                    {{ $referralInfo().totalFirstPurchase }}
+                                </span>
+                                </div>
+                                <tagpeak-line-chart [$chartOptions]="$chartOptionsPurchases()"/>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-row w-full">
+
+                            <!--                        GRAPHIC-->
+                            <div class="flex flex-col w-2/3">
+                            <span class="font-plex text-[25px] text-project-licorice-500 pl-2.5">
+                                {{ 'referrals.your-referrals.revenue' | transloco }}
+                            </span>
+
+                                <span class="font-plex text-md text-project-waterloo mt-2 mb-2.5 pl-2.5">
+                                {{ 'referrals.your-referrals.total-generated' | transloco : {currency: getCurrencySymbol($user().currency)} }}
+                            </span>
+
+                                <tagpeak-line-chart [$chartOptions]="$chartOptionsRevenue()"/>
+                            </div>
+
+                            <!--                        USERS TABLE-->
+                            <div
+                                class="w-1/3 rounded-[20px] border border-project-wildsand px-[25px] pt-[25px] max-h-[440px] mr-5 overflow-y-scroll">
+
+                                <div
+                                    class="flex flex-row justify-between items-center border-b border-b-project-wildsand">
+                                    <div class="flex flex-row gap-2.5">
+                                        <mat-icon svgIcon="stars"
+                                                  class="icon-size-4 text-project-licorice-500"></mat-icon>
+
+                                        <span
+                                            class="font-plex text-md text-project-waterloo"> {{ 'referrals.referrals' | transloco }} </span>
+                                    </div>
+
+                                    <span
+                                        class="font-plex text-4xl text-project-licorice-500"> {{ $users().length }} </span>
+                                </div>
+
+                                <div class="relative">
+                                    <div class="flex flex-col justify-center">
+
+                                        @for (user of $users(); track user) {
+                                            <div class="flex flex-row justify-between items-center py-3"
+                                                 [ngClass]="{
+                                             'border-b border-b-project-wildsand': $index !== $users().length - 1,
+
+                                         }">
+
+                                                <!--                    Image and user name-->
+                                                <div class="flex flex-row gap-2.5 items-center">
+                                                    <div class="h-[33px] w-[33px] rounded-full">
+                                                        @if (user.profilePicture) {
+                                                            <img [ngSrc]="user.profilePicture" width="33" height="33"
+                                                                 class="rounded-full w-8 h-8"
+                                                                 alt="user-image">
+                                                        } @else {
+                                                            <div
+                                                                class="w-8 h-8 bg-project-youngBlue flex justify-center items-center rounded-full">
+                                                                <img src="assets/icons/tgpk.svg" width="17" height="17"
+                                                                     alt="default_icon"
+                                                                     class="w-4 h-4"/>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                    <span class="font-plex text-[15px] text-project-waterloo">
+                                                    @if (user?.displayName) {
+                                                        {{ user.displayName }}
+                                                    } @else {
+                                                        {{ user.firstName }} {{ user.lastName }}
+                                                    }
+                                                    </span>
+                                                </div>
+
+                                                <span
+                                                    class="font-plex text-xl font-semibold text-project-licorice-500">
+                                                {{ user.firstTransactionSuccessful ? (user.referredValue | number: '1.2-2' | currency: $user().currency : 'symbol-narrow' : '1.2-2') : '-' }}
+                                                </span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div *ngIf="$users().length > 6"
+                                     class="bottom-6 !h-[68px] !w-[24%] opacity-70 bg-white absolute z-1">
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                } @else {
+                    <!--                NO CONTENT-->
+                    <div class="flex flex-col items-center mt-[70px]">
+
+                        <div class="w-[250px] h-[190px]">
+                            <img [ngSrc]="'../../../../../../assets/images/referrals/nocontent.webp'" width="20"
+                                 height="10"
+                                 alt="referrals-info" class="scale-90">
+                        </div>
+                        <span class="font-plex font-bold text-project-licorice-500 text-xl mt-[35px]">
+                        {{ 'referrals.your-referrals.nothing-here' | transloco }}
+                    </span>
+
+                        <span class="font-plex text-project-waterloo text-md mt-5">
+                        {{ 'referrals.your-referrals.nothing-here-subtitle' | transloco }}
+                    </span>
+
+                        <button
+                            class="border flex items-center gap-1 border-project-licorice-500 rounded p-2.5 text-[13px] font-plex text-project-licorice-500 cursor-copy mt-5"
+                            [cdkCopyToClipboard]="$referralLink()" (click)="informCopy()">
+                            <mat-icon svgIcon="duplicate" class="icon-size-4"></mat-icon>
+                            {{ 'referrals.copy' | transloco }}
+                        </button>
+                    </div>
+                }
+            </div>
+
+            <!--    INFO -->
+            <div class="flex flex-col w-full gap-5">
+                <!--        Yellow box-->
+                <div class="rounded-[20px] px-[25px] pt-9 pb-[25px] bg-project-grandis">
+                    <div class="flex flex-row items-center gap-2.5 mb-[45px]">
+                        <mat-icon svgIcon="two_persons" class="icon-size-5"></mat-icon>
+                        <span class="text-md font-plex text-project-licorice-500 leading-[30px]">
+                        {{ 'referrals.your-referrals.earnings' | transloco }}
+                    </span>
+                    </div>
+                    <span class="text-6xl font-plex text-project-licorice-500">
+                    {{ $totalRevenue() | number: '1.2-2' | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }}
+                </span>
+                </div>
+
+                <!--        Blue box-->
+                <div class="flex flex-col bg-project-youngBlue pl-[25px] pr-9 pt-10 pb-[25px] rounded-[20px]">
+                    @if ($revenueInfo().totalRevenue) {
+
+                        <span class="font-plex text-white text-4xl mb-5 font-extralight">
+                        Reach <span
+                            class="text-project-grandis"> {{ ('membership-level.' + getNextMembershipLevel($userLevel().level)) | transloco }}</span> and unlock an extra {{ $totalRevenue() | number: '1.2-2' | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}
+                            .
+                    </span>
+
+                        <span class="font-plex text-white text-[15px] text-justify font-extralight">
+                    As your status is {{ ('membership-level.' + $userLevel().level) | transloco }}
+                            , you earn {{ getInfoBaseOnMembershipLevel($userLevel().level)?.percentageOnReward }}% of your friends' all-time cashback.
+                    Reach {{ ('membership-level.' + getInfoBaseOnMembershipLevel(getNextMembershipLevel($userLevel().level))?.level) | transloco }}
+                            to unlock {{ getInfoBaseOnMembershipLevel(getNextMembershipLevel($userLevel().level))?.percentageOnReward }}
+                            % ({{ $doubleValue() | number: '1.2-2' | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}
+                            ).
+                    <span (click)="howItWorks()" class="underline cursor-pointer"> How to reach next level?</span>
+          </span>
+
+                        <progress class="progress progress-warning w-full mt-[25px] my-1 bg-white"
+                                  [value]="progressMinValue"
+                                  [max]="progressMaxValue"></progress>
+
+                        <div class="flex justify-between w-full mb-8">
+                        <span class="text-project-wildsand text-sm font-plex">
+                            {{ $userLevel().valueSpent | currency: $user().currency : 'symbol-narrow' : '1.2-2' }} spent
+                        </span>
+                            <span class="text-project-wildsand text-sm font-plex">
+                            {{ $goalValue() | currency: $user().currency : 'symbol-narrow' : '1.2-2' }} Goal
+                        </span>
+                        </div>
+
+                        <img [ngSrc]="'../../../../../../assets/images/referrals/info.webp'" width="20" height="10"
+                             alt="ref-info-cont" class="pl-3">
+
+                    } @else {
+
+                        <span class="font-plex text-white text-[25px] mb-5">
+                        {{ 'referrals.your-referrals.your-friends' | transloco: {value: 10000 | currency: $user().currency : 'symbol-narrow' : '1.2-2'} }}
+                    </span>
+
+                        <span class="font-plex text-white text-[13px] text-justify mb-[30px]">
+                        {{ 'referrals.your-referrals.win' | transloco }}
+                    </span>
+
+                        <button
+                            class="bg-white border flex items-center gap-1 border-project-licorice-500 rounded p-2.5 text-[13px] font-plex text-project-licorice-500 cursor-copy w-fit mb-7"
+                            [cdkCopyToClipboard]="$referralLink()" (click)="informCopy()">
+                            <mat-icon svgIcon="duplicate" class="icon-size-4"></mat-icon>
+                            {{ 'referrals.copy' | transloco }}
+                        </button>
+
+                        <img [ngSrc]="'../../../../../../assets/images/referrals/card.webp'" width="20" height="10"
+                             alt="ref-info" class="pl-3">
+
+                    }
+                </div>
+
+            </div>
+        } @loading (minimum 1000ms) {
+            <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+                <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+            </div>
+        }
+    </div>
+
+}

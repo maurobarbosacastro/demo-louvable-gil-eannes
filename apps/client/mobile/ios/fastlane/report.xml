@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+    
+    
+      
+      <testcase classname="fastlane.lanes" name="00: default_platform" time="0.000197">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="01: cd ../../ &amp;&amp; fvm flutter pub get" time="3.310514">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="02: cd ../../ &amp;&amp; fvm flutter pub run build_runner build --delete-conflicting-outputs" time="3.803546">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="03: curl -o /tmp/AppleWWDRCAG3.cer https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer" time="0.262277">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="04: import_certificate" time="0.084094">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="05: rm -f /tmp/AppleWWDRCAG3.cer" time="0.018914">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="06: unlock_keychain" time="0.09105">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="07: app_store_connect_api_key" time="0.002725">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="08: match" time="13.808591">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="09: sync_code_signing" time="7.993996">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="10: automatic_code_signing" time="0.056715">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="11: update_code_signing_settings" time="0.013733">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="12: update_project_provisioning" time="0.016078">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="13: app_store_connect_api_key" time="0.001233">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="14: get_certificates" time="0.779129">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="15: get_provisioning_profile" time="5.389034">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="16: Switch to ios versioning lane" time="0.000182">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="17: increment_build_number" time="0.172372">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="18: increment_version_number" time="0.14862">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="19: cocoapods" time="2.551122">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="20: cd ../../ &amp;&amp; fvm flutter build ios --no-codesign -t lib/main_prod.dart" time="68.999687">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="21: build_app" time="95.443362">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="22: upload_to_testflight" time="283.055324">
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>

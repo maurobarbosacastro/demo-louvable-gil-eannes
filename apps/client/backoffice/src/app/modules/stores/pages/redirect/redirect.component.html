@@ -1,0 +1,24 @@
+<div class="w-full flex justify-center items-center" *ngIf="$store()">
+
+    <div class="w-1/2 flex flex-col justify-center items-center gap-y-8">
+
+        <img [ngSrc]="$store().logo" [alt]="$store().name+'_logo'" width="150" height="150"
+            class="max-w-30 max-h-30"
+        />
+
+        <div class="text-6xl text-white">
+            We are redirecting you to {{ $store().name }} in {{ secondsTimer }} seconds
+        </div>
+
+        <div class="text-3xl text-project-lavender" [innerHTML]="$store().description">
+        </div>
+
+
+        <div class="text-xl text-project-lavender mt-24">
+            <a class="link" (click)="manualClick()">Click here</a> to go straight to the store
+        </div>
+
+
+    </div>
+
+</div>

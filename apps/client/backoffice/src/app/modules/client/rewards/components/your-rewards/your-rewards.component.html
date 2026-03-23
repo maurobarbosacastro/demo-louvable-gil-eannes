@@ -1,0 +1,537 @@
+@if ($isMobile()) {
+    <div class="flex flex-col gap-5 pb-4">
+        @defer {
+            <div class="mt-6 w-full flex flex-row gap-6 justify-between">
+                <div class="flex flex-col gap-5 border-b border-project-brand-500 w-1/2">
+                    <div class="flex flex-col gap-2.5 items-start">
+                        <mat-icon svgIcon="stars" class="icon-size-4"></mat-icon>
+                        <span
+                            class="text-md text-project-licorice-900 leading-none">{{ 'reward-summary.live-rewards' | transloco }}</span>
+                    </div>
+                    <span
+                        class="text-4xl text-project-licorice-900 leading-none mb-5">{{ $liveRewards() | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }}</span>
+                </div>
+                <div class="flex flex-col gap-5 border-b border-project-brand-500 w-1/2">
+                    <div class="flex flex-col gap-2.5 items-start">
+                        <mat-icon svgIcon="credit-score" class="icon-color-credit-score icon-size-4"></mat-icon>
+                        <span
+                            class="text-md text-project-licorice-900 leading-none">{{ 'reward-summary.available-withdraw' | transloco }}</span>
+                    </div>
+                    <div class="flex flex-row justify-between items-center mb-5 gap-2.5">
+                        <span
+                            class="text-4xl text-project-licorice-900 leading-none">{{ $user()?.balance | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            @if ($dataNew() && $dataNew().length > 0) {
+                <div class="w-full">
+                    <div class="flex justify-end items-center gap-5">
+                        <span class="text-md text-project-waterloo">{{ 'dashboard.filters' | transloco }}</span>
+                        <form [formGroup]="filterForm" class="dropdown">
+                            <div tabindex="0" role="button" class="m-1">
+                                <label
+                                    class="input input-bordered rounded flex items-center gap-2 h-[34px] min-h-[34px] px-2.5 w-24">
+                                    <input type="text" class="grow max-w-12 cursor-pointer" readonly
+                                           placeholder="{{ 'dashboard.table.status' | transloco }}"/>
+                                    <mat-icon svgIcon="arrow_drop_down"></mat-icon>
+                                </label>
+                            </div>
+                            <ul tabindex="0" class="dropdown-content menu bg-white rounded-box z-10 w-44 p-2 shadow">
+                                @for (filter of filters; track filter.value) {
+                                    <li class="w-full hover:bg-[#4237DA33] rounded hover:text-project-youngBlue"
+                                        (click)="setFilters(filter.value)">
+                                        <a class="flex justify-between">
+                                            {{ filter.label | transloco }}
+                                            @if (filterForm.value.filter.includes(filter.value)) {
+                                                <mat-icon svgIcon="check" class="icon-size-4 icon-color"></mat-icon>
+                                            }
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </form>
+                        @if (filterForm.controls.filter.value.length > 0) {
+                            <div class="flex gap-2.5">
+                                @for (value of filterForm.controls.filter.value; track value) {
+                                    <tagpeak-status-container [$status]="value" [$icon]="'close-modal'"
+                                                              (iconEvent)="removeFilter($event)"/>
+                                }
+                            </div>
+
+                        }
+                    </div>
+
+                    <atl-ng-table class="custom-table"
+                                  id="table"
+                                  [tableConfiguration]="$tableConfig()"
+                                  [bodyCustomTemplate]="bodyCustomTemplate"
+                                  [totalPages]="totalPages"
+                                  [totalSize]="totalSize"
+                                  [resetPaginator]="page$ | async"
+                                  (onRowClick)="openDetailsDialog($event.element)"
+                                  (onSortAndPageChange)="onSortAndPageChange($event)"
+                                  (onActionClick)="openDetailsDialog($event.element)"
+                    />
+
+
+                    <ng-template #bodyCustomTemplate let-implicit>
+                        @switch (implicit.column.id) {
+                            @case ('store') {
+                                @if (implicit.row.reward && isReferralOrCommission(implicit.row)) {
+                                    <div class="flex flex-row items-center gap-5 p-2">
+                                        <div class="h-full">
+                                            <img src="assets/icons/tgpk.svg" width="28" height="28" alt="default_icon"
+                                                 class="w-7 h-7"/>
+                                        </div>
+                                        <div class="flex flex-col gap-3 leading-none">
+                                            @if (implicit.row.reward.origin === RewardOrigins.COMMISSION) {
+                                                <span class="text-xl font-semibold text-project-licorice-900">{{ 'reward.commission' | transloco }}</span>
+                                            } @else {
+                                                <span class="text-xl font-semibold text-project-licorice-900">{{ 'reward.by-referral' | transloco }}</span>
+                                            }
+                                        </div>
+                                    </div>
+                                } @else {
+                                    <div class="flex flex-row items-center gap-2 p-1">
+                                        <div class="h-full">
+                                            <img [ngSrc]="implicit.row.store.logo" class="w-7 h-7 rounded"
+                                                 *ngIf="implicit.row.store.logo"
+                                                 [alt]="implicit.row.store.name+' logo'" width="28" height="28"/>
+                                        </div>
+                                        <div class="flex flex-col gap-2 leading-none">
+                                    <span
+                                        class="text-lg font-semibold text-project-licorice-900">{{ implicit.row.store.name }}</span>
+                                            <span
+                                                class="text-sm">{{ 'dashboard.purchased-on' | transloco }} {{ implicit.row.date | date: 'MMM d, yyyy' }}</span>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            @case ('amountUser') {
+                                @if (implicit.row.reward && isReferralOrCommission(implicit.row)) {
+                                    <span class="text-xl">-</span>
+                                } @else {
+                                    <span
+                                        class="text-xl">{{ implicit.rowVal | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }}</span>
+                                }
+
+                            }
+                            @case ('stopDate') {
+                                @if (implicit.row.reward && implicit.row.reward.state === 'LIVE') {
+                                    <div class="flex flex-col gap-2 leading-none">
+                                        <span
+                                            class="text-lg text-project-licorice-500">{{ implicit.row.reward.endDate | date: 'MMM d, yyyy' }}</span>
+                                        @let days = differenceInCalendarDays(implicit.row.reward.endDate, today);
+                                        @if (days > 0) {
+                                            <span
+                                                class="text-sm">{{ days }} {{ 'dashboard.days-left' | transloco }}</span>
+                                        } @else {
+                                            <span
+                                                class="text-sm">0 {{ 'dashboard.days-left' | transloco }}</span>
+                                        }
+                                    </div>
+                                } @else {
+                                    @if (implicit.row.status === 'STOPPED') {
+                                        <span
+                                            class="text-sm">Since {{ implicit.row.reward.stoppedAt | date: 'MMM d, yyyy' }}</span>
+                                    } @else if (implicit.row.status === 'EXPIRED' || implicit.row.status === 'FINISHED') {
+                                        @if (!!implicit.row.reward.stoppedAt) {
+                                            <span
+                                                class="text-sm">Since {{ implicit.row.reward.stoppedAt | date: 'MMM d, yyyy' }}</span>
+                                        } @else {
+                                            <span
+                                                class="text-sm">Since {{ implicit.row.reward.endDate | date: 'MMM d, yyyy' }}</span>
+                                        }
+                                    } @else {
+                                        <span>-</span>
+                                    }
+                                }
+                            }
+                            @case ('currentReward') {
+                                @if (implicit.row.reward) {
+                                    <div class="flex flex-col text-project-licorice-500 text-xl font-semibold">
+                                        <span>{{ implicit.row.reward.currentRewardUser | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }}</span>
+                                    </div>
+                                } @else {
+                                    @if (implicit.row.status === 'TRACKED' || implicit.row.status === 'VALIDATED') {
+                                        <div class="flex flex-col text-[#7A7B92] text-xl font-semibold">
+                                            <span>{{ implicit.row.unvalidatedCurrentReward | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }}</span>
+                                        </div>
+                                    } @else {
+                                        <span class="text-project-licorice-500 text-lg">-</span>
+                                    }
+                                }
+                            }
+                            @case ('status') {
+                                <div class="flex flex-row items-center leading-none">
+                                    <tagpeak-status-container [$status]="implicit.rowVal" [$disableTooltip]="false"
+                                                              [$height]="'32px'"/>
+                                    @if (implicit.row.reward && implicit.row.reward.state === StatusEnum.LIVE) {
+                                        <button
+                                            class="btn btn-sm ml-2.5 bg-project-red text-white px-2.5 !max-h-[29px] !h-[29px] text-md font-normal gap-1 rounded"
+                                            (click)="stopReward(implicit.row)">
+                                            <mat-icon svgIcon="table_stop" class="icon-size-4">
+                                            </mat-icon>
+                                            {{ 'dashboard.stop' | transloco }}
+                                        </button>
+                                    }
+                                </div>
+                            }
+                            @case ('customActions') {
+                                @if (showHistoryBtn(implicit.row)  && !isReferralOrCommission(implicit.row)) {
+                                    <button mat-button (click)="openDetailsDialog(implicit.row)">
+                                        <mat-icon svgIcon="table_chart_view"></mat-icon>
+                                    </button>
+                                }
+                            }
+                        }
+                    </ng-template>
+
+                </div>
+            } @else {
+                <div class="lg:w-2/3 w-full h-full">
+                    <div class="flex flex-col items-center justify-center mt-30">
+                        <mat-icon svgIcon="no-rewards" class="w-96 h-40"></mat-icon>
+                        <div class="flex flex-col gap-5 mt-8 items-center justify-center text-center w-96">
+                        <span
+                            class="text-xl font-semibold text-project-licorice-900">{{ 'dashboard.nothing-here' | transloco }}</span>
+                            <span
+                                class="text-md text-project-waterloo">{{ 'dashboard.first-purchase' | transloco }}</span>
+                            <button (click)="goToStore()"
+                                    class="btn bg-project-licorice-500 text-white px-5 py-1.5 rounded font-normal text-lg min-h-9 h-9">
+                                {{ 'dashboard.new-purchase' | transloco }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="mt-5">
+                <tagpeak-info-card [styleClass]="'bg-project-grandis rounded-[20px]'"
+                                   [templateCardBody]="$userLevel()?.valueSpent > 0 ? cardBody : cardBodyNoTransactions"/>
+                <ng-template #cardBody>
+                    <div class="flex flex-col justify-center items-center gap-5 p-8">
+                        @if ($userLevel().level != MembershipLevelsEnum.gold) {
+                            <span class="text-3xl leading-7"
+                                  innerHTML="{{ 'dashboard.info-card.title' | transloco: { membership: ('membership-level.'+getNextMembershipLevel($userLevel().level)) | transloco } }}"></span>
+                            <div class="text-lg leading-5">
+                             <span
+                                 innerHTML="{{ 'dashboard.info-card.body' | transloco: { membership: ('membership-level.'+getNextMembershipLevel($userLevel().level)) | transloco , valueSpend: ($goalValue() - $userLevel().valueSpent) | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' } }}"></span>
+                                <span class="underline cursor-pointer"
+                                      (click)="howItWorks()">{{ 'dashboard.info-card.body-info' | transloco }}</span>
+                            </div>
+                        } @else {
+                            <span class="text-3xl leading-5"
+                                  innerHTML="{{ 'dashboard.info-card.last-membership-title' | transloco }}"></span>
+                            <span
+                                class="text-lg leading-5">{{ 'dashboard.info-card.last-membership-body' | transloco }}</span>
+                        }
+
+                        <div class="flex flex-col w-full mt-5">
+                            <progress class="progress progress-custom bg-white w-full"
+                                      value="{{ $userLevel().valueSpent }}" max="{{ $goalValue() }}"></progress>
+                            <div class="flex justify-between text-md">
+                                <span>{{ $userLevel().valueSpent | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }} {{ 'dashboard.info-card.spent' | transloco }}</span>
+                                <div>{{ $goalValue() | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }} {{ 'dashboard.info-card.goal' | transloco }}</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </ng-template>
+
+                <ng-template #cardBodyNoTransactions>
+                    <div class="flex flex-col justify-center gap-5 p-7">
+                        <span
+                            class="text-project-licorice-500 text-2xl leading-7">{{ 'referrals.your-referrals.your-friends' | transloco: {value: 10000 | currency: $user()?.currency : 'symbol-narrow' : '1.2-2'} }}</span>
+                        <span
+                            class="text-project-licorice-500 text-[15px] leading-5"> {{ 'reward-summary.win' | transloco }}
+                            <span class="underline cursor-pointer"
+                                  (click)="howItWorks()">{{ 'reward-summary.how-it-works' | transloco }}</span></span>
+                        <button
+                            class="bg-white border flex items-center gap-1 border-project-licorice-500 rounded p-2.5 text-[13px] font-plex text-project-licorice-500 cursor-copy w-fit mt-2.5"
+                            [cdkCopyToClipboard]="$referralLink()" (click)="informCopy()">
+                            <mat-icon svgIcon="duplicate" class="icon-size-4"></mat-icon>
+                            {{ 'referrals.copy' | transloco }}
+                        </button>
+                    </div>
+                </ng-template>
+            </div>
+
+        } @loading (minimum 500ms) {
+            <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+                <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+            </div>
+        }
+    </div>
+
+} @else {
+    <div class="flex lg:flex-row flex-col-reverse lg:gap-18 2xl:gap-26 gap-8 pb-4">
+        @defer {
+            @if ($dataNew() && $dataNew().length > 0) {
+                <div class="lg:w-3/4 w-full lg:mt-8 mt-6">
+                    <div class="flex justify-end items-center gap-5">
+                        <span class="text-md text-project-waterloo">{{ 'dashboard.filters' | transloco }}</span>
+                        <form [formGroup]="filterForm" class="dropdown">
+                            <div tabindex="0" role="button" class="m-1">
+                                <label
+                                    class="input input-bordered rounded flex items-center gap-2 h-[34px] min-h-[34px] px-2.5 w-24">
+                                    <input type="text" class="grow max-w-12 cursor-pointer" readonly
+                                           placeholder="{{ 'dashboard.table.status' | transloco }}"/>
+                                    <mat-icon svgIcon="arrow_drop_down"></mat-icon>
+                                </label>
+                            </div>
+                            <ul tabindex="0" class="dropdown-content menu bg-white rounded-box z-10 w-44 p-2 shadow">
+                                @for (filter of filters; track filter.value) {
+                                    <li class="w-full hover:bg-[#4237DA33] rounded hover:text-project-youngBlue"
+                                        (click)="setFilters(filter.value)">
+                                        <a class="flex justify-between">
+                                            {{ filter.label | transloco }}
+                                            @if (filterForm.value.filter.includes(filter.value)) {
+                                                <mat-icon svgIcon="check" class="icon-size-4 icon-color"></mat-icon>
+                                            }
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </form>
+                        @if (filterForm.controls.filter.value.length > 0) {
+                            <div class="flex gap-2.5">
+                                @for (value of filterForm.controls.filter.value; track value) {
+                                    <tagpeak-status-container [$status]="value" [$icon]="'close-modal'"
+                                                              (iconEvent)="removeFilter($event)"/>
+                                }
+                            </div>
+
+                        }
+                    </div>
+
+                    <atl-ng-table class="custom-table"
+                                  id="table"
+                                  [tableConfiguration]="$tableConfig()"
+                                  [bodyCustomTemplate]="bodyCustomTemplate"
+                                  [totalPages]="totalPages"
+                                  [totalSize]="totalSize"
+                                  [resetPaginator]="page$ | async"
+                                  (onSortAndPageChange)="onSortAndPageChange($event)"
+                                  (onActionClick)="openDetailsDialog($event.element)"
+                    />
+
+
+                    <ng-template #bodyCustomTemplate let-implicit>
+                        @switch (implicit.column.id) {
+                            @case ('store') {
+                                @if (implicit.row.reward && isReferralOrCommission(implicit.row)) {
+                                    <div class="flex flex-row items-center gap-5 p-2">
+                                        <div class="h-full">
+                                            <img src="assets/icons/tgpk.svg" width="36" height="36" alt="default_icon"
+                                                 class="w-9 h-9"/>
+                                        </div>
+                                        <div class="flex flex-col gap-3 leading-none">
+                                            @if (implicit.row.reward.origin === RewardOrigins.COMMISSION) {
+                                                <span class="text-xl font-semibold text-project-licorice-900">{{ 'reward.commission' | transloco }}</span>
+                                            } @else {
+                                                <span class="text-xl font-semibold text-project-licorice-900">{{ 'reward.by-referral' | transloco }}</span>
+                                            }
+                                    </div>
+                                </div>
+                            } @else {
+                                <div class="flex flex-row items-center gap-5 p-2">
+                                    <div class="w-9 h-9">
+                                        <img [ngSrc]="implicit.row.store.logo" class="w-full h-full object-cover rounded"
+                                             *ngIf="implicit.row.store.logo"
+                                             [alt]="implicit.row.store.name+' logo'" width="36" height="36"/>
+                                    </div>
+                                    <div class="flex flex-col gap-2 leading-none">
+                                    <span
+                                        class="text-xl font-semibold text-project-licorice-900">{{ implicit.row.store.name }}</span>
+                                            <span
+                                                class="text-sm">{{ 'dashboard.purchased-on' | transloco }} {{ implicit.row.date | date: 'MMM d, yyyy' }}</span>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            @case ('amountUser') {
+                                @if (implicit.row.reward && isReferralOrCommission(implicit.row)) {
+                                    <span class="text-xl">-</span>
+                                } @else {
+                                    <span
+                                        class="text-xl">{{ implicit.rowVal | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }}</span>
+                                }
+
+                            }
+                            @case ('stopDate') {
+                                @if (implicit.row.reward && implicit.row.reward.state === 'LIVE') {
+                                    <div class="flex flex-col gap-2 leading-none">
+                                        <span
+                                            class="text-lg text-project-licorice-500">{{ implicit.row.reward.endDate | date: 'MMM d, yyyy' }}</span>
+                                        @let days = differenceInCalendarDays(implicit.row.reward.endDate, today);
+                                        @if (days > 0) {
+                                            <span
+                                                class="text-sm">{{ days }} {{ 'dashboard.days-left' | transloco }}</span>
+                                        } @else {
+                                            <span
+                                                class="text-sm">0 {{ 'dashboard.days-left' | transloco }}</span>
+                                        }
+                                    </div>
+                                } @else {
+                                    @if (implicit.row.status === 'STOPPED') {
+                                        <span
+                                            class="text-sm">Since {{ implicit.row.reward.stoppedAt | date: 'MMM d, yyyy' }}</span>
+                                    } @else if (implicit.row.status === 'EXPIRED' || implicit.row.status === 'FINISHED') {
+                                        @if (!!implicit.row.reward.stoppedAt) {
+                                            <span
+                                                class="text-sm">Since {{ implicit.row.reward.stoppedAt | date: 'MMM d, yyyy' }}</span>
+                                        } @else {
+                                            <span
+                                                class="text-sm">Since {{ implicit.row.reward.endDate | date: 'MMM d, yyyy' }}</span>
+                                        }
+                                    } @else {
+                                        <span>-</span>
+                                    }
+                                }
+                            }
+                            @case ('currentReward') {
+                                @if (implicit.row.reward) {
+                                    <div class="flex flex-col text-project-licorice-500 text-xl font-semibold">
+                                        <span>{{ implicit.row.reward.currentRewardUser | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }}</span>
+                                    </div>
+                                } @else {
+                                    @if (implicit.row.status === 'TRACKED' || implicit.row.status === 'VALIDATED') {
+                                        <div class="flex flex-col text-[#7A7B92] text-xl font-semibold">
+                                            <span>{{ implicit.row.unvalidatedCurrentReward | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }}</span>
+                                        </div>
+                                    } @else {
+                                        <span class="text-project-licorice-500 text-lg">-</span>
+                                    }
+                                }
+                            }
+                            @case ('status') {
+                                <div class="flex flex-row items-center leading-none">
+                                    <tagpeak-status-container [$status]="implicit.rowVal" [$disableTooltip]="false"
+                                                              [$height]="'32px'"/>
+                                    @if (implicit.row.reward && implicit.row.reward.state === StatusEnum.LIVE) {
+                                        <button
+                                            class="btn btn-sm ml-2.5 bg-project-red text-white px-2.5 !max-h-[29px] !h-[29px] text-md font-normal gap-1 rounded"
+                                            (click)="stopReward(implicit.row)">
+                                            <mat-icon svgIcon="table_stop" class="icon-size-4">
+                                            </mat-icon>
+                                            {{ 'dashboard.stop' | transloco }}
+                                        </button>
+                                    }
+                                </div>
+                            }
+                            @case ('customActions') {
+                                @if (showHistoryBtn(implicit.row) && !isReferralOrCommission(implicit.row)) {
+                                    <button mat-button (click)="openDetailsDialog(implicit.row)">
+                                        <mat-icon svgIcon="table_chart_view"></mat-icon>
+                                    </button>
+                                }
+                            }
+                        }
+                    </ng-template>
+
+                </div>
+            } @else {
+                <div class="lg:w-2/3 w-full h-full">
+                    <div class="flex flex-col items-center justify-center mt-30">
+                        <mat-icon svgIcon="no-rewards" class="w-96 h-40"></mat-icon>
+                        <div class="flex flex-col gap-5 mt-8 items-center justify-center text-center w-96">
+                        <span
+                            class="text-xl font-semibold text-project-licorice-900">{{ 'dashboard.nothing-here' | transloco }}</span>
+                            <span
+                                class="text-md text-project-waterloo">{{ 'dashboard.first-purchase' | transloco }}</span>
+                            <button (click)="goToStore()"
+                                    class="btn bg-project-licorice-500 text-white px-5 py-1.5 rounded font-normal text-lg min-h-9 h-9">
+                                {{ 'dashboard.new-purchase' | transloco }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="lg:w-1/4 lg:mt-9 mt-6 w-2/3 lg:mx-auto">
+                <div class="flex flex-col gap-6">
+                    <div class="flex flex-col gap-11 border-b border-project-brand-500">
+                        <div class="flex flex-row gap-2.5 items-center">
+                            <mat-icon svgIcon="stars"></mat-icon>
+                            <span
+                                class="text-md text-project-licorice-900">{{ 'reward-summary.live-rewards' | transloco }}</span>
+                        </div>
+                        <span
+                            class="text-6xl text-project-licorice-900 leading-none mb-5">{{ $liveRewards() | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }}</span>
+                    </div>
+                    <div class="flex flex-col gap-11 border-b border-project-brand-500">
+                        <div class="flex flex-row gap-2.5 items-center">
+                            <mat-icon svgIcon="credit-score" class="icon-color-credit-score"></mat-icon>
+                            <span
+                                class="text-md text-project-licorice-900">{{ 'reward-summary.available-withdraw' | transloco }}</span>
+                        </div>
+                        <div class="flex flex-row justify-between items-center mb-5 gap-2.5">
+                        <span
+                            class="text-6xl text-project-licorice-900 leading-none">{{ $user()?.balance | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }}</span>
+                            <button
+                                (click)="goToWithdraw()"
+                                class="btn bg-white border-project-licorice-500 text-project-licorice-500 px-3 py-1.5 rounded font-normal text-lg min-h-9 h-9">{{ 'reward-summary.withdraw' | transloco }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-5">
+                    <tagpeak-info-card [styleClass]="'bg-project-grandis rounded-[20px]'"
+                                       [templateCardBody]="$userLevel()?.valueSpent > 0 ? cardBody : cardBodyNoTransactions"/>
+                    <ng-template #cardBody>
+                        <div class="flex flex-col justify-center items-center gap-5 p-8">
+                            @if ($userLevel().level != MembershipLevelsEnum.gold) {
+                                <span class="text-3xl leading-7"
+                                      innerHTML="{{ 'dashboard.info-card.title' | transloco: { membership: ('membership-level.'+getNextMembershipLevel($userLevel().level)) | transloco } }}"></span>
+                                <div class="text-lg leading-5">
+                             <span
+                                 innerHTML="{{ 'dashboard.info-card.body' | transloco: { membership: ('membership-level.'+getNextMembershipLevel($userLevel().level)) | transloco , valueSpend: ($goalValue() - $userLevel().valueSpent) | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' } }}"></span>
+                                    <span class="underline cursor-pointer"
+                                          (click)="howItWorks()">{{ 'dashboard.info-card.body-info' | transloco }}</span>
+                                </div>
+                            } @else {
+                                <span class="text-3xl leading-5"
+                                      innerHTML="{{ 'dashboard.info-card.last-membership-title' | transloco }}"></span>
+                                <span
+                                    class="text-lg leading-5">{{ 'dashboard.info-card.last-membership-body' | transloco }}</span>
+                            }
+
+                            <div class="flex flex-col w-full mt-5">
+                                <progress class="progress progress-custom bg-white w-full"
+                                          value="{{ $userLevel().valueSpent }}" max="{{ $goalValue() }}"></progress>
+                                <div class="flex justify-between text-md">
+                                    <span>{{ $userLevel().valueSpent | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }} {{ 'dashboard.info-card.spent' | transloco }}</span>
+                                    <div>{{ $goalValue() | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }} {{ 'dashboard.info-card.goal' | transloco }}</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </ng-template>
+
+                    <ng-template #cardBodyNoTransactions>
+                        <div class="flex flex-col justify-center gap-5 p-10">
+                        <span
+                            class="text-project-licorice-500 text-3xl leading-8">{{ 'referrals.your-referrals.your-friends' | transloco: {value: 10000 | currency: $user()?.currency : 'symbol-narrow' : '1.2-2'} }}</span>
+                            <span
+                                class="text-project-licorice-500 text-[15px] leading-5"> {{ 'reward-summary.win' | transloco }}
+                                <span class="underline cursor-pointer"
+                                      (click)="howItWorks()">{{ 'reward-summary.how-it-works' | transloco }}</span></span>
+                            <button
+                                class="bg-white border flex items-center gap-1 border-project-licorice-500 rounded p-2.5 text-[13px] font-plex text-project-licorice-500 cursor-copy w-fit mt-2.5"
+                                [cdkCopyToClipboard]="$referralLink()" (click)="informCopy()">
+                                <mat-icon svgIcon="duplicate" class="icon-size-4"></mat-icon>
+                                {{ 'referrals.copy' | transloco }}
+                            </button>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        } @loading (minimum 500ms) {
+            <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+                <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+            </div>
+        }
+    </div>
+}

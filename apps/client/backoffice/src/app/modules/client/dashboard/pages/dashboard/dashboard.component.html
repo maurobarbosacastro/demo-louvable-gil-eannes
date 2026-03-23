@@ -1,0 +1,33 @@
+<div class="w-full mt-8 lg:mt-20 lg:px-9 px-5">
+    <span class="text-6xl">{{ 'dashboard.title' | transloco }}</span>
+    <div class="flex flex-row lg:mt-10 mt-6 justify-between border-b border-project-brand-500 pb-3">
+        <div class="tabs tab-border w-fit md:gap-10 gap-5">
+            @for (tab of tabs; track tab) {
+                <button class="tab text-base md:text-xl p-0"
+                        [ngClass]="{'text-project-licorice-500 text-opacity-100': $selectedTab() === tab , 'text-project-waterloo text-opacity-60': $selectedTab() !== tab}"
+                        (click)="selectTab(tab)">{{ getNameTabs(tab) }}
+                </button>
+            }
+        </div>
+        @if (!$isMobile()) {
+            <button class="btn bg-project-licorice-500 text-white px-2 md:px-5 py-1.5 rounded font-normal text-base md:text-lg min-h-9 h-9"
+                    (click)="goToStore()">
+                {{ 'dashboard.new-purchase' | transloco }}
+            </button>
+        }
+
+    </div>
+    <div class="w-full">
+        @switch ($selectedTab()) {
+            @case (DashboardTabEnum.YOU_REWARDS) {
+                <tagpeak-your-rewards />
+            }
+            @case (DashboardTabEnum.STORE_VISITS) {
+                <tagpeak-store-visits />
+            }
+            @case (DashboardTabEnum.BALANCE) {
+                <tagpeak-balance-withdrawals />
+            }
+        }
+    </div>
+</div>

@@ -1,0 +1,194 @@
+<div class="table-container d-flex flex-column">
+
+    <div *ngIf="!hasDataToDisplay()" class="d-flex flex-column noContent">
+        <mat-label [hidden]="hasDataToDisplay()" class="table-no-results text-center">
+            <span
+                class="!text-[#838383] font-bold !text-[16px] !leading-[22px]">{{ 'table.no-content' | transloco }}</span>
+        </mat-label>
+    </div>
+    <div class="d-flex flex-column" style="overflow-x: scroll;">
+        <table mat-table matSort
+               id="mat-table"
+               [dataSource]="tableConfiguration.dataSource"
+               [ngClass]="tableConfiguration.css"
+               [hidden]="!hasDataToDisplay()"
+               [matSortDisableClear]="true"
+               (matSortChange)="announceSortChange($event)"
+               multiTemplateDataRows
+               *ngIf="tableConfiguration && tableConfiguration.dataSource"
+        >
+            <ng-container *ngFor="let column of tableConfiguration.columns; index as i">
+                <ng-container [matColumnDef]="column.id" [stickyEnd]="column.stickyEnd" [sticky]="column.sticky">
+                    <!-- Table Header -->
+                    <ng-container *ngIf="column.hasSort; else noSort">
+                        <th
+                            [id]="'th_' + column.id"
+                            mat-header-cell
+                            *matHeaderCellDef
+                            mat-sort-header
+                            [sortActionDescription]="column.sortActionDescription"
+                            [ngClass]="tableConfiguration.styles.header"
+                            [style.width]="column.colWidth"
+                        >
+                            <ng-container
+                                [ngTemplateOutlet]="headerCustomTemplate || defaultHeaderTemplate"
+                                [ngTemplateOutletContext]="{$implicit: column}"
+                            >
+                            </ng-container>
+                        </th>
+                    </ng-container>
+                    <ng-template #noSort>
+                        <th
+                            [id]="'th_' + column.id"
+                            mat-header-cell
+                            *matHeaderCellDef
+                            [ngClass]="tableConfiguration.styles.header"
+                            [style.width]="column.colWidth"
+                        >
+                            <ng-container
+                                [ngTemplateOutlet]="headerCustomTemplate || defaultHeaderTemplate"
+                                [ngTemplateOutletContext]="{$implicit: column}"
+                            >
+                            </ng-container>
+                        </th>
+                    </ng-template>
+
+                    <ng-template #defaultHeaderTemplate id="defaultHeaderTemplate">
+                        {{ column.name }}
+                    </ng-template>
+                    <!-- Table Data -->
+                    <ng-container *ngIf="!column.actions; else actions">
+                        <td mat-cell
+                            id="row"
+                            *matCellDef="let row"
+                            [matTooltipDisabled]="!column.hasTooltip"
+                            [matTooltip]="column.name"
+                            [ngClass]="tableConfiguration.styles.content"
+                            (click)="expandedElement = expandedElement === row ? null : row; $event.stopPropagation()"
+                        >
+                            <ng-template #defaultBodyTemplate>
+                                <div class="flex flex-row">
+                                    <span [ngClass]="getCssValue(row, column)" id="defaultBody">
+                                        {{ getRowValue(row, column) }}
+                                    </span>
+                                </div>
+                            </ng-template>
+
+                            <ng-container
+                                [ngTemplateOutlet]="bodyCustomTemplate || defaultBodyTemplate"
+                                [ngTemplateOutletContext]="{$implicit: {column, row, i, rowVal: getRowValue(row, column)}}"
+                            >
+                            </ng-container>
+                        </td>
+                    </ng-container>
+                    <ng-template #actions>
+                        <td *matCellDef="let row" mat-cell>
+                            <div [ngClass]="column.css">
+                                <ng-container *ngFor="let action of column.actions">
+                                    <button mat-button
+                                            [id]="action.type"
+                                            (click)="emitActionClick(row, $event, action)"
+                                            [matTooltip]="'table.actions.' + action.type  | transloco"
+                                            [ngClass]="action.css"
+                                            [disabled]="action.disabled ? action.disabled(row) : false"
+                                    >
+                                        <mat-icon [svgIcon]="action.iconUrl"></mat-icon>
+                                    </button>
+                                </ng-container>
+                            </div>
+                        </td>
+                    </ng-template>
+                </ng-container>
+            </ng-container>
+            <ng-container *ngIf="tableConfiguration.expanded">
+                <ng-container matColumnDef="expand">
+                    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button aria-label="expand row"
+                                (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+                            <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+                            <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+                <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+                <ng-container matColumnDef="expandedDetail">
+                    <td mat-cell *matCellDef="let row" [attr.colspan]="columnsToDisplayWithExpand.length">
+                        <div class="element-detail" [@detailExpand]="row == expandedElement ? 'expanded' : 'collapsed'">
+                            <div class="element-description">
+                                <ng-container
+                                    *ngIf="bodyCustomExpandedTemplate"
+                                    [ngTemplateOutlet]="bodyCustomExpandedTemplate"
+                                    [ngTemplateOutletContext]="{$implicit: row}"
+                                >
+                                </ng-container>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+            </ng-container>
+            <tr mat-header-row
+                *matHeaderRowDef="tableConfiguration.expanded ? columnsToDisplayWithExpand : columnList"></tr>
+            <tr mat-row
+                [class.odd-row]="i % 2"
+                [class.even-row]="!(i % 2)"
+                *matRowDef="let element; columns: tableConfiguration.expanded ? columnsToDisplayWithExpand : columnList; let i = dataIndex"
+                (click)="rowClick(element); tableConfiguration.expanded ? (expandedElement = expandedElement === element ? null : element) : null">
+            </tr>
+            <ng-container *ngIf="tableConfiguration.expanded">
+                <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+            </ng-container>
+        </table>
+    </div>
+</div>
+
+@if (tableConfiguration.showPagination) {
+    <div class="mt-4 custom-paginator" *ngIf="hasDataToDisplay()">
+        <div class="w-full flex justify-between items-center gap-2 text-sm">
+        <span class="text-gray-600">
+            Showing <span class="font-bold">{{ totalResults() }}</span> of {{ totalSize }}
+        </span>
+
+            <div class="flex items-center gap-1 ml-4">
+                <button
+                    (click)="previousPage()"
+                    [disabled]="currentPage <= 0"
+                    class="p-2 hover:bg-gray-100 rounded-lg disabled:opacity-50"
+                    aria-label="Previous page">
+                    <span class="text-gray-600">&lsaquo;</span>
+                </button>
+
+                <ng-container *ngFor="let page of visiblePages()">
+                    <button
+                        *ngIf="page !== '...'"
+                        (click)="changePage(page)"
+                        [class.bg-gray-100]="page === currentPage"
+                        class="px-3 py-1 rounded-lg hover:bg-gray-100">
+                        {{ Number(page) + 1 }}
+                    </button>
+                    <span *ngIf="page === '...'" class="px-2">...</span>
+                </ng-container>
+
+                <button
+                    (click)="nextPage()"
+                    [disabled]="currentPage === totalPages - 1"
+                    class="p-2 hover:bg-gray-100 rounded-lg disabled:opacity-50"
+                    aria-label="Next page">
+                    <span class="text-gray-600">&rsaquo;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+<!--Hidden Paginator to work with custom-paginator -->
+<mat-paginator
+    id="paginator"
+    [ngClass]="tableConfiguration.styles.paginator"
+    [pageSizeOptions]="[tableConfiguration.pageSize]"
+    [length]="totalSize"
+    [hidden]="hasDataToDisplay()"
+    (page)="onPaginateChange($event)"
+    class="invisible hidden"
+>
+</mat-paginator>

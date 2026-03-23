@@ -1,0 +1,41 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "6bd29e5a3497a94f03767cca7d90ac3e"
+name = "Tagpeak PRE"
+handle = "tagpeak-integration-v3"
+application_url = "https://pre.tagpeak.shopify.atlanse-cloud.ddns.net"
+embedded = true
+
+[webhooks]
+api_version = "2025-04"
+
+[[webhooks.subscriptions]]
+topics = [
+  "orders/cancelled",
+  "orders/create",
+  "orders/delete",
+  "orders/updated"
+]
+uri = "https://pre.tagpeak.atlanse-cloud.ddns.net/shopify/public/webhook"
+
+[[webhooks.subscriptions]]
+topics = [ "app/uninstalled" ]
+uri = "https://pre.tagpeak.atlanse-cloud.ddns.net/shopify/public/webhook-uninstall"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_discounts,read_orders,read_products,read_publications,write_discounts,write_products,write_publications,read_customers"
+
+[auth]
+redirect_urls = [
+  "https://pre.tagpeak.shopify.atlanse-cloud.ddns.net/auth/callback",
+  "https://pre.tagpeak.shopify.atlanse-cloud.ddns.net/auth/shopify/callback",
+  "https://pre.tagpeak.shopify.atlanse-cloud.ddns.net/api/auth/callback"
+]
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = false
+include_config_on_deploy = true

@@ -1,0 +1,78 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Clean"
+  lane :clean do
+    gradle(task: "clean")
+    sh("cd ../../ && fvm flutter pub run build_runner build --delete-conflicting-outputs")
+  end
+
+  lane :versioning do
+  	android_set_version_code(
+  		gradle_file: "./app/build.gradle",
+  		version_code: ENV['ANDROID_VERSION_CODE']
+  	)
+  	android_set_version_name(
+  		gradle_file: "./app/build.gradle",
+  		version_name: ENV['ANDROID_VERSION_NAME']
+  	)
+  end
+
+  desc "Build and upload qa APK"
+  lane :qa do
+      clean
+      versioning
+      sh("cd ../../ && fvm flutter build appbundle -t lib/main_qa.dart --no-tree-shake-icons --release")
+      gradle(
+        task: "bundle",
+        build_type: "dev",
+  	    print_command: false
+      )
+      upload_to_play_store(track: 'internal', aab: '../build/app/outputs/bundle/dev/app-dev.aab')
+  end
+
+  desc "Build and upload staging APK"
+  lane :pre do
+      clean
+      versioning
+      sh("cd ../../ && fvm flutter build appbundle -t lib/main_pre.dart --no-tree-shake-icons --release")
+      gradle(
+        task: "bundle",
+        build_type: "staging",
+        print_command: false
+      )
+	  upload_to_play_store(track: 'Pre', aab: '../build/app/outputs/bundle/staging/app-staging.aab')
+  end
+
+  desc "Build and upload release APK"
+  lane :prod do
+      clean
+      versioning
+      sh("cd ../../ && fvm flutter build appbundle -t lib/main_prod.dart --no-tree-shake-icons --release")
+      gradle(
+        task: "bundle",
+        build_type: "prod",
+        print_command: false
+      )
+  end
+
+  lane :tracks do
+      google_play_track_version_codes
+   end
+
+end

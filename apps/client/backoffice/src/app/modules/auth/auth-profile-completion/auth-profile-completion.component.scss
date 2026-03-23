@@ -1,0 +1,3 @@
+.tooltip[data-tip]::before {
+    @apply text-white bg-project-red;
+}

@@ -1,0 +1,15 @@
+<div class="w-full">
+    <div [ngClass]="cssHeader"
+         (click)="clickAccordion()">
+        <ng-container *ngTemplateOutlet="headerTemplate ?? defaultHeader"></ng-container>
+        <ng-template #defaultHeader>
+            <div class="flex justify-between">
+                <span class="text-xl text-project-licorice-500">{{ title | transloco }}</span>
+                <mat-icon [svgIcon]="$showAccordion() ? 'arrow-right' : 'arrow-down'"></mat-icon>
+            </div>
+        </ng-template>
+    </div>
+    @if ($showAccordion()) {
+        <ng-container *ngTemplateOutlet="bodyTemplate"></ng-container>
+    }
+</div>

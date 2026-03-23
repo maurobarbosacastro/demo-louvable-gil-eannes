@@ -1,0 +1,168 @@
+@defer {
+    <div class="w-full px-16 mt-8">
+        <div class="grid grid-cols-2 gap-x-4">
+            <tagpeak-stat-card [$title]="'Total Orders'" [$value]="$stats()?.totalOrders" />
+            <tagpeak-stat-card [$title]="'Total Amount'" [$value]="$stats()?.totalAmount" [$currency]="$stats().currency" />
+        </div>
+
+
+        <div class="mt-5">
+            <form [formGroup]="filtersForm" class="flex justify-end items-center gap-5">
+                <div class="flex items-center gap-2.5">
+
+                    <!-- Search by start date-->
+                    <div class="w-52">
+                        <label class="input input-bordered flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <mat-icon svgIcon="calender" class="icon-size-5"></mat-icon>
+                                <input [matDatepicker]="pickerStart" (click)="pickerStart.open()"
+                                       [formControl]="startDateControl"
+                                       class="custom-picker w-22 text-[15px] font-normal" readonly
+                                       placeholder="{{ 'store-visits.date-from' | transloco }}"
+                                       [max]="endDateControl.value" />
+                                <mat-datepicker #pickerStart class="custom-picker"></mat-datepicker>
+                            </div>
+                            @if (startDateControl.value) {
+                                <mat-icon svgIcon="close-modal" class="icon-size-4 cursor-pointer"
+                                          (click)="resetFormControl('startDate')"></mat-icon>
+                            }
+                        </label>
+                    </div>
+
+                    <!-- Search by end date-->
+                    <div class="w-52">
+                        <label class="input input-bordered flex justify-between items-center gap-2">
+                            <div class="flex items-center gap-2">
+                                <mat-icon svgIcon="arrow-right" class="icon-size-4"></mat-icon>
+                                <input [matDatepicker]="pickerEnd" (click)="pickerEnd.open()" [formControl]="endDateControl"
+                                       class="custom-picker w-22 text-[15px] font-normal" readonly
+                                       placeholder="{{ 'store-visits.date-to' | transloco }}"
+                                       [min]="startDateControl.value" />
+                                <mat-datepicker #pickerEnd></mat-datepicker>
+                            </div>
+                            @if (endDateControl.value) {
+                                <mat-icon svgIcon="close-modal" class="icon-size-4 cursor-pointer"
+                                          (click)="resetFormControl('endDate')"></mat-icon>
+                            }
+                        </label>
+                    </div>
+
+                    <!-- Search by status -->
+                    <div class="dropdown">
+                        <div tabindex="0" role="button" class="m-1">
+                            <label class="input input-bordered flex items-center gap-2">
+                                <input type="text" class="grow max-w-12 text-[15px] font-normal cursor-pointer" readonly
+                                       placeholder="{{ 'dashboard.table.status' | transloco }}" />
+                                <mat-icon svgIcon="arrow_drop_down"></mat-icon>
+                            </label>
+                        </div>
+                        <ul tabindex="0" class="dropdown-content menu bg-white rounded-box z-10 w-52 p-2 shadow">
+                            @for (status of filtersStatus; track status.value) {
+                                <li class="w-full hover:bg-[#4237DA33] rounded hover:text-project-youngBlue"
+                                    (click)="setFilters(status.value)">
+                                    <a class="flex justify-between">
+                                        {{ status.label | transloco }}
+                                        @if (filtersForm.value.status.includes(status.value)) {
+                                            <mat-icon svgIcon="check" class="icon-size-4 icon-color"></mat-icon>
+                                        }
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    @if (filtersForm.controls.status.value.length > 0) {
+                        <div class="flex gap-2.5">
+                            @for (value of filtersForm.controls.status.value; track value) {
+                                <tagpeak-status-container class="h-12" [$status]="value" [$icon]="'close-modal'"
+                                                          (iconEvent)="removeFilter($event)" />
+                            }
+                        </div>
+
+                    }
+                </div>
+            </form>
+
+            @if (dataSource.data.length > 0) {
+                <div class="mt-5">
+                    <atl-ng-table class="custom-table table-cashback"
+                                  id="table"
+                                  [tableConfiguration]="tableConfiguration"
+                                  [headerCustomTemplate]="headerCustomTemplate"
+                                  [bodyCustomTemplate]="bodyCustomTemplate"
+                                  [resetPaginator]="page$ | async"
+                                  (onSortAndPageChange)="onSortAndPageChange($event)"
+                                  [totalSize]="totalSize"
+                                  [totalPages]="totalPages()" />
+
+                    <ng-template #headerCustomTemplate let-implicit>
+                        @switch (implicit.id) {
+                            @default {
+                                <div class="flex items-center">
+                                    {{ implicit.name }}
+                                </div>
+                            }
+                        }
+                    </ng-template>
+
+                    <ng-template #bodyCustomTemplate let-implicit>
+                        @switch (implicit.column.id) {
+                            @case ('id') {
+                                <span [matTooltip]="implicit.row.uuid" class="cursor-copy"
+                                      [cdkCopyToClipboard]="implicit.row.uuid" (click)="informCopy()">
+                                    {{ implicit.row.uuid }}
+                                </span>
+                            }
+                            @case ('order_name') {
+                                <span>
+                                    {{ implicit.row.exitId }}
+                                </span>
+                            }
+                            @case ('store') {
+                                <span>
+                                    {{ implicit.row.store?.name }}
+                                </span>
+                            }
+                            @case ('user') {
+                                <span>
+                                    {{ implicit.row.email }}
+                                </span>
+                            }
+                            @case ('date') {
+                                <span>{{ implicit.rowVal | date: 'MMM d, yyyy' }}</span>
+                            }
+                            @case ('amountSource') {
+                                <span [matTooltip]="implicit.row.currencySource">
+                                     {{ implicit.rowVal | currency: implicit.row.currencySource : 'symbol-narrow' : '1.2-2'}}
+                                </span>
+                            }
+                            @case ('status') {
+                                @if (implicit.row.reward) {
+                                    <tagpeak-status-container [$status]="implicit.row.reward.state" />
+                                } @else {
+                                    @if (implicit.rowVal === 'REJECTED') {
+                                        <tagpeak-status-container [$status]="'CANCELLED'" />
+                                    } @else {
+                                        <tagpeak-status-container [$status]="implicit.row.status" />
+                                    }
+                                }
+                            }
+                        }
+                    </ng-template>
+
+                </div>
+            } @else {
+                <div class="mt-8 h-56">
+                    <span class="text-xl text-project-licorice-900 font-semibold">
+                        {{ 'store-visits.nothing-here' | transloco }}
+                    </span>
+                </div>
+            }
+        </div>
+
+    </div>
+
+} @loading (minimum 400ms) {
+    <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+        <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+    </div>
+}

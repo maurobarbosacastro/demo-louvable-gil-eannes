@@ -1,0 +1,33 @@
+<div class="w-full mt-12">
+    <tagpeak-custom-accordion [headerTemplate]="headerRewardsByCurrenciesTemplate"
+                              [bodyTemplate]="bodyRewardsByCurrenciesTemplate"
+                              [cssHeader]="'flex justify-between cursor-pointer border-b border-project-brand-500 pb-4'"/>
+
+    <ng-template #headerRewardsByCurrenciesTemplate>
+                <span
+                    class="text-xl text-project-licorice-500">{{ 'dashboard-admin.reward-currency' | transloco }}</span>
+        <div class="flex gap-2.5">
+            <mat-icon svgIcon="arrow-down"></mat-icon>
+        </div>
+    </ng-template>
+
+    <ng-template #bodyRewardsByCurrenciesTemplate>
+
+        <div class="mt-2">
+            <atl-ng-table *ngIf="$tableConfig()"
+                          id="tableReward"
+                          [tableConfiguration]="$tableConfig()"
+                          [bodyCustomTemplate]="bodyCustomTemplate"/>
+
+
+            <ng-template #bodyCustomTemplate let-implicit>
+                @if (implicit.column.id === 'rowValue') {
+                    <span class="text-md">{{ implicit.rowVal | titlecase }}</span>
+                } @else {
+                    <span class="text-md">{{ implicit.rowVal }}</span>
+                }
+            </ng-template>
+
+        </div>
+    </ng-template>
+</div>

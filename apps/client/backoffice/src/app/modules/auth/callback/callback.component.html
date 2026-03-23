@@ -1,0 +1,27 @@
+<div
+        class=" m-4 flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0 p-2.5 bg-white rounded-[2.5rem]">
+    <div
+            class=" sm:hidden rounded-[2rem] pr-2.5 relative hidden md:flex flex-auto items-center justify-center w-1/2 h-full p-16 lg:px-28 overflow-hidden bg-gray-800 dark:border-l">
+    </div>
+    <div
+            class="flex md:justify-start sm:justify-center h-full md:w-1/2 py-8 md:px-4 md:p-16 sm:p-8 rounded-none shadow-none items-center sm:w-full ">
+        <div class="flex flex-col w-100 sm:mx-0 md:ml-28">
+            <div class="flex items-center gap-4">
+                <span class="font-normal text-project-licorice-500 text-4xl">
+                {{ 'auth.processing' | transloco }}
+            </span>
+                <mat-progress-spinner
+                        [diameter]="24"
+                        [mode]="'indeterminate'"
+                        [color]="'accent'"
+                ></mat-progress-spinner>
+            </div>
+
+            <div class="mt-4 lg:w-100 md:w-72 flex">
+                <span class="font-normal text-project-waterloo text-lg">{{ 'auth.redirected' | transloco }}</span>
+                <span class="font-normal text-project-licorice-500 text-lg ml-2">{{ timer }}</span>
+            </div>
+
+        </div>
+    </div>
+</div>

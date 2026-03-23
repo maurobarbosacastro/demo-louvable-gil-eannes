@@ -1,0 +1,24 @@
+<div class="w-full px-4 my-5 lg:px-16 lg:mt-8">
+    <div class="flex justify-between items-center max-h-[74px]">
+        <span class="text-3xl">{{ 'languages.title' | transloco }}</span>
+        <button
+            class="py-2.5 px-10 bg-project-licorice-500 text-white rounded  textButton flex justify-center cursor-pointer my-4"
+            (click)="openDetailsModal()">
+            {{ 'languages.new-language' | transloco }}
+        </button>
+    </div>
+
+    <div class="mt-16">
+        <atl-ng-table class="custom-table"
+                      *ngIf="$tableConfiguration()"
+                      id="table"
+                      [tableConfiguration]="$tableConfiguration()"
+                      [totalPages]="total"
+                      [totalSize]="totalSize"
+                      [resetPaginator]="page$ | async"
+                      (onSortAndPageChange)="onSortAndPageChange($event)"
+                      (onActionClick)="onActionClick($event)"
+        >
+        </atl-ng-table>
+    </div>
+</div>

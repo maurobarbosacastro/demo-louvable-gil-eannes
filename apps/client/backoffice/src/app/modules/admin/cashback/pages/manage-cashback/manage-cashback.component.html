@@ -1,0 +1,464 @@
+@defer {
+    <div class="w-full h-full mt-2.5 overflow-hidden">
+
+        @if (environment.features.dashboard) {
+            <div class="w-full mb-5">
+                <tagpeak-mini-dashboard [$transactionsDashboard]="$dashboardTransactions()"
+                                        (navigateToPage)="navigateToCashback($event)" />
+            </div>
+        }
+
+        @if ($isMobile()) {
+            <form [formGroup]="filtersForm" class="flex flex-col gap-2.5">
+                <div class="flex flex-col gap-2.5">
+                    <div class="flex gap-2.5">
+                        <div class="w-1/2">
+                            <!-- Search by RefId -->
+                            <tagpeak-custom-dropdown [control]="searchStoreVisitsForm"
+                                                     [placeholder]="'cashback.search-store-visit' | transloco"
+                                                     [$options]="$mappedDropdownStoreVisits()"
+                                                     [value]="searchStoreVisitsForm.value?.label ?? ''"
+                                                     [iconInput]="iconInput"
+                                                     [css]="styleDropdown"
+                                                     [iconCheckOption]="iconCheckOption"
+                                                     [showDefaultValue]="false"
+                                                     [isReadonly]="false"
+                                                     (valueChangesEvent)="setFormControlName('searchStoreVisit', $event)" />
+                        </div>
+
+                        <!-- Search by user -->
+                        <div class="w-1/2">
+                            <tagpeak-custom-dropdown #dropdownUserComponent [control]="searchUserForm"
+                                                     [placeholder]="'cashback.search-user' | transloco"
+                                                     [$options]="$mappedDropdownUsers()"
+                                                     [value]="searchUserForm.value?.label ?? ''"
+                                                     [iconInput]="iconInput"
+                                                     [css]="styleDropdown"
+                                                     [iconCheckOption]="iconCheckOption"
+                                                     [showDefaultValue]="false"
+                                                     [isReadonly]="false"
+                                                     [customListTemplate]="customListUserTemplate"
+                                                     (valueChangesEvent)="setFormControlName('searchUser', $event)" />
+
+                            <ng-template #customListUserTemplate let-value="value">
+                                <div
+                                    class="flex items-center gap-2 p-2 cursor-pointer hover:bg-[#4237DA33] rounded hover:text-project-youngBlue justify-between"
+                                    (click)="setFormControlName('searchUser', value); dropdownUserComponent.isOpen = false">
+                                    <div class="flex flex-col gap-1 leading-none">
+                                        <span>{{ value.label }}</span>
+                                        <span class="text-project-waterloo text-xs">({{ getEmailUser(value.value) }})</span>
+                                    </div>
+
+                                    @if (searchUserForm.value?.value === value.value) {
+                                        <mat-icon svgIcon="check" class="icon-size-4 icon-color"></mat-icon>
+                                    }
+                                </div>
+                            </ng-template>
+                        </div>
+                    </div>
+
+                    <!-- Search by store -->
+                    <div class="w-full">
+                        <tagpeak-custom-dropdown #customDropdownComponent [control]="searchStoreForm"
+                                                 [placeholder]="'cashback.search-store' | transloco"
+                                                 [$options]="$mappedDropdownStores()"
+                                                 [value]="searchStoreForm.value?.label ?? ''"
+                                                 [iconInput]="iconInput"
+                                                 [css]="styleDropdown"
+                                                 [iconCheckOption]="iconCheckOption"
+                                                 [showDefaultValue]="false"
+                                                 [isReadonly]="false"
+                                                 [customListTemplate]="customListTemplate"
+                                                 (valueChangesEvent)="setFormControlName('searchStore', $event)" />
+
+                        <ng-template #customListTemplate let-value="value">
+                            <div
+                                class="flex items-center gap-2 p-2 cursor-pointer hover:bg-[#4237DA33] rounded hover:text-project-youngBlue justify-between"
+                                (click)="setFormControlName('searchStore', value); customDropdownComponent.isOpen = false">
+                                {{ value.label }}
+                                <div class="flex flex-row items-center gap-3">
+                                    <span class="text-project-waterloo text-xs">({{ getCountryStore(value.value) }})</span>
+                                    @if (searchStoreForm.value?.value === value.value) {
+                                        <mat-icon svgIcon="check" class="icon-size-4 icon-color"></mat-icon>
+                                    }
+                                </div>
+
+                            </div>
+                        </ng-template>
+                    </div>
+
+                   <div class="flex gap-2.5">
+                       <!-- Search by start date-->
+                       <div class="w-1/2">
+                           <label class="input input-bordered flex justify-between items-center">
+                               <div class="flex items-center gap-2">
+                                   <mat-icon svgIcon="calender" class="icon-size-5"></mat-icon>
+                                   <input [matDatepicker]="pickerStart" (click)="pickerStart.open()"
+                                          [formControl]="startDateControl"
+                                          class="custom-picker w-22 text-[15px] font-normal" readonly
+                                          placeholder="{{ 'store-visits.date-from' | transloco }}"
+                                          [max]="endDateControl.value" />
+                                   <mat-datepicker #pickerStart class="custom-picker"></mat-datepicker>
+                               </div>
+                               @if (startDateControl.value) {
+                                   <mat-icon svgIcon="close-modal" class="icon-size-4 cursor-pointer"
+                                             (click)="resetFormControl('startDate')"></mat-icon>
+                               }
+                           </label>
+                       </div>
+
+                       <!-- Search by end date-->
+                       <div class="w-1/2">
+                           <label class="input input-bordered flex justify-between items-center gap-2">
+                               <div class="flex items-center gap-2">
+                                   <mat-icon svgIcon="arrow-right" class="icon-size-4"></mat-icon>
+                                   <input [matDatepicker]="pickerEnd" (click)="pickerEnd.open()" [formControl]="endDateControl"
+                                          class="custom-picker w-22 text-[15px] font-normal" readonly
+                                          placeholder="{{ 'store-visits.date-to' | transloco }}"
+                                          [min]="startDateControl.value" />
+                                   <mat-datepicker #pickerEnd></mat-datepicker>
+                               </div>
+                               @if (endDateControl.value) {
+                                   <mat-icon svgIcon="close-modal" class="icon-size-4 cursor-pointer"
+                                             (click)="resetFormControl('endDate')"></mat-icon>
+                               }
+                           </label>
+                       </div>
+                   </div>
+
+                    <!-- Search by status -->
+                    <div class="dropdown">
+                        <div tabindex="0" role="button" class="m-1">
+                            <label class="input input-bordered flex items-center gap-2 w-full">
+                                <input type="text" class="grow max-w-full text-[15px] font-normal cursor-pointer" readonly
+                                       placeholder="{{ 'dashboard.table.status' | transloco }}" />
+                                <mat-icon svgIcon="arrow_drop_down"></mat-icon>
+                            </label>
+                        </div>
+                        <ul tabindex="0" class="dropdown-content menu bg-white rounded-box z-10 w-52 p-2 shadow">
+                            @for (status of filtersStatus; track status.value) {
+                                <li class="w-full hover:bg-[#4237DA33] rounded hover:text-project-youngBlue"
+                                    (click)="setFilters(status.value)">
+                                    <a class="flex justify-between">
+                                        {{ status.label | transloco }}
+                                        @if (filtersForm.value.status.includes(status.value)) {
+                                            <mat-icon svgIcon="check" class="icon-size-4 icon-color"></mat-icon>
+                                        }
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    @if (filtersForm.controls.status.value.length > 0) {
+                        <div class="flex gap-2.5 overflow-x-scroll">
+                            @for (value of filtersForm.controls.status.value; track value) {
+                                @if (value === StatusEnum.REJECTED) {
+                                    <tagpeak-status-container class="h-12" [$status]="StatusEnum.CANCELLED" [$icon]="'close-modal'"
+                                                              (iconEvent)="removeFilter($event)" />
+                                } @else {
+                                    <tagpeak-status-container class="h-12" [$status]="value" [$icon]="'close-modal'"
+                                                              (iconEvent)="removeFilter($event)" />
+                                }
+                            }
+                        </div>
+
+                    }
+                </div>
+            </form>
+        } @else {
+            <form [formGroup]="filtersForm" class="flex justify-end items-center gap-5">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-fit">
+                        <!-- Search by RefId -->
+                        <tagpeak-custom-dropdown [control]="searchStoreVisitsForm"
+                                                 [placeholder]="'cashback.search-store-visit' | transloco"
+                                                 [$options]="$mappedDropdownStoreVisits()"
+                                                 [value]="searchStoreVisitsForm.value?.label ?? ''"
+                                                 [iconInput]="iconInput"
+                                                 [css]="styleDropdown"
+                                                 [iconCheckOption]="iconCheckOption"
+                                                 [showDefaultValue]="false"
+                                                 [isReadonly]="false"
+                                                 (valueChangesEvent)="setFormControlName('searchStoreVisit', $event)" />
+                    </div>
+
+                    <!-- Search by user -->
+                    <div class="w-fit">
+                        <tagpeak-custom-dropdown #dropdownUserComponent [control]="searchUserForm"
+                                                 [placeholder]="'cashback.search-user' | transloco"
+                                                 [$options]="$mappedDropdownUsers()"
+                                                 [value]="searchUserForm.value?.label ?? ''"
+                                                 [iconInput]="iconInput"
+                                                 [css]="styleDropdown"
+                                                 [iconCheckOption]="iconCheckOption"
+                                                 [showDefaultValue]="false"
+                                                 [isReadonly]="false"
+                                                 [customListTemplate]="customListUserTemplate"
+                                                 (valueChangesEvent)="setFormControlName('searchUser', $event)" />
+
+                        <ng-template #customListUserTemplate let-value="value">
+                            <div
+                                class="flex items-center gap-2 p-2 cursor-pointer hover:bg-[#4237DA33] rounded hover:text-project-youngBlue justify-between"
+                                (click)="setFormControlName('searchUser', value); dropdownUserComponent.isOpen = false">
+                                <div class="flex flex-col gap-1 leading-none">
+                                    <span>{{ value.label }}</span>
+                                    <span class="text-project-waterloo text-xs">({{ getEmailUser(value.value) }})</span>
+                                </div>
+
+                                @if (searchUserForm.value?.value === value.value) {
+                                    <mat-icon svgIcon="check" class="icon-size-4 icon-color"></mat-icon>
+                                }
+                            </div>
+                        </ng-template>
+                    </div>
+
+                    <!-- Search by store -->
+                    <div class="w-fit">
+                        <tagpeak-custom-dropdown #customDropdownComponent [control]="searchStoreForm"
+                                                 [placeholder]="'cashback.search-store' | transloco"
+                                                 [$options]="$mappedDropdownStores()"
+                                                 [value]="searchStoreForm.value?.label ?? ''"
+                                                 [iconInput]="iconInput"
+                                                 [css]="styleDropdown"
+                                                 [iconCheckOption]="iconCheckOption"
+                                                 [showDefaultValue]="false"
+                                                 [isReadonly]="false"
+                                                 [customListTemplate]="customListTemplate"
+                                                 (valueChangesEvent)="setFormControlName('searchStore', $event)" />
+
+                        <ng-template #customListTemplate let-value="value">
+                            <div
+                                class="flex items-center gap-2 p-2 cursor-pointer hover:bg-[#4237DA33] rounded hover:text-project-youngBlue justify-between"
+                                (click)="setFormControlName('searchStore', value); customDropdownComponent.isOpen = false">
+                                {{ value.label }}
+                                <div class="flex flex-row items-center gap-3">
+                                    <span class="text-project-waterloo text-xs">({{ getCountryStore(value.value) }})</span>
+                                    @if (searchStoreForm.value?.value === value.value) {
+                                        <mat-icon svgIcon="check" class="icon-size-4 icon-color"></mat-icon>
+                                    }
+                                </div>
+
+                            </div>
+                        </ng-template>
+                    </div>
+
+                    <!-- Search by start date-->
+                    <div class="w-52">
+                        <label class="input input-bordered flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <mat-icon svgIcon="calender" class="icon-size-5"></mat-icon>
+                                <input [matDatepicker]="pickerStart" (click)="pickerStart.open()"
+                                       [formControl]="startDateControl"
+                                       class="custom-picker w-22 text-[15px] font-normal" readonly
+                                       placeholder="{{ 'store-visits.date-from' | transloco }}"
+                                       [max]="endDateControl.value" />
+                                <mat-datepicker #pickerStart class="custom-picker"></mat-datepicker>
+                            </div>
+                            @if (startDateControl.value) {
+                                <mat-icon svgIcon="close-modal" class="icon-size-4 cursor-pointer"
+                                          (click)="resetFormControl('startDate')"></mat-icon>
+                            }
+                        </label>
+                    </div>
+
+                    <!-- Search by end date-->
+                    <div class="w-52">
+                        <label class="input input-bordered flex justify-between items-center gap-2">
+                            <div class="flex items-center gap-2">
+                                <mat-icon svgIcon="arrow-right" class="icon-size-4"></mat-icon>
+                                <input [matDatepicker]="pickerEnd" (click)="pickerEnd.open()" [formControl]="endDateControl"
+                                       class="custom-picker w-22 text-[15px] font-normal" readonly
+                                       placeholder="{{ 'store-visits.date-to' | transloco }}"
+                                       [min]="startDateControl.value" />
+                                <mat-datepicker #pickerEnd></mat-datepicker>
+                            </div>
+                            @if (endDateControl.value) {
+                                <mat-icon svgIcon="close-modal" class="icon-size-4 cursor-pointer"
+                                          (click)="resetFormControl('endDate')"></mat-icon>
+                            }
+                        </label>
+                    </div>
+
+                    <!-- Search by status -->
+                    <div class="dropdown">
+                        <div tabindex="0" role="button" class="m-1">
+                            <label class="input input-bordered flex items-center gap-2">
+                                <input type="text" class="grow max-w-12 text-[15px] font-normal cursor-pointer" readonly
+                                       placeholder="{{ 'dashboard.table.status' | transloco }}" />
+                                <mat-icon svgIcon="arrow_drop_down"></mat-icon>
+                            </label>
+                        </div>
+                        <ul tabindex="0" class="dropdown-content menu bg-white rounded-box z-10 w-52 p-2 shadow">
+                            @for (status of filtersStatus; track status.value) {
+                                <li class="w-full hover:bg-[#4237DA33] rounded hover:text-project-youngBlue"
+                                    (click)="setFilters(status.value)">
+                                    <a class="flex justify-between">
+                                        {{ status.label | transloco }}
+                                        @if (filtersForm.value.status.includes(status.value)) {
+                                            <mat-icon svgIcon="check" class="icon-size-4 icon-color"></mat-icon>
+                                        }
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    @if (filtersForm.controls.status.value.length > 0) {
+                        <div class="flex gap-2.5">
+                            @for (value of filtersForm.controls.status.value; track value) {
+                                <tagpeak-status-container class="h-12" [$status]="value" [$icon]="'close-modal'"
+                                                          (iconEvent)="removeFilter($event)" />
+                            }
+                        </div>
+
+                    }
+                </div>
+            </form>
+        }
+
+        @if ($cashbacksSelected().length > 0 && $cashbackSelectedAllSameStatus()) {
+            <tagpeak-bulk-update [cashbacksSelected]="$cashbacksSelected()"
+                                 [isMobile]="$isMobile()"
+                                 [lockButton]="$lockedButtonBulk()"
+                                 (updateClickEvent)="updateBulk($event)"
+                                 (closeClickEvent)="clearCashbacksSelected()" />
+        }
+        @if ($cashbacksSelected().length > 0 && !$cashbackSelectedAllSameStatus()) {
+            <div class="text-project-lavender text-sm text-center">
+                You selected cashbacks with different status. Please select only cashbacks with the same status to be
+                able to bulk update without issue.
+            </div>
+        }
+        @if (dataSource.data.length > 0) {
+            <div class="mt-5">
+                <atl-ng-table class="custom-table table-cashback"
+                              id="table"
+                              [tableConfiguration]="tableConfiguration"
+                              [headerCustomTemplate]="headerCustomTemplate"
+                              [bodyCustomTemplate]="bodyCustomTemplate"
+                              [resetPaginator]="page$ | async"
+                              (onSortAndPageChange)="onSortAndPageChange($event)"
+                              [totalSize]="totalSize"
+                              [totalPages]="totalPages()" />
+
+                <ng-template #headerCustomTemplate let-implicit>
+                    @switch (implicit.id) {
+                        @case ('checkbox') {
+                            <div class="flex items-center">
+                                <input #checkboxHeader type="checkbox"
+                                       class="checkbox checkbox-sm rounded border-black [--chkbg:white] [--chkfg:black]"
+                                       (click)="selectAllVisibleCashback()" />
+                            </div>
+                        }
+                        @default {
+                            <div class="flex items-center">
+                                {{ implicit.name }}
+                            </div>
+                        }
+                    }
+                </ng-template>
+
+                <ng-template #bodyCustomTemplate let-implicit>
+                    @switch (implicit.column.id) {
+                        @case ('checkbox') {
+                            <div class="flex items-center">
+                                <input type="checkbox" [checked]="validateCheckboxValue(implicit.row.id)" #checkbox
+                                       class="checkbox checkbox-sm rounded border-black [--chkbg:white] [--chkfg:black]"
+                                       (click)="selectCashback(implicit.row)" />
+                            </div>
+                        }
+                        @case ('exitIdEncoded') {
+                            <span>
+                                {{ encodeStoreVisitRef(implicit.row.exitId, implicit.row.userUuid) }}
+                            </span>
+                        }
+                        @case ('exitId') {
+                            <span>
+                                {{ implicit.row.exitId }}
+                            </span>
+                        }
+                        @case ('store') {
+                            <span>
+                                {{ implicit.row.store?.name }}
+                            </span>
+                        }
+                        @case ('user') {
+                            <span>
+                                {{ implicit.row.email }}
+                            </span>
+                        }
+                        @case ('date') {
+                            <span>{{ implicit.rowVal | date: 'MMM d, yyyy' }}</span>
+                        }
+                        @case ('title') {
+                            <span>{{ implicit.row.reward?.title }}</span>
+                        }
+                        @case ('amountTarget') {
+                            <span>{{ implicit.rowVal | number: '1.2-2' }}</span>
+                        }
+                        @case ('networkCommission') {
+                            <span>{{ implicit.rowVal | number: '1.2-2' }}</span>
+                        }
+                        @case ('currentRewardTarget') {
+                            <span>{{ implicit.row.reward?.currentRewardTarget }}</span>
+                        }
+                        @case ('priceDayZero') {
+                            <span>{{ implicit.row.reward?.initialPrice }}</span>
+                        }
+                        @case ('isin') {
+                            @if (implicit.row.reward?.conid == "") {
+                                <span
+                                    matTooltip="{{'cashback.details.isin' | transloco}}">{{ implicit.row.reward?.isin }}</span>
+                            } @else {
+                                <span
+                                    matTooltip="{{'cashback.details.conid' | transloco}}">{{ implicit.row.reward?.conid }}</span>
+                            }
+                        }
+                        @case ('status') {
+                            @if (implicit.row.reward) {
+                                <tagpeak-status-container [$status]="implicit.row.reward.state" />
+                            } @else {
+                                @if (implicit.rowVal === 'REJECTED') {
+                                    <tagpeak-status-container [$status]="'CANCELLED'" />
+                                } @else {
+                                    <tagpeak-status-container [$status]="implicit.row.status" />
+                                }
+                            }
+                        }
+                        @case ('customActions') {
+                            <div class="flex gap-1.5 justify-end">
+                                <button
+                                    class="btn bg-white text-project-youngBlue border-project-youngBlue text-md font-normal min-h-9 h-9 rounded"
+                                    *ngIf="showHistoryBtn(implicit.row)"
+                                    (click)="historyCashback(implicit)">
+                                    {{ 'cashback.table.history' | transloco }}
+                                </button>
+                                <button
+                                    class="btn bg-white text-project-youngBlue border-project-youngBlue text-md font-normal min-h-9 h-9 rounded px-2"
+                                    (click)="editCashback(implicit)">
+                                    <mat-icon svgIcon="pencil" class="icon-size-4"></mat-icon>
+                                </button>
+                                <button
+                                    class="btn bg-white text-project-red border-project-red text-md font-normal min-h-9 h-9 rounded px-2"
+                                    (click)="deleteCashback(implicit)">
+                                    <mat-icon svgIcon="trash" class="icon-size-4"></mat-icon>
+                                </button>
+                            </div>
+                        }
+                    }
+                </ng-template>
+
+            </div>
+        } @else {
+            <div class="mt-8 h-56">
+                    <span class="text-xl text-project-licorice-900 font-semibold">
+                        {{ 'store-visits.nothing-here' | transloco }}
+                    </span>
+            </div>
+        }
+    </div>
+
+} @loading (minimum 400ms) {
+    <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+        <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+    </div>
+}

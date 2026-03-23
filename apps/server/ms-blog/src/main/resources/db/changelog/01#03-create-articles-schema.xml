@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="04-blog" author="Atlanse">
+		<createTable tableName="articles"
+		             remarks="A table to contain articles">
+
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints
+					nullable="false"
+					unique="true"
+					primaryKey="true"
+					primaryKeyName="article_PK" />
+			</column>
+
+			<column name="version" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+
+<!--            todo Replace by content -->
+			<column name="article_media_file_id" type="BIGINT">
+				<constraints nullable="false"
+				             foreignKeyName="fk_article_mediafile"
+				             references="article_media_file(id)" />
+			</column>
+
+			<column name="status" type="varchar(255)">
+				<constraints nullable="true" />
+			</column>
+
+			<column name="view_mobile" type="boolean">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="view_web" type="boolean">
+				<constraints nullable="false" />
+			</column>
+
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_article_category"
+                             references="category(id)" />
+            </column>
+
+			<column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="created_by" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="updated_by" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+	</changeSet>
+</databaseChangeLog>

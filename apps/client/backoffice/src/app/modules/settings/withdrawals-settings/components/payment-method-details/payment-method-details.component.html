@@ -1,0 +1,169 @@
+@if ($isMobile()) {
+    @defer {
+        <div class="w-full h-full p-2">
+            <div class="flex justify-end mb-15">
+                <mat-icon svgIcon="close-modal" class="cursor-pointer" (click)="closeModal()"></mat-icon>
+            </div>
+
+            <div class="flex justify-between border-b border-project-sideMenu pb-4 items-center">
+                <div class="flex flex-col">
+                    <span class="text-3xl text-project-licorice-500">{{ $paymentMethod().paymentMethod | titlecase }} Account</span>
+                    <span class="text-sm text-project-waterloo">{{ ibanFormat($paymentMethod().iban) }}</span>
+                </div>
+
+                <button class="btn bg-white rounded border-project-red justify-evenly gap-1 px-4 text-md w-26 h-9 min-h-9"
+                        (click)="deletePaymentMethod($paymentMethod().uuid)">
+                    <mat-icon svgIcon="trash" class="icon-size-4"></mat-icon>
+                    <span class="font-normal text-[15px] text-project-red">{{ 'table.actions.delete' | transloco }}</span>
+                </button>
+            </div>
+
+            <div class="flex flex-col gap-10 w-full mt-10">
+                <!-- Bank Name -->
+                <div class="flex flex-col leading-none gap-2.5">
+                    <span class="text-md text-project-waterloo">{{ 'withdrawal-settings.details.bank-name' | transloco }}</span>
+                    <span class="text-[15px] text-project-licorice-500">{{ $paymentMethod().bankName }}</span>
+                </div>
+
+                <!-- Bank Address -->
+                <div class="flex flex-col leading-none gap-2.5">
+                    <span class="text-md text-project-waterloo">{{ 'withdrawal-settings.details.bank-address' | transloco }}</span>
+                    <span class="text-[15px] text-project-licorice-500">{{ $paymentMethod().bankAddress }}</span>
+                </div>
+
+                <!-- Bank Country -->
+                <div class="fflex flex-col leading-none gap-2.5">
+                    <span class="text-md text-project-waterloo">{{ 'withdrawal-settings.details.bank-country' | transloco }}</span>
+                    <span class="text-[15px] text-project-licorice-500">{{ $paymentMethod().bankCountry }}</span>
+                </div>
+
+                <!-- Bank Account Title -->
+                <div class="flex flex-col leading-none gap-2.5">
+                    <span class="text-md text-project-waterloo">{{ 'withdrawal-settings.details.bank-account-title' | transloco }}</span>
+                    <span class="text-[15px] text-project-licorice-500">{{ $paymentMethod().bankAccountTitle }}</span>
+                </div>
+
+                <!-- IBAN -->
+                <div class="flex flex-col leading-none gap-2.5">
+                    <span class="text-md text-project-waterloo">{{ 'withdrawal-settings.details.iban' | transloco }}</span>
+                    <span class="text-[15px] text-project-licorice-500">{{ ibanFormat($paymentMethod().iban) }}</span>
+                </div>
+
+                <!-- IBAN Statement -->
+                @if ($paymentMethod().ibanStatement) {
+                    <div class="flex justify-between items-center">
+                        <span class="text-md text-project-waterloo">{{ 'withdrawal-settings.details.iban-statement-confirmation' | transloco }}</span>
+                        <div class="flex items-center justify-center p-1.5 gap-1 bg-project-youngBlue text-white rounded min-h-8 h-auto cursor-pointer" (click)="downloadFile()">
+                            <mat-icon svgIcon="uploaded" class="icon-size-4 icon-color-file"></mat-icon>
+                            <span>{{ $paymentMethod().ibanStatement.fileName }}</span>
+                        </div>
+                    </div>
+                }
+
+                <div class="divider divider-project-licorice-500 my-0"></div>
+
+                <!-- VAT Number -->
+                <div class="flex justify-between items-center">
+                    <span class="text-md text-project-waterloo">{{ 'withdrawal-settings.details.vat-number' | transloco }}</span>
+                    <span class="text-[15px] text-project-licorice-500">{{ $paymentMethod().vat }}</span>
+                </div>
+
+                <!-- Country -->
+                <div class="flex justify-between items-center pb-10">
+                    <span class="text-md text-project-waterloo">{{ 'withdrawal-settings.details.country' | transloco }}</span>
+                    <span class="text-[15px] text-project-licorice-500">{{ $paymentMethod().country}}</span>
+                </div>
+
+            </div>
+        </div>
+    } @loading (minimum 200) {
+        <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+            <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+        </div>
+    }
+
+} @else {
+    @defer {
+        <div class="w-full h-full p-2">
+            <div class="flex justify-end mb-15">
+                <mat-icon svgIcon="close-modal" class="cursor-pointer" (click)="closeModal()"></mat-icon>
+            </div>
+
+            <div class="flex justify-between border-b border-project-sideMenu pb-4 items-center">
+                <div class="flex flex-col">
+                    <span class="text-4xl text-project-licorice-500">{{ $paymentMethod().paymentMethod | titlecase }} Account</span>
+                    <span class="text-sm text-project-waterloo">{{ ibanFormat($paymentMethod().iban) }}</span>
+                </div>
+
+                <button class="btn bg-white rounded border-project-red justify-evenly gap-1 px-4 text-md w-26"
+                        (click)="deletePaymentMethod($paymentMethod().uuid)">
+                    <mat-icon svgIcon="trash" class="icon-size-4"></mat-icon>
+                    <span class="font-normal text-[15px] text-project-red">{{ 'table.actions.delete' | transloco }}</span>
+                </button>
+            </div>
+
+            <div class="flex flex-col gap-10 w-full mt-10">
+                <!-- Bank Name -->
+                <div class="flex justify-between items-center">
+                    <span class="text-md text-project-waterloo">{{ 'withdrawal-settings.details.bank-name' | transloco }}</span>
+                    <span class="text-[15px] text-project-licorice-500">{{ $paymentMethod().bankName }}</span>
+                </div>
+
+                <!-- Bank Address -->
+                <div class="flex justify-between items-center">
+                    <span class="text-md text-project-waterloo">{{ 'withdrawal-settings.details.bank-address' | transloco }}</span>
+                    <span class="text-[15px] text-project-licorice-500">{{ $paymentMethod().bankAddress }}</span>
+                </div>
+
+                <!-- Bank Country -->
+                <div class="flex justify-between items-center">
+                    <span class="text-md text-project-waterloo">{{ 'withdrawal-settings.details.bank-country' | transloco }}</span>
+                    <span class="text-[15px] text-project-licorice-500">{{ $paymentMethod().bankCountry }}</span>
+                </div>
+
+                <!-- Bank Account Title -->
+                <div class="flex justify-between items-center">
+                    <span class="text-md text-project-waterloo">{{ 'withdrawal-settings.details.bank-account-title' | transloco }}</span>
+                    <span class="text-[15px] text-project-licorice-500">{{ $paymentMethod().bankAccountTitle }}</span>
+                </div>
+
+                <!-- IBAN -->
+                <div class="flex justify-between items-center">
+                    <span class="text-md text-project-waterloo">{{ 'withdrawal-settings.details.iban' | transloco }}</span>
+                    <span class="text-[15px] text-project-licorice-500">{{ ibanFormat($paymentMethod().iban) }}</span>
+                </div>
+
+                <!-- IBAN Statement -->
+                @if ($paymentMethod().ibanStatement) {
+                    <div class="flex justify-between items-center">
+                        <span class="text-md text-project-waterloo">{{ 'withdrawal-settings.details.iban-statement-confirmation' | transloco }}</span>
+                        <div class="flex items-center justify-center p-2 gap-1 bg-project-youngBlue text-white rounded min-h-8 h-auto cursor-pointer" (click)="downloadFile()">
+                            <mat-icon svgIcon="uploaded" class="icon-size-4 icon-color-file"></mat-icon>
+                            <span>{{ $paymentMethod().ibanStatement.fileName }}</span>
+                        </div>
+                    </div>
+                }
+
+                <div class="divider divider-project-licorice-500 my-0"></div>
+
+                <!-- VAT Number -->
+                <div class="flex justify-between items-center">
+                    <span class="text-md text-project-waterloo">{{ 'withdrawal-settings.details.vat-number' | transloco }}</span>
+                    <span class="text-[15px] text-project-licorice-500">{{ $paymentMethod().vat }}</span>
+                </div>
+
+                <!-- Country -->
+                <div class="flex justify-between items-center">
+                    <span class="text-md text-project-waterloo">{{ 'withdrawal-settings.details.country' | transloco }}</span>
+                    <span class="text-[15px] text-project-licorice-500">{{ $paymentMethod().country}}</span>
+                </div>
+
+            </div>
+        </div>
+    } @loading (minimum 200) {
+        <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+            <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+        </div>
+    }
+
+}

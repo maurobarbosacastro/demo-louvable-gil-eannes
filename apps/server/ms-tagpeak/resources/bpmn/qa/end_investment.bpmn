@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1p9vcbk" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.39.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+  <bpmn:collaboration id="Collaboration_04gbqns">
+    <bpmn:participant id="Participant_1twcxn5" name="End Investment" processRef="QA_end-investment" />
+    <bpmn:textAnnotation id="TextAnnotation_0gvaadu">
+      <bpmn:text>End of investment 
+ - Sopped by the user
+ - Finished or Expired</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_01vvdm6">
+      <bpmn:text>Join the two manual tasks because Stop Investment and verify investment will be done at the same time
+
+Call endpoint to save the data in DB</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0ke1p7s">
+      <bpmn:text>After verify the investment and all the fields are saved the state will be automatically updated to FINISHED</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1ve937u" associationDirection="None" sourceRef="Flow_1ba8yfy" targetRef="TextAnnotation_0ke1p7s" />
+    <bpmn:association id="Association_1nrmi7j" associationDirection="None" sourceRef="Activity_10tpvvv" targetRef="TextAnnotation_0gvaadu" />
+    <bpmn:textAnnotation id="TextAnnotation_0g31gkp">
+      <bpmn:text>Send email to user that the he want to stop the reward</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1nbksl3" associationDirection="None" sourceRef="Activity_1i0fwjf" targetRef="TextAnnotation_0g31gkp" />
+    <bpmn:textAnnotation id="TextAnnotation_02yrs3c">
+      <bpmn:text>Send email to the user, with the value credited in the tagpeak account</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1n6cv59" associationDirection="None" sourceRef="Activity_0p76xw4" targetRef="TextAnnotation_02yrs3c" />
+    <bpmn:textAnnotation id="TextAnnotation_0di3ijw">
+      <bpmn:text>If the user was referred this sub process will credit the amount to the referrer</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0ya164r" associationDirection="None" sourceRef="Activity_07ml6yk" targetRef="TextAnnotation_0di3ijw" />
+  </bpmn:collaboration>
+  <bpmn:process id="QA_end-investment" name="QA_End Investment" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_13yynwj">
+      <bpmn:lane id="Lane_0rpes9m" name="MS-TAGPEAK">
+        <bpmn:flowNodeRef>Activity_10tpvvv</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1njjxlc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_0k0w9mt</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1i0fwjf</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_07ml6yk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0kodsmt</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Credit_Value_To_User</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0p76xw4</bpmn:flowNodeRef>
+        <bpmn:childLaneSet id="LaneSet_0yzgw2k">
+          <bpmn:lane id="Lane_1h4v7gd">
+            <bpmn:flowNodeRef>Activity_10tpvvv</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Activity_1njjxlc</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Gateway_0k0w9mt</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Activity_1i0fwjf</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Activity_07ml6yk</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Event_0kodsmt</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Credit_Value_To_User</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Activity_0p76xw4</bpmn:flowNodeRef>
+          </bpmn:lane>
+        </bpmn:childLaneSet>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0gokpj7" name="TAGPEAK ACTOR">
+        <bpmn:flowNodeRef>Activity_0ud9ynd</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Update_Reward_Status</bpmn:flowNodeRef>
+        <bpmn:childLaneSet id="LaneSet_1crehun">
+          <bpmn:lane id="Lane_1b3hep3">
+            <bpmn:flowNodeRef>Activity_0ud9ynd</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Update_Reward_Status</bpmn:flowNodeRef>
+          </bpmn:lane>
+        </bpmn:childLaneSet>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:manualTask id="Activity_10tpvvv" name="End Investment">
+      <bpmn:incoming>Flow_03vvask</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nsd60e</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_03vvask</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0xj9i63" name="EXPIRED" sourceRef="Gateway_0k0w9mt" targetRef="Activity_0ud9ynd">
+      <bpmn:extensionElements />
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=investmentState = "EXPIRED"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0nw5hry" name="FINISHED" sourceRef="Gateway_0k0w9mt" targetRef="Activity_07ml6yk">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=investmentState = "FINISHED"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1nsd60e" sourceRef="Activity_10tpvvv" targetRef="Activity_1njjxlc" />
+    <bpmn:sequenceFlow id="Flow_03vvask" sourceRef="StartEvent_1" targetRef="Activity_10tpvvv" />
+    <bpmn:sequenceFlow id="Flow_1ba8yfy" sourceRef="Activity_0ud9ynd" targetRef="Update_Reward_Status" />
+    <bpmn:sequenceFlow id="Flow_1meoe2j" sourceRef="Update_Reward_Status" targetRef="Activity_07ml6yk" />
+    <bpmn:sequenceFlow id="Flow_1q3ncvf" sourceRef="Activity_07ml6yk" targetRef="Credit_Value_To_User" />
+    <bpmn:sequenceFlow id="Flow_1e5tiiu" sourceRef="Activity_1njjxlc" targetRef="Gateway_0k0w9mt" />
+    <bpmn:serviceTask id="Activity_1njjxlc" name="Notify Tagpeak">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="QA_notify-tagpeak-actor" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1nsd60e</bpmn:incoming>
+      <bpmn:outgoing>Flow_1e5tiiu</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0k0w9mt" name="Stop Invesment">
+      <bpmn:incoming>Flow_1e5tiiu</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xj9i63</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0nw5hry</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1hwfhqw</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1hwfhqw" name="STOPPED" sourceRef="Gateway_0k0w9mt" targetRef="Activity_1i0fwjf">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=investmentState = "STOPPED"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1e4tycg" sourceRef="Activity_1i0fwjf" targetRef="Activity_0ud9ynd" />
+    <bpmn:userTask id="Activity_0ud9ynd" name="Stop Investment/&#10;Verify Investment">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_0xj9i63</bpmn:incoming>
+      <bpmn:incoming>Flow_1e4tycg</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ba8yfy</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:callActivity id="Activity_1i0fwjf" name="Dispatch Stopped Notifications">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="qa-notification-dispatcher" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;stop-request&#34;" target="template_code" />
+          <zeebe:input source="=false" target="isNewsletter" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1hwfhqw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1e4tycg</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="Activity_07ml6yk" name="Credit Referral ">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="QA_credit-user-referral" propagateAllChildVariables="false" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1meoe2j</bpmn:incoming>
+      <bpmn:incoming>Flow_0nw5hry</bpmn:incoming>
+      <bpmn:outgoing>Flow_1q3ncvf</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="Update_Reward_Status" name="Update Reward Status (Finished)">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="QA_update-reward-status" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ba8yfy</bpmn:incoming>
+      <bpmn:outgoing>Flow_1meoe2j</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1k2x3xn" sourceRef="Credit_Value_To_User" targetRef="Activity_0p76xw4" />
+    <bpmn:sequenceFlow id="Flow_0m155fo" sourceRef="Activity_0p76xw4" targetRef="Event_0kodsmt" />
+    <bpmn:endEvent id="Event_0kodsmt">
+      <bpmn:incoming>Flow_0m155fo</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Credit_Value_To_User" name="Credit User with Balance">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="QA_credit-value-to-user" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1q3ncvf</bpmn:incoming>
+      <bpmn:outgoing>Flow_1k2x3xn</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:callActivity id="Activity_0p76xw4" name="Dispatch Cashback End Notifications">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="qa-notification-dispatcher" propagateAllChildVariables="false" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;reward-finish-and-credited&#34;" target="template_code" />
+          <zeebe:input source="=false" target="isNewsletter" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1k2x3xn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0m155fo</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:association id="Association_0uxc1b8" associationDirection="None" sourceRef="Activity_0ud9ynd" targetRef="TextAnnotation_01vvdm6" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_04gbqns">
+      <bpmndi:BPMNShape id="Participant_1twcxn5_di" bpmnElement="Participant_1twcxn5" isHorizontal="true">
+        <dc:Bounds x="131" y="170" width="1509" height="430" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0gokpj7_di" bpmnElement="Lane_0gokpj7" isHorizontal="true">
+        <dc:Bounds x="161" y="170" width="1479" height="130" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1b3hep3_di" bpmnElement="Lane_1b3hep3" isHorizontal="true">
+        <dc:Bounds x="191" y="170" width="1449" height="130" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0rpes9m_di" bpmnElement="Lane_0rpes9m" isHorizontal="true">
+        <dc:Bounds x="161" y="300" width="1479" height="300" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1h4v7gd_di" bpmnElement="Lane_1h4v7gd" isHorizontal="true">
+        <dc:Bounds x="191" y="300" width="1449" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08l1wqi_di" bpmnElement="Activity_10tpvvv">
+        <dc:Bounds x="300" y="460" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="212" y="482" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_122kqde_di" bpmnElement="Activity_1njjxlc">
+        <dc:Bounds x="450" y="460" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1j4fjql" bpmnElement="Gateway_0k0w9mt" isMarkerVisible="true">
+        <dc:Bounds x="685" y="475" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="671" y="535" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yb6l2x_di" bpmnElement="Activity_0ud9ynd">
+        <dc:Bounds x="860" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0nf7ipk_di" bpmnElement="Activity_1i0fwjf">
+        <dc:Bounds x="660" y="320" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ooa3hf_di" bpmnElement="Activity_07ml6yk">
+        <dc:Bounds x="1040" y="460" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ka1x3l_di" bpmnElement="Update_Reward_Status">
+        <dc:Bounds x="1040" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0kodsmt_di" bpmnElement="Event_0kodsmt">
+        <dc:Bounds x="1562" y="482" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09wsa2a_di" bpmnElement="Credit_Value_To_User">
+        <dc:Bounds x="1220" y="460" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0e3zwhj_di" bpmnElement="Activity_0p76xw4">
+        <dc:Bounds x="1400" y="460" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0xj9i63_di" bpmnElement="Flow_0xj9i63">
+        <di:waypoint x="715" y="480" />
+        <di:waypoint x="770" y="480" />
+        <di:waypoint x="770" y="440" />
+        <di:waypoint x="910" y="440" />
+        <di:waypoint x="910" y="270" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="915" y="366" width="49" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nw5hry_di" bpmnElement="Flow_0nw5hry">
+        <di:waypoint x="735" y="500" />
+        <di:waypoint x="1040" y="500" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="852" y="483" width="52" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nsd60e_di" bpmnElement="Flow_1nsd60e">
+        <di:waypoint x="400" y="500" />
+        <di:waypoint x="450" y="500" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="781" y="478" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03vvask_di" bpmnElement="Flow_03vvask">
+        <di:waypoint x="248" y="500" />
+        <di:waypoint x="300" y="500" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ba8yfy_di" bpmnElement="Flow_1ba8yfy">
+        <di:waypoint x="960" y="230" />
+        <di:waypoint x="1040" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1meoe2j_di" bpmnElement="Flow_1meoe2j">
+        <di:waypoint x="1090" y="270" />
+        <di:waypoint x="1090" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1q3ncvf_di" bpmnElement="Flow_1q3ncvf">
+        <di:waypoint x="1140" y="500" />
+        <di:waypoint x="1220" y="500" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1e5tiiu_di" bpmnElement="Flow_1e5tiiu">
+        <di:waypoint x="550" y="500" />
+        <di:waypoint x="685" y="500" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hwfhqw_di" bpmnElement="Flow_1hwfhqw">
+        <di:waypoint x="710" y="475" />
+        <di:waypoint x="710" y="400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="643" y="423" width="53" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1e4tycg_di" bpmnElement="Flow_1e4tycg">
+        <di:waypoint x="710" y="320" />
+        <di:waypoint x="710" y="230" />
+        <di:waypoint x="860" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1k2x3xn_di" bpmnElement="Flow_1k2x3xn">
+        <di:waypoint x="1320" y="500" />
+        <di:waypoint x="1400" y="500" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0m155fo_di" bpmnElement="Flow_0m155fo">
+        <di:waypoint x="1500" y="500" />
+        <di:waypoint x="1562" y="500" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0uxc1b8_di" bpmnElement="Association_0uxc1b8">
+        <di:waypoint x="860" y="202" />
+        <di:waypoint x="791" y="164" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_0gvaadu_di" bpmnElement="TextAnnotation_0gvaadu">
+        <dc:Bounds x="380" y="380" width="190" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_01vvdm6_di" bpmnElement="TextAnnotation_01vvdm6">
+        <dc:Bounds x="680" y="80" width="250" height="84" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0ke1p7s_di" bpmnElement="TextAnnotation_0ke1p7s">
+        <dc:Bounds x="1000" y="60" width="190" height="70" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0g31gkp_di" bpmnElement="TextAnnotation_0g31gkp">
+        <dc:Bounds x="490" y="210" width="99.98924268502583" height="69.70740103270224" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_02yrs3c_di" bpmnElement="TextAnnotation_02yrs3c">
+        <dc:Bounds x="1430" y="340" width="200" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0di3ijw_di" bpmnElement="TextAnnotation_0di3ijw">
+        <dc:Bounds x="1140" y="380" width="180" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1ve937u_di" bpmnElement="Association_1ve937u">
+        <di:waypoint x="1000" y="230" />
+        <di:waypoint x="1047" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1nrmi7j_di" bpmnElement="Association_1nrmi7j">
+        <di:waypoint x="380" y="460" />
+        <di:waypoint x="396" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1nbksl3_di" bpmnElement="Association_1nbksl3">
+        <di:waypoint x="663" y="323" />
+        <di:waypoint x="590" y="265" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1n6cv59_di" bpmnElement="Association_1n6cv59">
+        <di:waypoint x="1458" y="460" />
+        <di:waypoint x="1471" y="400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0ya164r_di" bpmnElement="Association_0ya164r">
+        <di:waypoint x="1128" y="460" />
+        <di:waypoint x="1147" y="440" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

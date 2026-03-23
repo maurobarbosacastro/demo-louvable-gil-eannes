@@ -1,0 +1,68 @@
+micronaut:
+    application:
+        name: blog
+    security:
+        authentication: bearer
+        token:
+            jwt:
+                enabled: true
+                signatures:
+                    jwks:
+                        keycloak:
+                            url: http://${KEYCLOAK_HOST:CHANGE_ME}:${KEYCLOAK_PORT:CHANGE_ME}/realms/${KEYCLOAK_REALM:CHANGE_ME}/protocol/openid-connect/certs
+        oauth2.clients.keycloak:
+            grant-type: password
+            client-id: ${KEYCLOAK_CLIENT_ID:CHANGE_ME}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET:CHANGE_ME}
+            authorization:
+                url: http://${KEYCLOAK_HOST:CHANGE_ME}:${KEYCLOAK_PORT:CHANGE_ME}/realms/${KEYCLOAK_REALM:CHANGE_ME}/protocol/openid-connect/auth
+        enabled: false
+    server:
+        port: ${BLOG_PORT:8094}
+        cors:
+            enabled: true
+    router:
+        static-resources:
+            swagger:
+                paths: classpath:META-INF/swagger
+                mapping: /swagger/**
+            swagger-ui:
+                mapping: /swagger-ui/**
+                paths: classpath:META-INF/swagger/views/swagger-ui
+netty:
+    default:
+        allocator:
+            max-order: 3
+
+# Articles portion
+articles:
+    default-roles:
+        user-roles: [ "read-article","read-comment", "create-comment" , "report-comment" ]
+        admin-roles: [ "read-article", "create-article", "edit-article", "delete-article", "read-comment", "create-comment", "edit-comment", "delete-comment", "report-comment" ]
+    roles:
+        article:
+            roles: [ "read-article", "create-article", "edit-article", "delete-article" ]
+        comment:
+            roles: [ "read-comment", "create-comment", "edit-comment", "delete-comment", "report-comment" ]
+    filter-word: 3
+    directory: .temp/media/blog/
+    file-type:
+        image:
+            directory: images
+            size: 5MB
+            allowed-formats: [ "image/png", "image/jpg", "image/jpeg" ]
+        video:
+            directory: videos
+            size: 40MB
+            allowed-formats: [ "video/mp4" ]
+        document:
+            directory: documents
+            size: 5MB
+            allowed-formats: [ "application/pdf" ]
+
+datasources:
+    default:
+        url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${BLOG_DB:blog}
+        driverClassName: org.postgresql.Driver
+        username: ${POSTGRES_USER:postgres}
+        password: ${POSTGRES_PASSWORD:postgres}

@@ -1,0 +1,96 @@
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Main Tailwind file for injecting utilities.
+/* ----------------------------------------------------------------------------------------------------- */
+@tailwind utilities;
+@tailwind base;
+
+@layer base {
+    h1{
+        @apply font-plex;
+        font-size: 32px;
+        line-height: 140%;
+
+        @media (min-width: theme('screens.lg')) {
+            font-size: 80px;
+            line-height: 80px;
+        }
+    }
+
+    h2{
+        @apply font-plex;
+        font-size: 28px;
+        line-height: 32px;
+
+        @media (min-width: theme('screens.lg')) {
+            font-size: 50px;
+            line-height: 55px;
+        }
+    }
+
+    h3{
+        @apply font-plex;
+        font-size: 24px;
+        line-height: 2028;
+
+        @media (min-width: theme('screens.lg')) {
+            font-size: 40px;
+            line-height: 55px;
+        }
+    }
+
+    h4{
+        @apply font-plex;
+        font-size: 18px;
+        line-height: 20px;
+
+        @media (min-width: theme('screens.lg')) {
+            font-size: 25px;
+            line-height: 30px;
+        }
+    }
+
+    h5{
+        @apply font-plex;
+        font-size: 14px;
+        line-height: 18.2px;
+
+        @media (min-width: theme('screens.lg')) {
+            font-size: 15px;
+            line-height: 19.5px;
+        }
+    }
+
+
+    p{
+        @apply font-plex;
+        font-size: 15px;
+        line-height: 18px;
+
+        @media (min-width: theme('screens.lg')) {
+            font-size: 18px;
+            line-height: 23px;
+        }
+    }
+
+    small{
+        @apply font-plex;
+        font-size: 13px;
+        line-height: 16.9px;
+
+        @media (min-width: theme('screens.lg')) {
+            font-size: 13px;
+            line-height: 16.9px;
+        }
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield; /* Firefox */
+        appearance: textfield;
+    }
+}

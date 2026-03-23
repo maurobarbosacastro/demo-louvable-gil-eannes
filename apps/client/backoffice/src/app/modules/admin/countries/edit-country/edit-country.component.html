@@ -1,0 +1,114 @@
+<div class="flex flex-col justify-between h-full">
+
+    <div>
+        <h2 class="text-3xl text-project-licorice-500">{{ editCountry ? ('country.edit-country' | transloco) : ('country.new-country' | transloco) }}</h2>
+        <form [formGroup]="countryForm" class="mt-8">
+            <div class="flex flex-col">
+
+                <!-- Abbreviation field -->
+                <div class="mb-6">
+                    <label for="abbreviation"
+                           class="block text-project-waterloo font-normal text-md">{{ 'country.abbreviation' | transloco }}</label>
+                    <div class="relative">
+                        <input type="text" id="abbreviation"
+                               placeholder="{{ 'country.abbreviation' | transloco }}"
+                               [formControl]="abbreviationControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': abbreviationControl.hasError('required')  && !abbreviationControl.untouched}"
+                               class="w-full pb-2 pt-1 border-b placeholder:text-project-waterloo focus:outline-none  border-project-licorice-500 text-project-licorice-500">
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error"
+                                 [attr.data-tip]="'country.abbreviation-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(abbreviationControl.hasError('required') ) && !abbreviationControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Country Name field -->
+                <div class="mb-6">
+                    <label for="name"
+                           class="block text-project-waterloo font-normal text-md">{{ 'country.name' | transloco }}</label>
+                    <div class="relative">
+                        <input type="text" id="name"
+                               placeholder="{{ 'country.name' | transloco }}"
+                               [formControl]="nameControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': nameControl.hasError('required')  && !nameControl.untouched}"
+                               class="w-full pb-2 pt-1 border-b placeholder:text-project-waterloo focus:outline-none  border-project-licorice-500 text-project-licorice-500">
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error"
+                                 [attr.data-tip]="'country.name-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(nameControl.hasError('required') ) && !nameControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Currency  field -->
+                <div class="mb-6">
+                    <label for="currency"
+                           class="block text-project-waterloo font-normal text-md">{{ 'country.currency' | transloco }}</label>
+                    <div class="relative">
+                        <input type="text" id="currency"
+                               placeholder="{{ 'country.currency' | transloco }}"
+                               [formControl]="currencyControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': currencyControl.hasError('required')  && !currencyControl.untouched}"
+                               class="w-full pb-2 pt-1 border-b placeholder:text-project-waterloo focus:outline-none  border-project-licorice-500 text-project-licorice-500">
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error"
+                                 [attr.data-tip]="'country.currency-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(currencyControl.hasError('required') ) && !currencyControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Currency  field -->
+
+                <label class="label cursor-pointer">
+                    <span
+                        class="block text-project-waterloo font-normal text-md">{{ 'country.enabled' | transloco }}</span>
+                    <input [formControl]="enabledControl" id="enabled" type="checkbox"
+                           class="toggle toggle-primary toggle-sm "
+                           [ngClass]="enabledControl.value == true ? 'bg-white [--tglbg:#4237DA] ' : 'bg-gray-500 [--tglbg:#FFFFFF]'"
+                           checked="checked"/>
+                </label>
+
+            </div>
+        </form>
+
+    </div>
+
+
+    <div class="flex justify-between">
+        <button
+            class="py-2.5 px-10 border border-project-licorice-500 bg-white  text-project-licorice-500 rounded  textButton flex justify-center cursor-pointer my-4"
+            (click)="closeModal()">
+            {{ 'misc.cancel' | transloco }}
+        </button>
+        <button
+            class="py-2.5 px-10 bg-project-licorice-500 text-white rounded  textButton flex justify-center cursor-pointer my-4"
+            (click)="saveCountry()">
+            {{ 'misc.save' | transloco }}
+
+        </button>
+    </div>
+
+
+</div>

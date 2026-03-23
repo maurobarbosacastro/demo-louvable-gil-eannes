@@ -1,0 +1,24 @@
+
+# ------------------------------------------------------------------
+# {INNER_TRIGGER_FOR_STARTER_SCRIPTS}
+\ {INNER_TRIGGER_FOR_STARTER_SCRIPTS}-dev:
+      \ \ build:
+        \ \ \ context: ./apps/server/{INNER_TRIGGER_FOR_STARTER_SCRIPTS}
+      \ \ volumes:
+        \ \ \ - .docker/{INNER_TRIGGER_FOR_STARTER_SCRIPTS}-data/:/var/lib/{INNER_TRIGGER_FOR_STARTER_SCRIPTS}/data
+      \ \ env_file:
+        \ \ \ - .env
+      \ \ ports:
+        \ \ \ - "8081:8081"
+      \ \ networks:
+        \ \ \ - traefik-private
+      \ \ labels:
+        \ \ \ - "traefik.enable=true"
+        \ \ \ - "traefik.http.routers.{INNER_TRIGGER_FOR_STARTER_SCRIPTS}.rule=Host(`localhost`)\&\&PathPrefix(`/{INNER_TRIGGER_FOR_STARTER_SCRIPTS}`)"
+        \ \ \ - "traefik.http.routers.{INNER_TRIGGER_FOR_STARTER_SCRIPTS}.entrypoints=web"
+        \ \ \ - "traefik.http.routers.{INNER_TRIGGER_FOR_STARTER_SCRIPTS}.middlewares={INNER_TRIGGER_FOR_STARTER_SCRIPTS}-stripprefix@docker"
+        \ \ \ - "traefik.http.middlewares.{INNER_TRIGGER_FOR_STARTER_SCRIPTS}-stripprefix.stripprefix.prefixes=/{INNER_TRIGGER_FOR_STARTER_SCRIPTS}"
+        \ \ \ - "traefik.http.services.{INNER_TRIGGER_FOR_STARTER_SCRIPTS}.loadbalancer.server.port=8081"
+      \ \ restart: on-failure
+
+# {TRIGGER_FOR_STARTER_SCRIPTS}

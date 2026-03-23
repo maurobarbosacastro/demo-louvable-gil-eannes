@@ -1,0 +1,140 @@
+<div class="w-full px-4 my-5 lg:px-16 lg:mt-8">
+    <div class="flex justify-between max-h-[54px]">
+        <span class="flex items-center justify-center text-3xl">{{ 'store-visits.title' | transloco }}</span>
+    </div>
+    <!--    Filters-->
+
+    <form [formGroup]="searchForm"
+          class="grid grid-cols-2 lg:grid-cols-3 1.75xl:flex 1.75xl:flex-row justify-start 1.75xl:justify-end items-start 1.75xl:items-center gap-2.5 lg:gap-5 mt-12 mb-1">
+
+        <!--        Search by reference-->
+        <label class="input input-bordered flex items-center gap-2 w-70" [ngClass]="{'px-2': $isMobile()}">
+            <mat-icon svgIcon="search" [ngClass]="{'icon-size-5': $isMobile()}"></mat-icon>
+            <input type="text" class="grow placeholder:text-md lg:placeholder:text-lg" placeholder="{{ 'store-visits.reference' | transloco }}"
+                   [formControl]="referenceControl" />
+        </label>
+
+        <!--        Search by encodedReference-->
+        <label class="input input-bordered flex items-center gap-2 w-70" [ngClass]="{'px-2': $isMobile()}">
+            <mat-icon svgIcon="search" [ngClass]="{'icon-size-5': $isMobile()}"></mat-icon>
+            <input type="text" class="grow placeholder:text-md lg:placeholder:text-lg" placeholder="{{ 'store-visits.encoded-reference' | transloco }}"
+                   [formControl]="encodedReferenceControl" />
+        </label>
+
+        <!--        Search by name-->
+        <label class="input input-bordered flex items-center gap-2 w-70" [ngClass]="{'px-2': $isMobile()}">
+            <mat-icon svgIcon="search" [ngClass]="{'icon-size-5': $isMobile()}"></mat-icon>
+            <input type="text" class="grow placeholder:text-md lg:placeholder:text-lg" placeholder="{{ 'store-visits.search-name' | transloco }}"
+                   [formControl]="nameControl" />
+        </label>
+
+        <!--        Search by store-->
+        <div class="dropdown">
+            <div tabindex="0" role="button" class="w-70">
+                <label class="input input-bordered flex items-center gap-2" [ngClass]="{'px-2': $isMobile()}">
+                    <input type="text" #storeNameInput [value]="searchForm?.value?.store?.name ?? null"
+                           class="grow placeholder:text-md lg:placeholder:text-lg min-w-24" (input)="searchByStoreName(storeNameInput.value)"
+                           placeholder="{{ 'store-visits.select-store' | transloco }}" />
+                    @if (searchForm?.value?.store) {
+                        <mat-icon svgIcon="close-modal" class="icon-size-4 cursor-pointer"
+                                  (click)="resetFormControl('store')"></mat-icon>
+                    }
+                    <mat-icon svgIcon="arrow_drop_down"></mat-icon>
+                </label>
+            </div>
+            <ul tabindex="0"
+                class="dropdown-content menu bg-white rounded z-10 w-70 max-h-50 p-2 shadow flex flex-row overflow-y-auto">
+                @for (store of $allStores(); track store.uuid) {
+                    <li class="w-full hover:bg-[#4237DA33] rounded hover:text-project-youngBlue"
+                        (click)="setFormControlName('store', store)">
+                        <a class="flex justify-between">
+                            {{ store.name }}
+                            <div class="flex flex-row items-center gap-3">
+                                <span
+                                    class="text-project-waterloo text-xs">({{ store?.country?.slice(0, store?.country?.length > 3 ? 3 : store?.country?.length).join(', ') }}
+                                    )</span>
+                                @if (searchForm.value.store === store) {
+                                    <mat-icon svgIcon="check" class="icon-size-4 icon-color"></mat-icon>
+                                }
+                            </div>
+
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <!--        Search by start date-->
+        <div class="w-70">
+            <label class="input input-bordered flex items-center gap-2 w-full" [ngClass]="{'px-2': $isMobile()}">
+                <mat-icon svgIcon="calender" class="icon-size-5"></mat-icon>
+                <input [matDatepicker]="pickerStart" (click)="pickerStart.open()" formControlName="startDate"
+                       class="custom-picker placeholder:text-md lg:placeholder:text-lg w-full" readonly
+                       placeholder="{{ 'store-visits.date-from' | transloco }}" [max]="searchForm.value.endDate" />
+                <mat-datepicker #pickerStart class="custom-picker"></mat-datepicker>
+                @if (searchForm?.value?.startDate) {
+                    <mat-icon svgIcon="close-modal" class="icon-size-4 cursor-pointer"
+                              (click)="resetFormControl('startDate')"></mat-icon>
+                }
+            </label>
+        </div>
+
+        <!--        Search by end date-->
+        <div class="w-70">
+            <label class="input input-bordered flex items-center gap-2 w-full" [ngClass]="{'px-2': $isMobile()}">
+                <mat-icon svgIcon="arrow-right" class="icon-size-4"></mat-icon>
+                <input [matDatepicker]="pickerEnd" (click)="pickerEnd.open()" formControlName="endDate"
+                       class="custom-picker placeholder:text-md lg:placeholder:text-lg" readonly
+                       placeholder="{{ 'store-visits.date-to' | transloco }}" [min]="searchForm.value.startDate" />
+                <mat-datepicker #pickerEnd></mat-datepicker>
+                @if (searchForm?.value?.endDate) {
+                    <mat-icon svgIcon="close-modal" class="icon-size-4 cursor-pointer"
+                              (click)="resetFormControl('endDate')"></mat-icon>
+                }
+            </label>
+        </div>
+
+    </form>
+    <div class="">
+        <atl-ng-table *ngIf="$tableConfig()"
+                      class="custom-table"
+                      id="table"
+                      [tableConfiguration]="$tableConfig()"
+                      [bodyCustomTemplate]="bodyCustomTemplate"
+                      [totalPages]="total"
+                      [totalSize]="totalSize"
+                      [resetPaginator]="page$ | async"
+                      (onSortAndPageChange)="onSortAndPageChange($event)"
+        >
+        </atl-ng-table>
+    </div>
+</div>
+
+
+<ng-template #bodyCustomTemplate let-implicit>
+    @switch (implicit.column.id) {
+        @case ('user') {
+            <span class="text-base">{{ implicit.rowVal.firstName }} {{ implicit.rowVal.lastName }}</span>
+        }
+        @case ('reference') {
+            <span class="text-base">{{ implicit.rowVal }}</span>
+        }
+        @case ('encodedReference') {
+            <span class="text-base">{{ implicit.rowVal }}</span>
+        }
+        @case ('purchased') {
+            @if (implicit.rowVal) {
+                <mat-icon svgIcon="success" class="icon-size-6 ml-3"></mat-icon>
+            } @else {
+                <mat-icon svgIcon="close-modal" class="icon-size-5 ml-3"></mat-icon>
+            }
+        }
+        @case ('store') {
+            <span class="text-base">{{ implicit.rowVal.name }}</span>
+        }
+        @case ('dateTime') {
+            <span
+                class="text-base"> {{ implicit.row.dateTime | date: 'd MMM, yyyy · HH:mm:ss' }} </span>
+        }
+    }
+</ng-template>

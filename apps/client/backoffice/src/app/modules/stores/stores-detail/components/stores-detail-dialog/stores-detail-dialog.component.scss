@@ -1,0 +1,18 @@
+.rectangle-6 {
+    width: 100%;
+    background-color: var(--wildsand);
+    border-radius: 20px;
+    align-items: center;
+}
+
+.ellipse {
+    min-width: 51px;
+    height: 51px;
+    background-color: var(--grandis);
+    border-radius: 25.5px;
+}
+
+*{
+    font-family: 'IBM Plex Sans', sans-serif !important;
+    font-feature-settings: normal;
+}

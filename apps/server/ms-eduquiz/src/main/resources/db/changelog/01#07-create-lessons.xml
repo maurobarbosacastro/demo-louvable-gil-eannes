@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="01#09-lessons" author="Atlanse">
+        <createTable tableName="lessons" remarks="A table that contains the Lessons">
+            <column name="id" type="UUID">
+                <constraints nullable="false" unique="true" primaryKey="true" primaryKeyName="lessons_PK" />
+            </column>
+            <column name="image" type="BIGINT">
+                <constraints
+                    foreignKeyName="fk_lessons_image_content"
+                    references="content(id)" />
+            </column>
+            <column name="title" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="subtitle" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="type" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="conclusion" type="varchar(255)">
+            </column>
+            <column name="state" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_by" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

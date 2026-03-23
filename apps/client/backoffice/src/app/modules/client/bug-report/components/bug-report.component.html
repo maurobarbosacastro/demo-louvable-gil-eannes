@@ -1,0 +1,55 @@
+<div class="flex flex-col justify-center items-center gap-12 font-plex">
+    <div class="w-full flex flex-row justify-between items-center">
+        <span class="text-[26px]"> Talk to us</span>
+    </div>
+
+    <form [formGroup]="bugForm">
+        <div class="flex flex-col gap-4">
+            <!-- Radio Button Field for Issue Type -->
+            <div>
+                <div class="flex gap-4 mt-1">
+                    <label class="flex items-center gap-2">
+                        <input type="radio" formControlName="type" value="technical"
+                               class="accent-project-licorice-500">
+                        <span class="text-md">{{ ReportType.Technical }}</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="radio" formControlName="type" value="question" class="accent-project-licorice-500">
+                        <span class="text-md">{{ ReportType.Question }}</span>
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <label for="name" class="block text-md text-project-licorice-500">Name</label>
+                <input id="name" type="text" formControlName="name"
+                       class="w-full text-md border rounded-md h-8 p-2 border-project-brand-500 placeholder:text-project-waterloo focus:outline-none focus:border-project-licorice-500">
+            </div>
+            <div>
+                <label for="email" class="block text-md text-project-licorice-500">Email</label>
+                <input id="email" type="email" formControlName="email"
+                       class="w-full text-md border rounded-md h-8 p-2 border-project-brand-500 placeholder:text-project-waterloo focus:outline-none focus:border-project-licorice-500">
+            </div>
+            <div>
+                <label for="description" class="block text-md text-project-licorice-500">Description</label>
+                <textarea id="description" formControlName="description"
+                          class="w-full text-md border rounded-md p-2 border-project-brand-500 placeholder:text-project-waterloo focus:outline-none focus:border-project-licorice-500"></textarea>
+            </div>
+            <div>
+                <label for="file" class="block text-md text-project-licorice-500">File</label>
+                <input id="file" type="file" formControlName="file" (change)="fileSelected($event)"
+                       class="w-full text-md border-b border-project-brand-500 placeholder:text-project-waterloo focus:outline-none focus:border-project-licorice-500">
+            </div>
+        </div>
+
+        <div class="flex flex-row justify-between items-center mt-6">
+            <button mat-dialog-close class="btn text-project-licorice-500 text-lg font-normal w-fit">
+                {{ 'email.cancel' | transloco }}
+            </button>
+
+            <button (click)="submitForm()" class="btn bg-project-licorice-500 text-white text-lg font-normal w-fit">
+                Submit
+            </button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,411 @@
+@if ($isMobile()) {
+    @defer (when $dashboard() && $dashboardStatistics()) {
+        <div class="w-full px-4 my-5">
+            <span class="text-3xl">{{ 'dashboard-admin.title' | transloco }}</span>
+
+            <!-- Mini Dashboard -->
+            <tagpeak-mini-dashboard [$transactionsDashboard]="$dashboardTransactions()"
+                                    (navigateToPage)="navigateToCashback($event)"/>
+
+            <!-- Stats -->
+            <div class="flex flex-row mt-8 gap-4">
+                <div class="flex flex-col w-1/2 gap-5 border-l border-project-brand-500 pb-4 pl-2.5">
+                    <span class="text-md text-project-waterloo">{{ 'dashboard-admin.total-validated-cashback' | transloco }}</span>
+                    <span class="text-6xl text-project-licorice-500 leading-none">{{ $dashboard()?.cashbackSection?.totalValidatedCashbacks }}</span>
+                </div>
+                <div class="flex flex-col w-1/2 gap-5 border-l border-project-brand-500 pb-4 pl-2.5">
+                    <span class="text-md text-project-waterloo">{{ 'dashboard-admin.total-stopped-cashback' | transloco }}</span>
+                    <span
+                        class="text-6xl text-project-licorice-500 leading-none">{{ $dashboard()?.cashbackSection?.totalStoppedCashbacks }}</span>
+                </div>
+
+            </div>
+
+            <div class="flex flex-row gap-4 mt-5">
+                <div class="flex flex-col w-1/2 gap-5 border-l border-project-brand-500 pb-4 pl-2.5">
+                    <span class="text-md text-project-waterloo">{{ 'dashboard-admin.total-paid-cashback' | transloco }}</span>
+                    <span
+                        class="text-6xl text-project-licorice-500 leading-none">{{ $dashboard()?.cashbackSection?.totalPaidCashbacks }}</span>
+                </div>
+                <div class="flex flex-col w-1/2 gap-5 border-l border-project-brand-500 pb-4 pl-2.5">
+                    <span class="text-md text-project-waterloo">{{ 'dashboard-admin.total-requested-cashback' | transloco }}</span>
+                    <span class="text-6xl text-project-licorice-500 leading-none">{{ $dashboard()?.cashbackSection?.totalRequestedCashbacks }}</span>
+                </div>
+            </div>
+
+            <!-- Indicators -->
+            <div class="w-full mt-15">
+                <tagpeak-custom-accordion [headerTemplate]="headerExitClickTemplate"
+                                          [bodyTemplate]="bodyExitClickTemplate"
+                                          [cssHeader]="'flex justify-between cursor-pointer border-b border-project-brand-500 pb-4'"/>
+
+                <ng-template #headerExitClickTemplate>
+                <span
+                    class="text-xl text-project-licorice-500">{{ 'dashboard-admin.indicators-section' | transloco }}</span>
+                    <div class="flex gap-2.5">
+                        <mat-icon svgIcon="arrow-down"></mat-icon>
+                    </div>
+                </ng-template>
+
+                <ng-template #bodyExitClickTemplate>
+                    <div class="flex mt-5 gap-4">
+                        <!-- Total Users -->
+                        <div class="flex flex-col w-1/2 border-b border-project-brand-500 pb-2.5 pl-2.5">
+                            <span class="text-lg text-project-waterloo leading-none mb-4">{{ $dashboard()?.indicatorsSection?.totalUsers?.allTime }}</span>
+                            <div class="flex gap-2 mb-5">
+                                <span class="text-2xl text-project-licorice-500 leading-none">{{ $dashboard()?.indicatorsSection?.totalUsers?.lastMonth }}</span>
+                                <div class="flex gap-1 mt-0.5">
+                                    <mat-icon [svgIcon]="getCompareIcon('totalUsers')" class="icon-size-5"></mat-icon>
+                                    <div class="leading-none mt-0.5">
+                                        <span class="text-sm" [ngClass]="getColorTextForPercentage('totalUsers')">{{ $dashboard()?.indicatorsSection?.totalUsers?.percentageChange | number:'1.0-2' }}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span
+                                class="text-md text-project-waterloo">{{ 'dashboard-admin.total-users' | transloco }} {{ 'dashboard-admin.last-month' | transloco }}</span>
+                        </div>
+
+                        <!-- Active users -->
+                        <div class="flex flex-col w-1/2 border-b border-project-brand-500 pb-2.5 pl-2.5">
+                            <span class="text-lg text-project-waterloo leading-none mb-4">{{ $dashboard()?.indicatorsSection?.activeUsers?.allTime }}</span>
+                            <div class="flex gap-2 mb-5">
+                                <span class="text-2xl text-project-licorice-500 leading-none">{{ $dashboard()?.indicatorsSection?.activeUsers?.last12Months }}</span>
+                                <div class="flex gap-1 mt-0.5">
+                                    <mat-icon [svgIcon]="getCompareIcon('activeUsers')" class="icon-size-5"></mat-icon>
+                                    <div class="leading-none mt-0.5">
+                                        <span class="text-sm" [ngClass]="getColorTextForPercentage('activeUsers')">{{ $dashboard()?.indicatorsSection?.activeUsers?.percentageChange | number:'1.0-2' }}%</span>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <span
+                                class="text-md text-project-waterloo">{{ 'dashboard-admin.active-users' | transloco }} {{ 'dashboard-admin.last-12-months' | transloco }}</span>
+                        </div>
+
+                    </div>
+
+                    <div class="flex mt-5 gap-4">
+                        <!-- Total Num Transactions -->
+                        <div class="flex flex-col w-1/2 border-b border-project-brand-500 pb-2.5 pl-2.5">
+                            <span class="text-lg text-project-waterloo leading-none mb-4">{{ $dashboard()?.indicatorsSection?.numTransactions?.allTime }}</span>
+                            <div class="flex gap-2 mb-5">
+                                <span class="text-2xl text-project-licorice-500 leading-none">{{ $dashboard()?.indicatorsSection?.numTransactions?.currentMonth }}</span>
+                                <div class="flex gap-1 mt-0.5">
+                                    <mat-icon [svgIcon]="getCompareIcon('numTransactions')" class="icon-size-5"></mat-icon>
+                                    <div class="leading-none mt-0.5">
+                                        <span class="text-sm" [ngClass]="getColorTextForPercentage('numTransactions')">{{ $dashboard()?.indicatorsSection?.numTransactions?.percentageChange | number:'1.0-2' }}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span
+                                class="text-md text-project-waterloo">{{ 'dashboard-admin.transactions' | transloco }} {{ 'dashboard-admin.current-month' | transloco }}</span>
+                        </div>
+
+                        <!-- Total GMV -->
+                        <div class="flex flex-col w-1/2 border-b border-project-brand-500 pb-2.5 pl-2.5">
+                            <span class="text-lg text-project-waterloo leading-none mb-4">{{ $dashboard()?.indicatorsSection?.totalGMV?.allTime }}</span>
+                            <div class="flex gap-2 mb-5">
+                                <span class="text-2xl text-project-licorice-500 leading-none">{{ $dashboard()?.indicatorsSection?.totalGMV?.currentMonth }}</span>
+                                <div class="flex gap-1 mt-0.5">
+                                    <mat-icon [svgIcon]="getCompareIcon('totalGMV')" class="icon-size-5"></mat-icon>
+                                    <div class="leading-none mt-0.5">
+                                        <span class="text-sm" [ngClass]="getColorTextForPercentage('totalGMV')">{{ $dashboard()?.indicatorsSection?.totalGMV?.percentageChange | number:'1.0-2' }}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span
+                                class="text-md text-project-waterloo">{{ 'dashboard-admin.total-gmv' | transloco }} {{ 'dashboard-admin.current-month' | transloco }}</span>
+                        </div>
+                    </div>
+
+
+                    <div class="flex mt-5 gap-4">
+
+                        <!-- Average Transaction Amount -->
+                        <div class="flex flex-col w-1/2 border-b border-project-brand-500 pb-2.5 pl-2.5">
+                            <span class="text-lg text-project-waterloo leading-none mb-4">{{ $dashboard()?.indicatorsSection?.averageTransactionAmount?.allTime }}</span>
+                            <div class="flex gap-2 mb-5">
+                                <span class="text-2xl text-project-licorice-500 leading-none">{{ $dashboard()?.indicatorsSection?.averageTransactionAmount?.currentMonth }}</span>
+                                <div class="flex gap-1 mt-0.5">
+                                    <mat-icon [svgIcon]="getCompareIcon('averageTransactionAmount')" class="icon-size-5"></mat-icon>
+                                    <div class="leading-none mt-0.5">
+                                        <span class="text-sm" [ngClass]="getColorTextForPercentage('averageTransactionAmount')">{{ $dashboard()?.indicatorsSection?.averageTransactionAmount?.percentageChange | number:'1.0-2' }}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span
+                                class="text-md text-project-waterloo">{{ 'dashboard-admin.avg-transaction' | transloco }} {{ 'dashboard-admin.current-month' | transloco }}</span>
+                        </div>
+
+                        <!-- Total Revenue -->
+                        <div class="flex flex-col w-1/2 border-b border-project-brand-500 pb-2.5 pl-2.5">
+                            <span class="text-lg text-project-waterloo leading-none mb-4">{{ $dashboard()?.indicatorsSection?.totalRevenue?.allTime }}</span>
+                            <div class="flex gap-2 mb-5">
+                                <span class="text-2xl text-project-licorice-500 leading-none">{{ $dashboard()?.indicatorsSection?.totalRevenue?.currentMonth }}</span>
+                                <div class="flex gap-1 mt-0.5">
+                                    <mat-icon [svgIcon]="getCompareIcon('totalRevenue')" class="icon-size-5"></mat-icon>
+                                    <div class="leading-none mt-0.5">
+                                        <span class="text-sm" [ngClass]="getColorTextForPercentage('totalRevenue')">{{ $dashboard()?.indicatorsSection?.totalRevenue?.percentageChange | number:'1.0-2' }}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-md text-project-waterloo">{{ 'dashboard-admin.total-revenue' | transloco }} {{ 'dashboard-admin.current-month' | transloco }}</span>
+                        </div>
+                    </div>
+                </ng-template>
+            </div>
+
+
+            <!--Latest Stores-->
+            <div class="w-full mt-12">
+                <tagpeak-custom-accordion [headerTemplate]="headerLatestStoresTemplate"
+                                          [bodyTemplate]="bodyLatestStoresTemplate"
+                                          [cssHeader]="'flex justify-between cursor-pointer border-b border-project-brand-500 pb-4'"/>
+
+                <ng-template #headerLatestStoresTemplate>
+                <span
+                    class="text-xl text-project-licorice-500">{{ 'dashboard-admin.statistics-by-month' | transloco }}</span>
+                    <div class="flex gap-2.5">
+                        <mat-icon svgIcon="arrow-down"></mat-icon>
+                    </div>
+                </ng-template>
+
+                <ng-template #bodyLatestStoresTemplate>
+                    <form [formGroup]="formFilter" class="mt-5">
+                        <div class="flex gap-5 items-center">
+                            <span>{{ 'dashboard-admin.filter-by-year' | transloco }}:</span>
+                            <tagpeak-custom-dropdown [placeholder]="'withdrawals-request.status'"
+                                                     [$options]="$years()"
+                                                     [value]="yearControl.value"
+                                                     [control]="yearControl"
+                                                     [css]="styleDropdown"
+                                                     [iconCheckOption]="iconCheckOption"
+                                                     [showDefaultValue]="false"
+                                                     [iconResetValue]="false"
+                                                     (valueChangesEvent)="setFormControlName('year', $event)"
+
+                            />
+                        </div>
+                    </form>
+
+                    <div class="mt-2">
+                        <atl-ng-table *ngIf="$tableConfig()"
+                                      id="table"
+                                      [tableConfiguration]="$tableConfig()"/>
+                    </div>
+                </ng-template>
+            </div>
+
+            <!-- Rewards By Currencies -->
+            <tagpeak-reward-currency [$dashboardRewards]="$dashboardRewards()"/>
+        </div>
+
+    } @loading (minimum 400ms) {
+        <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+            <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+        </div>
+    }
+
+} @else {
+    @defer (when $dashboard() && $dashboardStatistics()) {
+        <div class="w-full px-16 mt-8">
+            <h3 class="text-3xl">{{ 'dashboard-admin.title' | transloco }}</h3>
+
+            <!-- Mini Dashboard -->
+            <tagpeak-mini-dashboard [$transactionsDashboard]="$dashboardTransactions()"
+                                    (navigateToPage)="navigateToCashback($event)"/>
+
+            <!-- Stats -->
+            <div class="flex flex-row mt-8 gap-8">
+                <div class="flex flex-col w-1/4 gap-5 border-l border-project-brand-500 pb-4 pl-2.5">
+                    <span class="text-md text-project-waterloo">{{ 'dashboard-admin.total-validated-cashback' | transloco }}</span>
+                    <span class="text-6xl text-project-licorice-500 leading-none">{{ $dashboard()?.cashbackSection?.totalValidatedCashbacks }}</span>
+                </div>
+                <div class="flex flex-col w-1/4 gap-5 border-l border-project-brand-500 pb-4 pl-2.5">
+                    <span class="text-md text-project-waterloo">{{ 'dashboard-admin.total-stopped-cashback' | transloco }}</span>
+                    <span
+                        class="text-6xl text-project-licorice-500 leading-none">{{ $dashboard()?.cashbackSection?.totalStoppedCashbacks }}</span>
+                </div>
+                <div class="flex flex-col w-1/4 gap-5 border-l border-project-brand-500 pb-4 pl-2.5">
+                    <span class="text-md text-project-waterloo">{{ 'dashboard-admin.total-paid-cashback' | transloco }}</span>
+                    <span
+                        class="text-6xl text-project-licorice-500 leading-none">{{ $dashboard()?.cashbackSection?.totalPaidCashbacks }}</span>
+                </div>
+                <div class="flex flex-col w-1/4 gap-5 border-l border-project-brand-500 pb-4 pl-2.5">
+                    <span class="text-md text-project-waterloo">{{ 'dashboard-admin.total-requested-cashback' | transloco }}</span>
+                    <span class="text-6xl text-project-licorice-500 leading-none">{{ $dashboard()?.cashbackSection?.totalRequestedCashbacks }}</span>
+                </div>
+            </div>
+
+            <!-- Indicators -->
+            <div class="w-full mt-15">
+                <tagpeak-custom-accordion [headerTemplate]="headerExitClickTemplate"
+                                          [bodyTemplate]="bodyExitClickTemplate"
+                                          [cssHeader]="'flex justify-between cursor-pointer border-b border-project-brand-500 pb-4'"/>
+
+                <ng-template #headerExitClickTemplate>
+                <span
+                    class="text-xl text-project-licorice-500">{{ 'dashboard-admin.indicators-section' | transloco }}</span>
+                    <div class="flex gap-2.5">
+                        <mat-icon svgIcon="arrow-down"></mat-icon>
+                    </div>
+                </ng-template>
+
+                <ng-template #bodyExitClickTemplate>
+                    <div class="flex gap-8 mt-5">
+                        <!-- Total users -->
+                        <div class="flex flex-col w-1/4 border-b border-project-brand-500 pb-2.5 pl-2.5">
+                            <span class="text-xl text-project-waterloo leading-none mb-4">{{ $dashboard()?.indicatorsSection?.totalUsers?.allTime }}</span>
+                            <div class="flex gap-2 mb-5">
+                                <span class="text-4xl text-project-licorice-500 leading-none">{{ $dashboard()?.indicatorsSection?.totalUsers?.lastMonth }}</span>
+                                <div class="flex gap-1 mt-0.5">
+                                    <mat-icon [svgIcon]="getCompareIcon('totalUsers')" class="icon-size-5"></mat-icon>
+                                    <div class="leading-none mt-0.5">
+                                        <span class="text-sm" [ngClass]="getColorTextForPercentage('totalUsers')">{{ $dashboard()?.indicatorsSection?.totalUsers?.percentageChange | number:'1.0-2' }}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span
+                                class="text-md text-project-waterloo">{{ 'dashboard-admin.total-users' | transloco }} {{ 'dashboard-admin.last-month' | transloco }}</span>
+                        </div>
+
+                        <!-- Active users -->
+                        <div class="flex flex-col w-1/4 border-b border-project-brand-500 pb-2.5 pl-2.5">
+                            <span class="text-xl text-project-waterloo leading-none mb-4">{{ $dashboard()?.indicatorsSection?.activeUsers?.allTime }}</span>
+                            <div class="flex gap-2 mb-5">
+                                <span class="text-4xl text-project-licorice-500 leading-none">{{ $dashboard()?.indicatorsSection?.activeUsers?.last12Months }}</span>
+                                <div class="flex gap-1 mt-0.5">
+                                    <mat-icon [svgIcon]="getCompareIcon('activeUsers')" class="icon-size-5"></mat-icon>
+                                    <div class="leading-none mt-0.5">
+                                        <span class="text-sm" [ngClass]="getColorTextForPercentage('activeUsers')">{{ $dashboard()?.indicatorsSection?.activeUsers?.percentageChange | number:'1.0-2' }}%</span>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <span
+                                class="text-md text-project-waterloo">{{ 'dashboard-admin.active-users' | transloco }} {{ 'dashboard-admin.last-12-months' | transloco }}</span>
+                        </div>
+
+                        <!-- Total Num Transactions -->
+                        <div class="flex flex-col w-1/4 border-b border-project-brand-500 pb-2.5 pl-2.5">
+                            <span class="text-xl text-project-waterloo leading-none mb-4">{{ $dashboard()?.indicatorsSection?.numTransactions?.allTime }}</span>
+                            <div class="flex gap-2 mb-5">
+                                <span class="text-4xl text-project-licorice-500 leading-none">{{ $dashboard()?.indicatorsSection?.numTransactions?.currentMonth }}</span>
+                                <div class="flex gap-1 mt-0.5">
+                                    <mat-icon [svgIcon]="getCompareIcon('numTransactions')" class="icon-size-5"></mat-icon>
+                                    <div class="leading-none mt-0.5">
+                                        <span class="text-sm" [ngClass]="getColorTextForPercentage('numTransactions')">{{ $dashboard()?.indicatorsSection?.numTransactions?.percentageChange | number:'1.0-2' }}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span
+                                class="text-md text-project-waterloo">{{ 'dashboard-admin.transactions' | transloco }} {{ 'dashboard-admin.current-month' | transloco }}</span>
+                        </div>
+
+                        <!-- Total GMV -->
+                        <div class="flex flex-col w-1/4 border-b border-project-brand-500 pb-2.5 pl-2.5">
+                            <span class="text-xl text-project-waterloo leading-none mb-4">{{ $dashboard()?.indicatorsSection?.totalGMV?.allTime }}</span>
+                            <div class="flex gap-2 mb-5">
+                                <span class="text-4xl text-project-licorice-500 leading-none">{{ $dashboard()?.indicatorsSection?.totalGMV?.currentMonth }}</span>
+                                <div class="flex gap-1 mt-0.5">
+                                    <mat-icon [svgIcon]="getCompareIcon('totalGMV')" class="icon-size-5"></mat-icon>
+                                    <div class="leading-none mt-0.5">
+                                        <span class="text-sm" [ngClass]="getColorTextForPercentage('totalGMV')">{{ $dashboard()?.indicatorsSection?.totalGMV?.percentageChange | number:'1.0-2' }}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span
+                                class="text-md text-project-waterloo">{{ 'dashboard-admin.total-gmv' | transloco }} {{ 'dashboard-admin.current-month' | transloco }}</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-8 mt-4">
+                        <!-- Average Transaction Amount -->
+                        <div class="flex flex-col w-1/4 border-b border-project-brand-500 pb-2.5 pl-2.5">
+                            <span class="text-xl text-project-waterloo leading-none mb-4">{{ $dashboard()?.indicatorsSection?.averageTransactionAmount?.allTime }}</span>
+                            <div class="flex gap-2 mb-5">
+                                <span class="text-4xl text-project-licorice-500 leading-none">{{ $dashboard()?.indicatorsSection?.averageTransactionAmount?.currentMonth }}</span>
+                                <div class="flex gap-1 mt-0.5">
+                                    <mat-icon [svgIcon]="getCompareIcon('averageTransactionAmount')" class="icon-size-5"></mat-icon>
+                                    <div class="leading-none mt-0.5">
+                                        <span class="text-sm" [ngClass]="getColorTextForPercentage('averageTransactionAmount')">{{ $dashboard()?.indicatorsSection?.averageTransactionAmount?.percentageChange | number:'1.0-2' }}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span
+                                class="text-md text-project-waterloo">{{ 'dashboard-admin.avg-transaction' | transloco }} {{ 'dashboard-admin.current-month' | transloco }}</span>
+                        </div>
+
+                        <!-- Total Revenue -->
+                        <div class="flex flex-col w-1/4 border-b border-project-brand-500 pb-2.5 pl-2.5">
+                            <span class="text-xl text-project-waterloo leading-none mb-4">{{ $dashboard()?.indicatorsSection?.totalRevenue?.allTime }}</span>
+                            <div class="flex gap-2 mb-5">
+                                <span class="text-4xl text-project-licorice-500 leading-none">{{ $dashboard()?.indicatorsSection?.totalRevenue?.currentMonth }}</span>
+                                <div class="flex gap-1 mt-0.5">
+                                    <mat-icon [svgIcon]="getCompareIcon('totalRevenue')" class="icon-size-5"></mat-icon>
+                                    <div class="leading-none mt-0.5">
+                                        <span class="text-sm" [ngClass]="getColorTextForPercentage('totalRevenue')">{{ $dashboard()?.indicatorsSection?.totalRevenue?.percentageChange | number:'1.0-2' }}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-md text-project-waterloo">{{ 'dashboard-admin.total-revenue' | transloco }} {{ 'dashboard-admin.current-month' | transloco }}</span>
+                        </div>
+                        <div class="flex flex-col w-1/4 gap-4 border-b border-project-brand-500 pb-2.5 pl-2.5">
+                        </div>
+                        <div class="flex flex-col w-1/4 gap-4 border-b border-project-brand-500 pb-2.5 pl-2.5">
+                        </div>
+                    </div>
+                </ng-template>
+            </div>
+
+
+            <!--Latest Stores-->
+            <div class="w-full mt-12">
+                <tagpeak-custom-accordion [headerTemplate]="headerLatestStoresTemplate"
+                                          [bodyTemplate]="bodyLatestStoresTemplate"
+                                          [cssHeader]="'flex justify-between cursor-pointer border-b border-project-brand-500 pb-4'"/>
+
+                <ng-template #headerLatestStoresTemplate>
+                <span
+                    class="text-xl text-project-licorice-500">{{ 'dashboard-admin.statistics-by-month' | transloco }}</span>
+                    <div class="flex gap-2.5">
+                        <mat-icon svgIcon="arrow-down"></mat-icon>
+                    </div>
+                </ng-template>
+
+                <ng-template #bodyLatestStoresTemplate>
+                    <form [formGroup]="formFilter" class="mt-5">
+                        <div class="flex gap-5 items-center">
+                            <span>{{ 'dashboard-admin.filter-by-year' | transloco }}:</span>
+                            <tagpeak-custom-dropdown [placeholder]="'withdrawals-request.status'"
+                                                     [$options]="$years()"
+                                                     [value]="yearControl.value"
+                                                     [control]="yearControl"
+                                                     [css]="styleDropdown"
+                                                     [iconCheckOption]="iconCheckOption"
+                                                     [showDefaultValue]="false"
+                                                     [iconResetValue]="false"
+                                                     (valueChangesEvent)="setFormControlName('year', $event)"
+
+                            />
+                        </div>
+                    </form>
+
+                    <div class="mt-2">
+                        <atl-ng-table *ngIf="$tableConfig()"
+                                      id="table"
+                                      [tableConfiguration]="$tableConfig()"/>
+                    </div>
+                </ng-template>
+            </div>
+
+            <!-- Rewards By Currencies -->
+            <tagpeak-reward-currency [$dashboardRewards]="$dashboardRewards()"/>
+        </div>
+
+    } @loading (minimum 400ms) {
+        <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+            <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+        </div>
+    }
+
+}

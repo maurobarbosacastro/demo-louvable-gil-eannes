@@ -1,0 +1,142 @@
+{
+    "welcome-back": "Bem vindo de volta",
+    "Project": "Projeto",
+    "example": "Exemplo",
+    "users": {
+        "users": "Utilizadores",
+        "account-details": "Detalhes do utilizador",
+        "general-data": "Dados gerais",
+        "plan": "Plano:",
+        "country": "País:",
+        "email": "Email:",
+        "personal-data": "Dados pessoais",
+        "age": "Idade:",
+        "gender": "Genero:",
+        "block": "Bloquear utilizador",
+        "unblock": "Desbloquear utilizador",
+        "block-modal": "This user will no longer be able to comment. Block the user?",
+        "unblock-modal": "This user will be able to comment again. Unblock the user?",
+        "blocked": "Bloqueado",
+        "new": "Novo Utilizador"
+    },
+    "misc": {
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "yes": "Sim",
+        "no": "Não",
+        "search": "Pesquisar"
+    },
+    "table": {
+        "no-content": "Sem conteúdo",
+        "actions": {
+            "edit": "Editar",
+            "delete": "Apagar",
+            "add": "Adicionar"
+        }
+    },
+    "button": {
+        "previous": "Anterior",
+        "next": "Seguinte"
+    },
+    "email": {
+        "template-header": "Templates",
+        "new-template": "Novo template",
+        "add-template": "Adicionar novo template",
+        "edit-template": "Editar template",
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "click-to-copy": "Clicar para copiar",
+        "new-placeholder": "Adicionar nome do template",
+        "code-placeholder": "Código (editável apenas na criação)",
+        "name-required": "Nome do template é obrigatório"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "filters": "Filtrar por",
+        "tabs": {
+            "your-rewards": "As suas recompensas",
+            "store-visits": "Visitas às lojas",
+            "withdrawals": "Levantamentos"
+        },
+        "new-purchase": "Nova Compra",
+        "table": {
+            "store": "Loja",
+            "price-paid": "Valor pago",
+            "stop-date": "Data de paragem",
+            "current-reward": "Recompensa atual",
+            "status": "Estado"
+        },
+        "days-left": "Dias restantes",
+        "stop": "Parar",
+        "purchased-on": "Comprado em",
+        "nothing-here": "Nada aqui por agora",
+        "first-purchase": "Faça a sua primeira compra nas nossas lojas parceiras e acompanhe aqui a evolução da sua recompensa em dinheiro!",
+        "details": {
+            "revisit-store": "Visitar a loja",
+            "order-total-price": "Preço total do pedido",
+            "stop-anytime": "Pode parar a qualquer momento!",
+            "stop-anytime-info": "Quando te sentires confortável com a tua recompensa, podes premir o botão “Stop” e receber a tua recompensa. Ou pode esperar e talvez ganhar mais.",
+            "ref": "Ref ID"
+        },
+        "stop-confirmation": {
+            "title": "Parar esta recompensa?",
+            "body": "O prémio em dinheiro deixará de se mover e confirmaremos o montante final no prazo de 2 dias úteis.",
+            "confirm": "Sim, parar",
+            "footer-message": "Leia as nossas FAQs para mais informações",
+            "success": "Foi enviado um pedido de paragem ao admin.",
+            "error": "Erro ao pedir para enviar para o admin para parar."
+        },
+        "info-card": {
+            "title": "Alcance o estatuto <span class=\"text-project-youngBlue\">{{membership}}</span> e desbloquear mais ganhos",
+            "body": "Gaste €{{valueSpend}} para alcançar {{membership}} para desbloquear e coletar suas recompensas e muito mais. <span class=\"underline\">Como alcançar o próximo nível?</span>",
+            "spent": "gasto",
+            "goal": "meta"
+        }
+    },
+    "reward-summary": {
+        "live-rewards": "Recompensas em direto",
+        "available-withdraw": "Disponível para levantamento",
+        "withdraw": "Retirar"
+    },
+    "status": {
+        "pending": "Pendente",
+        "live": "Ao vivo",
+        "paid": "Pago",
+        "finished": "Terminado",
+        "stopped": "Parado"
+    },
+    "store-visits": {
+        "select-store": "Selecionar Loja",
+        "date-from": "Data de",
+        "date-to": "Data até",
+        "nothing-here": "Nada aqui por agora",
+        "nothing-here-body": "You have not visited any store yet. This place is for you to track past store visits.",
+        "no-results": "Não foram encontrados resultados.",
+        "no-results-body": "Não encontrámos nenhuma visita com esses termos.",
+        "table": {
+            "ref": "Ref ID",
+            "store-name": "Nome da loja",
+            "purchased": "Comprado",
+            "date-time": "Data & Hora"
+        }
+    },
+    "balance-withdrawals": {
+        "nothing-here": "Não foram encontrados resultados.",
+        "nothing-here-body": "Ainda não retirou qualquer recompensa.",
+        "table": {
+            "id": "ID",
+            "cash-out-amount": "Montante do Levantamento",
+            "status": "Estado",
+            "payment-date": "Data de Pagamento",
+            "payment-note": "Notas de pagamento",
+            "date-requested": "Data do Pedido"
+        },
+        "available-rewards": "Recompensas disponíveis",
+        "rewards": "Recompensas",
+        "referrals": "Referências",
+        "withdrawals": "Levantamentos",
+        "withdrawals-settings": "Definições de levantamentos",
+        "paid-rewards": "Recompensas pagas",
+        "cannot-withdrawal": "Não atingiu o limite de {{value}} para levantamento."
+    }
+}

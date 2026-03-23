@@ -1,0 +1,41 @@
+<div class="w-full mt-20 px-5 lg:px-9">
+    <span class="text-6xl font-plex">{{ 'referrals.title' | transloco }}</span>
+    <div class="flex flex-row mt-10 justify-between border-b border-project-brand-500 pb-3">
+        <div class="tabs tab-border w-fit gap-10">
+            @for (tab of tabs; track tab) {
+                <button class="tab text-lg md:text-xl p-0"
+                        [ngClass]="{'text-project-licorice-500 text-opacity-100': $selectedTab() === tab , 'text-project-waterloo text-opacity-60': $selectedTab() !== tab}"
+                        (click)="selectTab(tab)">{{ getNameTabs(tab) }}
+                </button>
+            }
+        </div>
+        @if (!$isMobile()) {
+            <button
+                class="border flex items-center gap-1 border-project-licorice-500 rounded p-2.5 text-[13px] font-plex text-project-licorice-500 cursor-copy"
+                [cdkCopyToClipboard]="$referralLink()" (click)="informCopy()">
+                <mat-icon svgIcon="duplicate" class="icon-size-4"></mat-icon>
+                {{ 'referrals.copy' | transloco }}
+            </button>
+        }
+    </div>
+    <div class="w-full">
+        @switch ($selectedTab()) {
+            @case (ReferralsTabEnum.YOUR_REFERRALS) {
+                <tagpeak-your-referrals
+                    [$userLevel]="$userLevel()"
+                    [$goalValue]="$goalValue()"
+                    [getNextMembershipLevel]="getNextMembershipLevel"
+                    [$user]="$user()"
+                />
+            }
+            @case (ReferralsTabEnum.HOW_IT_WORKS) {
+                <tagpeak-how-it-works
+                    [$userLevel]="$userLevel()"
+                    [$goalValue]="$goalValue()"
+                    [getNextMembershipLevel]="getNextMembershipLevel"
+                    [$user]="$user"
+                />
+            }
+        }
+    </div>
+</div>

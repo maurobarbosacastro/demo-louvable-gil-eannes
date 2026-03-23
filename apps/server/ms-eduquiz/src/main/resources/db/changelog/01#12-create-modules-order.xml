@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="01#15_modules_order" author="Atlanse">
+        <createTable tableName="modules_order" remarks="A table that contains the modules order">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true" primaryKeyName="modules_order_PK" />
+            </column>
+            <column name="module_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_modules_order_module"
+                             references="modules(id)" />
+            </column>
+            <column name="lesson_id" type="UUID">
+                <constraints foreignKeyName="fk_modules_order_lesson"
+                             references="lessons(id)" />
+            </column>
+            <column name="quiz_id" type="UUID">
+                <constraints foreignKeyName="fk_modules_order_quiz"
+                             references="quiz(id)" />
+            </column>
+            <column name="position" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_by" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_by" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,50 @@
+<!-- Header -->
+<div class="flex flex-row justify-between items-center absolute w-full top-6 px-6 z-10">
+    <ng-container *ngTemplateOutlet="$image()" />
+    <div>
+        <ng-container *ngTemplateOutlet="$action()" />
+    </div>
+</div>
+
+@if ($templates() && $templates().length > 0) {
+    <div class="overflow-hidden w-full h-full relative">
+        <div
+            class="flex transition-transform duration-[1500ms] ease-in-out h-full w-full "
+            [style.transform]="'translateX(-' + $currentIndex() * 100 + '%)'"
+        >
+            @for (template of $templates(); track template) {
+                <div class="flex-none w-full box-border">
+                    <ng-container *ngTemplateOutlet="template" class="h-full w-full" />
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<!-- Footer -->
+
+@if ($slideIndicatorType() == "RECT") {
+    <div class="absolute bottom-6 w-full px-6">
+        <div class="flex gap-1 ">
+            @for (template of $templates(); track template; let i = $index) {
+                <div class="h-1 w-10 cursor-pointer"
+                     [ngClass]="slideSelectedColor(i)"
+                     (click)="selectCard(i)">
+                </div>
+            }
+        </div>
+    </div>
+
+} @else if ($slideIndicatorType() == "ROUNDED") {
+    <div class="absolute mt-4 w-full px-6">
+        <div class="flex gap-1 items-center justify-center">
+            @for (template of $templates(); track template; let i = $index) {
+                <div class="h-3 w-3 rounded-full cursor-pointer z-1"
+                     [ngClass]="slideSelectedColor(i)"
+                     (click)="selectCard(i)">
+                </div>
+            }
+        </div>
+    </div>
+}
+

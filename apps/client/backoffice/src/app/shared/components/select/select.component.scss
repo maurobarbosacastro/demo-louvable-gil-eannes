@@ -1,0 +1,35 @@
+.select-display {
+    @apply mx-1 w-full font-nunitoRegular flex justify-between no-animation normal-case border-0 shadow-[0px_0px_4px_rgba(0,0,0,0.15)] rounded-lg h-12;
+}
+
+.icon-display {
+    transform: scale(0.8);
+}
+
+.icon-purple {
+    color: #7570A6;
+}
+
+ul {
+    li {
+        a {
+            &:active {
+                background: #b1be4e;
+            }
+        }
+    }
+}
+
+.dropdown-content-upwards {
+    position: absolute;
+    bottom: 100%;
+    transform: translateY(-4px);
+}
+
+
+.truncate {
+    width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

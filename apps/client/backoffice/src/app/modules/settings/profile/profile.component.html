@@ -1,0 +1,273 @@
+<div class="flex w-full justify-between bg-white">
+    <div class="flex lg:w-1/2 w-full flex-col">
+        <!-- Profile image-->
+        <div class="h-[100px] w-[100px] rounded-full relative group">
+            <div>
+                @if ($profilePicture()) {
+                    <img *ngIf="!$reload()"
+                         class="h-[100px] w-[100px] rounded-full object-cover shadow-lg"
+                         [ngSrc]="$profilePicture()"
+                         width="400" height="400"
+                         alt="Profile image"
+                    />
+                } @else {
+                    <div
+                        class="shadow-lg h-[100px] w-[100px] object-cover flex justify-center items-center rounded-full">
+                        <img src="assets/icons/tgpk.svg" width="400" height="400" alt="default_icon"
+                             class="w-8 h-8" />
+                    </div>
+                }
+            </div>
+            <!-- Overlay div to show on hover -->
+            <div
+                (click)="profilePicture.click()"
+                class="absolute inset-0 bg-project-licorice-500 bg-opacity-60 cursor-pointer items-center justify-center text-project-brand-500 rounded-full text-sm font-semibold hidden group-hover:flex">
+                {{ 'settings.change' | transloco }}
+            </div>
+            <input #profilePicture type="file" class="hidden" id="profilePicture" accept="image/*"
+                   (change)="updateProfilePicture($event)" [multiple]="false" />
+        </div>
+
+
+        <!-- Name and Email-->
+        <div class="mb-13 mt-5">
+            <h2 class="text-3xl text-project-licorice-500 pb-4 leading-none">{{ $user().firstName }} {{ $user().lastName }}</h2>
+            <span class="text-md text-project-waterloo leading-none">{{ $user().email }}</span>
+        </div>
+
+        <!-- Profile details-->
+        <div>
+            <!-- Name field -->
+            <div class="mb-6">
+                <label for="name"
+                       class="block text-project-waterloo font-normal text-md">{{ 'auth.name' | transloco }}</label>
+                <div class="relative">
+                    <input type="text" id="name"
+                           placeholder="{{ 'auth.your' | transloco}} {{ 'auth.name' | transloco}}"
+                           [formControl]="nameControl"
+                           [ngClass]="{'border-project-red placeholder:text-project-red': nameControl.hasError('required')  && !nameControl.untouched}"
+                           class="w-full pb-2 pt-1 border-b placeholder:text-project-waterloo focus:outline-none  border-project-licorice-500 text-project-licorice-500">
+
+                    <div class="absolute right-0 top-0 flex ">
+                        <div class="tooltip tooltip-error"
+                             [attr.data-tip]="'auth.name-required' | transloco">
+                            <mat-icon
+                                *ngIf="nameControl.hasError('required') && !nameControl.untouched"
+                                class="icon-size-4 cursor-pointer text-project-red"
+                                [svgIcon]="'error'"
+                            ></mat-icon>
+                        </div>
+                        <ng-container
+                            *ngTemplateOutlet="actions; context: { control: nameControl, fieldName: 'name' }" />
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- DisplayName field -->
+            <div class="mb-6">
+                <label for="displayName"
+                       class="block text-project-waterloo font-normal text-md">{{ 'settings.display-name' | transloco }}</label>
+                <div class="relative">
+                    <input type="text" id="displayName"
+                           placeholder="{{ 'auth.your' | transloco}} {{ 'settings.display-name' | transloco}}"
+                           [formControl]="displayNameControl"
+                           [ngClass]="{'border-project-red placeholder:text-project-red': displayNameControl.hasError('required')  && !displayNameControl.untouched}"
+                           class="w-full pb-2 pt-1 border-b placeholder:text-project-waterloo focus:outline-none  border-project-licorice-500 text-project-licorice-500">
+
+                    <div class="absolute right-0 top-0 flex ">
+                        <div class="tooltip tooltip-error"
+                             [attr.data-tip]="'settings.display-name-required' | transloco">
+                            <mat-icon
+                                *ngIf="displayNameControl.hasError('required') && !displayNameControl.untouched"
+                                class="icon-size-4 cursor-pointer text-project-red"
+                                [svgIcon]="'error'"
+                            ></mat-icon>
+                        </div>
+                        <ng-container
+                            *ngTemplateOutlet="actions; context: { control: displayNameControl, fieldName: 'displayName' }" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Password field -->
+            <div class="mb-6">
+                <label for="password"
+                       class="block text-project-waterloo font-normal text-md">{{ 'auth.password' | transloco }}</label>
+                <div class="relative">
+                    <input type="password" id="password"
+                           placeholder="{{ 'auth.your' | transloco}} {{ 'auth.password' | transloco}}"
+                           [formControl]="passwordControl"
+                           class="w-full pb-2 pt-1 border-b placeholder:text-project-waterloo focus:outline-none  border-project-licorice-500 text-project-licorice-500">
+                </div>
+            </div>
+
+
+            <!-- Email field -->
+            <div class="mb-6">
+                <label for="email"
+                       class="block text-project-waterloo font-normal text-md">{{ 'auth.email' | transloco }}</label>
+                <div class="relative">
+                    <input type="text" id="email"
+                           placeholder="{{ 'auth.your' | transloco}} {{ 'auth.email' | transloco}}"
+                           [formControl]="emailControl"
+                           [ngClass]="{'border-project-red placeholder:text-project-red': (emailControl.hasError('required') || emailControl.hasError('email')) && !emailControl.untouched}"
+                           class="w-full pb-2 pt-1 border-b placeholder:text-project-waterloo focus:outline-none  border-project-licorice-500 text-project-licorice-500">
+
+                    <div class="absolute right-0 top-0 flex ">
+                        <div class="tooltip tooltip-error"
+                             [attr.data-tip]=" emailControl.hasError('required') ? ('auth.email-required' | transloco ) : ('auth.email-invalid' | transloco) ">
+                            <mat-icon
+                                *ngIf="(emailControl.hasError('required') || emailControl.hasError('email')) && !emailControl.untouched"
+                                class="icon-size-4 cursor-pointer text-project-red"
+                                [svgIcon]="'error'"
+                            ></mat-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Date of birth field -->
+            <div class="mb-6">
+                <label for="dateOfBirth"
+                       class="block text-project-waterloo font-normal text-md">{{ 'settings.date-of-birth' | transloco }}</label>
+                <div class="relative">
+
+                    <div class="flex items-center justify-start" (click)="openCalendar()">
+                        @if (dateOfBirthControl.enabled) {
+                            <mat-icon
+                                class="icon-size-4 cursor-pointer text-project-licorice-500 ml-2 absolute left-0 top-1.5 "
+                                [svgIcon]="'calender'" />
+                        }
+                        <input id="dateOfBirth"
+                               [matDatepicker]="picker"
+                               placeholder="{{ 'settings.no-date-of-birth' | transloco }}"
+                               [formControl]="dateOfBirthControl"
+                               [ngClass]="{
+                                             'border-project-red placeholder:text-project-red': !dateOfBirthControl.untouched,
+                                             '!border-project-licorice-500': dateOfBirthControl.value,
+                                             'pl-9': dateOfBirthControl.enabled
+                                           }"
+                               class="w-full pb-2 pt-1 pr-14 border-b border-project-brand-500 placeholder:text-project-waterloo focus:outline-none focus:border-project-licorice-500 text-project-licorice-500">
+
+                        <mat-datepicker #picker></mat-datepicker>
+                    </div>
+                    <div class=" absolute right-0 top-0 flex ">
+                        <ng-container
+                            *ngTemplateOutlet="actions; context: { control: dateOfBirthControl, fieldName: 'dateOfBirth' }" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full">
+                <label for="country"
+                       class="block text-project-waterloo font-normal text-md">{{ 'settings.country' | transloco }}</label>
+                <div class="dropdown w-full dropdown-top relative" id="country"
+                     [ngClass]="{ 'open': $dropdownOpen() }">
+                    <input #input tabindex="0" role="button" (keyup)="countryControl.setValue(input.value)"
+                           [value]="countryControl.value?.name ?? countryControl.value"
+                           placeholder="{{'settings.no-country' | transloco}}"
+                           class="w-full flex justify-between items-center cursor-pointer border-b pb-2 pt-1 border-project-brand-500 text-project-licorice-500 focus:outline-none  focus:border-project-licorice-500"
+                           [ngClass]="{'!text-project-waterloo': !countryControl.value, 'pointer-events-none' : countryControl.disabled, '!border-project-licorice-500': countryControl.value}"
+                           (click)="toggleDropdown()"
+
+                    >
+                    <div class="flex gap-2 absolute top-0 right-0">
+                        <mat-icon class="icon-size-4 ml-2 text-black" [svgIcon]="'arrow_drop_down'" />
+                        @if (countryControl.disabled) {
+                            <div class="text-project-licorice-500 text-lg cursor-pointer pr-2.5"
+                                 (click)="editField('country')">
+                                {{ 'settings.edit' | transloco }}
+                            </div>
+                        } @else {
+                            <mat-icon [svgIcon]="'cancel'"
+                                      class="icon-size-4 mr-2 text-project-licorice-500 cursor-pointer"
+                                      (click)="editField('country')" />
+                        }
+                    </div>
+                    <ul tabindex="0"
+                        *ngIf="$dropdownOpen()"
+                        class="dropdown-content bg-base-100 mt-1 rounded-md border border-project-waterloo border-opacity-60 z-[10] w-full p-2 shadow max-h-[200px] overflow-y-auto overflow-x-hidden">
+                        @for (country of $countries(); track country) {
+                            <li class="w-full" (click)="selectCountry(country.abbreviation)">
+                                <a class="py-3 px-2.5 w-full cursor-pointer flex items-center justify-between hover:bg-project-youngBlue hover:bg-opacity-20 hover:text-project-youngBlue rounded">
+                                    {{ country.name }}
+                                    @if (country.abbreviation == countryControl.value) {
+                                        <mat-icon class="icon-size-4 ml-2 text-project-youngBlue">check</mat-icon>
+                                    }
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-4" *ngIf="environment.features.currency">
+                <label class="block text-project-waterloo font-normal text-md mb-1">
+                    {{ 'auth.currency' | transloco }}
+                </label>
+                <tagpeak-custom-dropdown [placeholder]="'Select Currency'"
+                                         [$options]="currencies"
+                                         [value]="currencyControl.value"
+                                         [control]="currencyControl"
+                                         [css]="styleDropdown"
+                                         [iconCheckOption]="iconCheckOption"
+                                         [isDisabled]="true"
+                                         [showDefaultValue]="false"
+                                         [iconResetValue]="false"/>
+            </div>
+
+        </div>
+
+        @if ($isMobile()) {
+            <div class="flex w-full flex-col mt-10 pt-6 border-t border-project-brand-500">
+                <h2 class="text-xl text-project-licorice-500">Subscription detail</h2>
+                <div class="flex items-center justify-between border-b border-project-brand-500 pb-4">
+                    <span class="text-project-waterloo text-[15px]">Newsletter subscription</span>
+                    <input
+                        type="checkbox"
+                        class=" ml-30 toggle toggle-xs"
+                        [ngClass]="newsletterControl.value == true ? 'bg-white [--tglbg:#4237DA] ' : 'bg-gray-500 [--tglbg:#FFFFFF]'"
+                        [formControl]="newsletterControl"
+                        [checked]="newsletterControl.value"
+                        (change)="saveField('newsletter')" />
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!$isMobile()) {
+        <div class="flex w-1/4 flex-col">
+            <h2 class="text-xl text-project-licorice-500">Subscription detail</h2>
+            <div class="flex items-center justify-between border-b border-project-brand-500 pb-4">
+                <span class="text-project-waterloo text-[15px]">Newsletter subscription</span>
+                <input
+                    type="checkbox"
+                    class=" ml-30 toggle toggle-xs"
+                    [ngClass]="newsletterControl.value == true ? 'bg-white [--tglbg:#4237DA] ' : 'bg-gray-500 [--tglbg:#FFFFFF]'"
+                    [formControl]="newsletterControl"
+                    [checked]="newsletterControl.value"
+                    (change)="saveField('newsletter')" />
+            </div>
+        </div>
+    }
+</div>
+
+
+<ng-template #actions let-control="control" let-fieldName="fieldName">
+    @if (control.disabled) {
+        <div class="text-project-licorice-500 text-lg cursor-pointer pr-2.5"
+             (click)="editField(fieldName)">
+            {{ 'settings.edit' | transloco }}
+        </div>
+    } @else {
+        <div class="flex items-center justify-center">
+            <mat-icon [svgIcon]="'cancel'" class="icon-size-4 mr-2 text-project-licorice-500 cursor-pointer"
+                      (click)="editField(fieldName)" />
+            <div class="text-project-licorice-500 text-lg cursor-pointer pr-2.5"
+                 (click)="saveField(fieldName)">
+                {{ 'misc.save' | transloco }}
+            </div>
+        </div>
+    }
+</ng-template>

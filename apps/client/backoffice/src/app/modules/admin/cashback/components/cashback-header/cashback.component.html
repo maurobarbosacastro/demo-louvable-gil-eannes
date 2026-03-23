@@ -1,0 +1,22 @@
+<div class="w-full px-4 my-5 lg:mt-8 lg:px-9">
+    <span class="text-3xl">{{ 'cashback.title' | transloco }}</span>
+    <div class="mt-7 border-b border-project-brand-500 pb-3">
+        <div class="tabs tab-border w-fit gap-10">
+            @for (tab of tabs; track tab) {
+                <button class="tab text-md p-0"
+                        [ngClass]="{'text-project-licorice-500 text-opacity-100': $selectedTab() === tab , 'text-project-waterloo text-opacity-60': $selectedTab() !== tab}"
+                        (click)="selectTab(tab)">{{ getTabName(tab) }}</button>
+            }
+        </div>
+    </div>
+    <div class="w-full">
+        @switch ($selectedTab()) {
+            @case (CashbackTabEnum.MANAGE_CASHBACK) {
+                <tagpeak-manage-cashback/>
+            }
+            @case (CashbackTabEnum.CASHOUT_REQUEST) {
+                <tagpeak-cashout-request/>
+            }
+        }
+    </div>
+</div>

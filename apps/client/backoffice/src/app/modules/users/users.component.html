@@ -1,0 +1,82 @@
+<div class="flex flex-col h-full flex-auto min-w-0 bg-white">
+    <!-- Main -->
+    <div class="flex flex-row justify-between h-full px-16 bg-white">
+        <div class="grid grid-cols-2 grid-rows-1 w-full mt-16" *ngIf="!loading">
+            <div class="h-full w-full">
+                <ng-container *ngFor="let item of alphabeticalUserList">
+                    <div class="bg-primary text-white h-8 font-lato flex items-center text-sm font-bold pl-5 border-b border-primary">{{item.letter | uppercase}}</div>
+                    <div *ngFor="let elem of item.list"
+                         (click)="selectUser(item.letter, elem)"
+                         [ngClass]="{'flex pt-2.5 pb-2.5 border-b border-r border-l border-secondary': true,
+                         'bg-primary/10':elem.open
+                        }">
+                        <div class="pl-5">
+                            <img class="h-12 w-12 rounded-full" [src]="getUserImage(elem)" alt="">
+                        </div>
+                        <div class="ml-3 ">
+                            <div class="font-bold text-base mr-3">{{elem.firstName | titlecase}} {{elem.lastName | titlecase}}</div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="bg-slate-50 h-full w-full">
+                <div class="flex justify-between items-center pt-4 pb-4 pl-7">
+                    <img class="h-20 w-20  rounded-full" [src]="getUserImage(selectedUser)" alt="">
+                    <div class="ml-3.5 w-full">
+                        <div
+                            class=" text-3xl text-lato font-bold">
+                            {{selectedUser.firstName | titlecase}} {{selectedUser.lastName | titlecase}}
+                        </div>
+                        <div *ngIf="selectedUser.isBlocked"
+                             class="text-warn">
+                            {{'users.blocked' | transloco}}
+                        </div>
+                    </div>
+                    <button mat-icon-button [matMenuTriggerFor]="userActions" aria-label="Action menu option user" class="mr-8">
+                        <mat-icon svgIcon="ellipsis-vertical"></mat-icon>
+                    </button>
+                    <mat-menu #userActions="matMenu" (click)="blockUser(selectedUser)">
+                        <button mat-menu-item>
+                            <div *ngIf="!selectedUser.isBlocked">{{'users.block'| transloco}}</div>
+                            <div *ngIf="selectedUser.isBlocked">{{'users.unblock'| transloco}}</div>
+                        </button>
+                    </mat-menu>
+                </div>
+                <div class="border-t pl-10 pb-6">
+                    <div class="text-xl mt-4 font-black font-lato">{{'users.general-data'| transloco}}</div>
+                    <div>
+                        <span class="text-sm font-black font-lato">{{'users.country'|transloco}}</span>
+                        <span class="text-sm font-normal font-lato m-2">{{selectedUser.country}}</span>
+                    </div>
+                    <div>
+                        <span class="text-sm font-black font-lato">{{'users.email'| transloco}}</span>
+                        <span class="text-sm font-normal font-lato m-2">{{selectedUser.email}}</span>
+                    </div>
+                </div>
+                <div class="border-t pl-10 pb-6">
+                    <div class="text-xl mt-4 font-black font-lato">{{'users.personal-data'| transloco}}</div>
+                    <div class="grid grid-cols-2 grid-rows-1">
+                        <div>
+                            <span class="text-sm font-black font-lato">{{'users.age'| transloco}}</span>
+                            <span class="text-sm font-normal font-lato m-2">{{selectedUser.birthDate | date: 'dd-MM-yyyy'}} ({{selectedUser.age}})</span>
+                        </div>
+                        <div>
+                            <span class="text-sm font-black font-lato">{{'users.gender'| transloco}}</span>
+                            <span class="text-sm font-normal font-lato m-2">{{selectedUser.genre}}</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="relative flex mt-4 mb-4 w-1/2 justify-center bg-white">
+        <app-pagination
+            [page]="page"
+            [total]="total"
+            (next)="nextPage()"
+            (previous)="previousPage()"
+        ></app-pagination>
+    </div>
+</div>

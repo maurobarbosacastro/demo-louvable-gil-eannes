@@ -1,0 +1,27 @@
+<div class="bg-white flex h-full flex-wrap rounded relative justify-center justify-items-center">
+    <div class="flex justify-start mx-2 mb-2 w-full">
+        <span class="text-project-licorice-500 font-bold text-center text-xl">{{ 'store.upload-csv'| transloco }}</span>
+    </div>
+    <input type="file"
+           accept=".csv"
+           (change)=" onFileChange($event)"
+           class="file-input file-input-bordered mx-1 w-full"
+           [ngClass]="{'mb-4': !error}" />
+
+    @if (error) {
+        <span class="text-error mb-2.5 mt-0.5 w-full text-start leading-none text-sm pl-1">
+            *{{ error['message'] }}
+        </span>
+    }
+
+    <div class="flex justify-between gap-16 mx-2 w-full flex-row-reverse items-center">
+        <button (click)="onSaveClick()"
+                class="bg-project-licorice-500 w-full items-center justify-evenly text-lg rounded text-white py-2">
+            {{ 'misc.save' | transloco }}
+        </button>
+        <button (click)="onCancelClick()"
+                class="bg-white w-full border-project-waterloo border items-center justify-evenly text-lg  rounded py-2 ">
+            {{ 'misc.cancel' | transloco }}
+        </button>
+    </div>
+</div>

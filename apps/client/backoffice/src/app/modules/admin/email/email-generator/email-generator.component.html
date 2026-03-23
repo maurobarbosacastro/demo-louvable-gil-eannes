@@ -1,0 +1,88 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <!-- CONTENT GOES HERE -->
+        <div class="h-400 min-h-400 max-h-400">
+
+            <div class="flex justify-between items-center mr-4 mt-4">
+
+                <h3
+                    class="flex items-center justify-center">{{ ($isNew() ? 'email.new-template' : 'email.edit-template')| transloco }}</h3>
+
+                <div class="flex flex-row justify-end gap-4 w-1/4">
+                    <button
+                        class="saveButton !bg-transparent text-[#32334C] border-solid border-2 border-[#32334C]"
+                        (click)="returnToTable()">
+                        {{ 'email.cancel' | transloco }}
+                    </button>
+
+                    <button class="saveButton"
+                            (click)="saveTemplate()">
+                        {{ 'email.save' | transloco }}
+                    </button>
+                </div>
+            </div>
+
+            <div class="w-full mt-5">
+                <div class="flex flex-col">
+                    <input id="templateName2" type="text" class="w-full text-[25px]"
+                           placeholder="{{ 'email.new-placeholder' | transloco }}"
+                           [formControl]="templateNameControl"
+                           [ngClass]="{'border-solid border-red-500' : !templateNameControl.valid}"
+                           (change)="onTemplateNameChange()">
+                    <mat-hint class="flex text-red-500 font-bold gap-1"
+                              *ngIf="$hasError() || (!templateNameControl.valid && !templateNameControl.untouched)">
+                        <mat-icon
+                            class="icon-size-5 text-current"
+                            [svgIcon]="'error'"
+                        ></mat-icon>
+                        {{ 'email.name-required' | transloco }}
+                    </mat-hint>
+                    <input id="templateCode" type="text" class="w-full text-[16px] mt-2"
+                           placeholder="{{ 'email.code-placeholder' | transloco }}"
+                           [formControl]="templateCodeControl"
+                           [ngClass]="{'border-solid border-red-500' : !templateCodeControl.valid}">
+                </div>
+            </div>
+
+            <div class="flex ml-[42%] top-[25%]  absolute bg-red h-10 w-10"
+                 *ngIf="$isLoading()">
+                <mat-progress-spinner
+
+                    [diameter]="80"
+                    [mode]="'indeterminate'"
+                    [color]="'accent'"
+                ></mat-progress-spinner>
+
+            </div>
+
+
+            <div class="grid grid-cols-[0.4fr,4fr] container pr-4 gap-4 mt-2 relative">
+                <div class="flex flex-col items-center gap-2 mt-[1.2rem] rounded-md bg-[#f9f9f9] h-fit p-4">
+                    <div
+                        class="flex justify-center items-center gap-4 text-center">
+                        <span class="text-[#32334C]"> {{ 'email.click-to-copy' | transloco }} </span>
+                    </div>
+                    <button *ngFor="let variable of variables"
+                            class="cursor-pointer text-center varButton w-full text-[14px]"
+                            (click)="copyToClipboard(variable)"
+                            [matTooltip]="'Click to copy the variable'" matTooltipPosition="right">
+                        {{ variable }}
+                    </button>
+                </div>
+
+                <email-editor
+                    [ngClass]="{hidden:$isLoading()}"
+                    class="max-h-[50%] z-0"
+                    [scriptUrl]="scriptUrl"
+                    (loaded)="editorLoaded($event)"
+                    (ready)="editorReady($event)"
+                    #editor
+                ></email-editor>
+            </div>
+
+        </div>
+    </div>
+</div>

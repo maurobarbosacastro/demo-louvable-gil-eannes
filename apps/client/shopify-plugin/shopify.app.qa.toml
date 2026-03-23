@@ -1,0 +1,41 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "d778b933b002e5df6962338456c3d295"
+name = "tp-qa"
+handle = "tp-qa"
+application_url = "https://qa.tagpeak.shopify.atlanse.ddns.net"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = false
+include_config_on_deploy = true
+
+[webhooks]
+api_version = "2025-04"
+
+  [[webhooks.subscriptions]]
+  topics = [
+  "orders/cancelled",
+  "orders/create",
+  "orders/delete",
+  "orders/updated"
+]
+  uri = "https://qa.tagpeak.atlanse.ddns.net/shopify/public/webhook"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "https://qa.tagpeak.atlanse.ddns.net/shopify/public/webhook-uninstall"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_discounts,read_orders,read_products,read_publications,write_discounts,write_products,write_publications,read_customers"
+
+[auth]
+redirect_urls = [
+  "https://qa.tagpeak.shopify.atlanse.ddns.net/auth/callback",
+  "https://qa.tagpeak.shopify.atlanse.ddns.net/auth/shopify/callback",
+  "https://qa.tagpeak.shopify.atlanse.ddns.net/api/auth/callback"
+]
+
+[pos]
+embedded = false

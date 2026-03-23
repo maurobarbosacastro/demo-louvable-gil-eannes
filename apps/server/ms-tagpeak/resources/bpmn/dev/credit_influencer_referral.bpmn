@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1eb43ip" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.39.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.7.0">
+  <bpmn:collaboration id="Collaboration_074943z">
+    <bpmn:participant id="Participant_1e558u4" name="Credit Influencer Reward" processRef="credit-influencer-referral" />
+    <bpmn:textAnnotation id="TextAnnotation_1gvow63">
+      <bpmn:text>Creates a new reward with a fixed value defined by configurations or for the user</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0llbopq">
+      <bpmn:text>Add the reward value to the user account balance</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0gfy27i" associationDirection="None" sourceRef="Activity_0onb4pt" targetRef="TextAnnotation_1gvow63" />
+    <bpmn:association id="Association_1qb5lbz" associationDirection="None" sourceRef="Activity_1e95pbf" targetRef="TextAnnotation_0llbopq" />
+  </bpmn:collaboration>
+  <bpmn:process id="credit-influencer-referral" name="credit-influencer-referral" isExecutable="true">
+    <bpmn:exclusiveGateway id="Gateway_1nyyap5" name="Has Influencer Referral?">
+      <bpmn:incoming>Flow_1e0fibx</bpmn:incoming>
+      <bpmn:outgoing>Flow_19dbqxv</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1tpv4uf</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_1h1v6t5">
+      <bpmn:incoming>Flow_19dbqxv</bpmn:incoming>
+      <bpmn:incoming>Flow_01ofdrq</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_0onb4pt" name="Create new infleuncer reward">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-new-reward-influencer-referral" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1tpv4uf</bpmn:incoming>
+      <bpmn:outgoing>Flow_1m39siv</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1e95pbf" name="Credit user">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="credit-user-referral" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1m39siv</bpmn:incoming>
+      <bpmn:outgoing>Flow_01ofdrq</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0e3w2qx</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Activity_05emmir" name="Get Data">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="get-data-credit-influencer" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0e3w2qx</bpmn:incoming>
+      <bpmn:outgoing>Flow_1e0fibx</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1e0fibx" sourceRef="Activity_05emmir" targetRef="Gateway_1nyyap5" />
+    <bpmn:sequenceFlow id="Flow_19dbqxv" name="No" sourceRef="Gateway_1nyyap5" targetRef="Event_1h1v6t5">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=hasBeenReferred = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1tpv4uf" name="Yes" sourceRef="Gateway_1nyyap5" targetRef="Activity_0onb4pt">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=hasBeenReferred = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_01ofdrq" sourceRef="Activity_1e95pbf" targetRef="Event_1h1v6t5" />
+    <bpmn:sequenceFlow id="Flow_1m39siv" sourceRef="Activity_0onb4pt" targetRef="Activity_1e95pbf" />
+    <bpmn:sequenceFlow id="Flow_0e3w2qx" sourceRef="StartEvent_1" targetRef="Activity_05emmir" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_074943z">
+      <bpmndi:BPMNShape id="Participant_1e558u4_di" bpmnElement="Participant_1e558u4" isHorizontal="true">
+        <dc:Bounds x="160" y="190" width="930" height="230" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1nyyap5_di" bpmnElement="Gateway_1nyyap5" isMarkerVisible="true">
+        <dc:Bounds x="475" y="285" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="544" y="300" width="72" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1h1v6t5_di" bpmnElement="Event_1h1v6t5">
+        <dc:Bounds x="922" y="292" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_14gjzrm_di" bpmnElement="Activity_0onb4pt">
+        <dc:Bounds x="580" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_068ly02_di" bpmnElement="Activity_1e95pbf">
+        <dc:Bounds x="790" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1emki4z" bpmnElement="StartEvent_1">
+        <dc:Bounds x="252" y="292" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05emmir_di" bpmnElement="Activity_05emmir">
+        <dc:Bounds x="330" y="270" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1e0fibx_di" bpmnElement="Flow_1e0fibx">
+        <di:waypoint x="430" y="310" />
+        <di:waypoint x="475" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19dbqxv_di" bpmnElement="Flow_19dbqxv">
+        <di:waypoint x="500" y="335" />
+        <di:waypoint x="500" y="370" />
+        <di:waypoint x="940" y="370" />
+        <di:waypoint x="940" y="328" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="482" y="352" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tpv4uf_di" bpmnElement="Flow_1tpv4uf">
+        <di:waypoint x="500" y="285" />
+        <di:waypoint x="500" y="260" />
+        <di:waypoint x="580" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="481" y="270" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01ofdrq_di" bpmnElement="Flow_01ofdrq">
+        <di:waypoint x="890" y="260" />
+        <di:waypoint x="940" y="260" />
+        <di:waypoint x="940" y="292" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1m39siv_di" bpmnElement="Flow_1m39siv">
+        <di:waypoint x="680" y="260" />
+        <di:waypoint x="790" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0e3w2qx_di" bpmnElement="Flow_0e3w2qx">
+        <di:waypoint x="288" y="310" />
+        <di:waypoint x="330" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_1gvow63_di" bpmnElement="TextAnnotation_1gvow63">
+        <dc:Bounds x="680" y="84" width="120" height="84" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0llbopq_di" bpmnElement="TextAnnotation_0llbopq">
+        <dc:Bounds x="880" y="84" width="100" height="70" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0gfy27i_di" bpmnElement="Association_0gfy27i">
+        <di:waypoint x="653" y="220" />
+        <di:waypoint x="680" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1qb5lbz_di" bpmnElement="Association_1qb5lbz">
+        <di:waypoint x="872" y="220" />
+        <di:waypoint x="886" y="154" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

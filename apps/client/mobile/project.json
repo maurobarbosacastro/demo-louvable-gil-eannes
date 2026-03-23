@@ -1,0 +1,184 @@
+{
+    "name": "mobile",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/client/mobile/src",
+    "projectType": "application",
+    "tags": [],
+    "targets": {
+        "analyze": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter analyze",
+                "cwd": "apps/client/mobile"
+            }
+        },
+        "clean": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter clean",
+                "cwd": "apps/client/mobile"
+            }
+        },
+        "format": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter format apps/client/mobile/*",
+                "cwd": "apps/client/mobile"
+            }
+        },
+        "test": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter test",
+                "cwd": "apps/client/mobile"
+            }
+        },
+        "doctor": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter doctor",
+                "cwd": "apps/client/mobile"
+            }
+        },
+        "assemble": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter assemble",
+                "cwd": "apps/client/mobile"
+            }
+        },
+        "attach": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter attach",
+                "cwd": "apps/client/mobile"
+            }
+        },
+        "drive": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter drive",
+                "cwd": "apps/client/mobile"
+            }
+        },
+        "gen-l10n": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter gen-l10n",
+                "cwd": "apps/client/mobile"
+            }
+        },
+        "install": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter install",
+                "cwd": "apps/client/mobile"
+            }
+        },
+        "run": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter run",
+                "cwd": "apps/client/mobile"
+            }
+        },
+        "run-dev": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter run -t lib/main_dev.dart",
+                "cwd": "apps/client/mobile"
+            }
+        },
+        "run-qa": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter run -t lib/main_qa.dart",
+                "cwd": "apps/client/mobile"
+            }
+        },
+        "build-aar": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter build aar",
+                "cwd": "apps/client/mobile"
+            },
+            "outputs": ["{workspaceRoot}/apps/client/mobile/build"]
+        },
+        "build-apk": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter build apk",
+                "cwd": "apps/client/mobile"
+            },
+            "outputs": ["{workspaceRoot}/apps/client/mobile/build"]
+        },
+        "build-appbundle": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter build appbundle",
+                "cwd": "apps/client/mobile"
+            },
+            "outputs": ["{workspaceRoot}/apps/client/mobile/build"]
+        },
+        "build-bundle": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter build bundle",
+                "cwd": "apps/client/mobile"
+            },
+            "outputs": ["{workspaceRoot}/apps/client/mobile/build"]
+        },
+        "build-ios": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter build ios",
+                "cwd": "apps/client/mobile"
+            },
+            "outputs": ["{workspaceRoot}/apps/client/mobile/build"]
+        },
+        "build-ios-framework": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter build ios-framework",
+                "cwd": "apps/client/mobile"
+            },
+            "outputs": ["{workspaceRoot}/apps/client/mobile/build"]
+        },
+        "build-ipa": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter build ipa",
+                "cwd": "apps/client/mobile"
+            },
+            "outputs": ["{workspaceRoot}/apps/client/mobile/build"]
+        },
+        "pub-get": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter pub get",
+                "cwd": "apps/client/mobile"
+            }
+        },
+        "build-runner": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter pub run build_runner build --delete-conflicting-outputs",
+                "cwd": "apps/client/mobile"
+            }
+        },
+        "icons": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter packages pub run flutter_launcher_icons:main",
+                "cwd": "apps/client/mobile"
+            }
+        },
+        "splash": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "flutter pub pub run flutter_native_splash:create",
+                "cwd": "apps/client/mobile"
+            }
+        }
+    }
+}

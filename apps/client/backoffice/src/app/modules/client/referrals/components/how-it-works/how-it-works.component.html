@@ -1,0 +1,421 @@
+@if ($isMobile()) {
+
+    @defer {
+        <div class="w-full flex flex-col gap-5 my-2.5">
+
+            <div class="rounded-[20px] p-2.5 bg-project-grandis">
+                <div class="flex flex-col gap-1 mb-5">
+                    <mat-icon svgIcon="two_persons" class="icon-size-5"></mat-icon>
+                    <span class="text-md font-plex text-project-licorice-500 leading-none">
+                        {{ 'referrals.your-referrals.earnings' | transloco }}
+                    </span>
+                </div>
+                <span class="text-4xl font-plex text-project-licorice-500">
+                    {{ $totalRevenue() | number: '1.2-2' | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }}
+                </span>
+            </div>
+
+            <div class="w-full mx-auto p-6 bg-project-wildsand rounded-[20px] shadow-md">
+                <!-- Scrollable container -->
+                <div class="overflow-x-auto">
+                    <div class="min-w-[640px]">
+                        <div class="grid grid-cols-4 gap-x-5">
+
+                            <!-- Header Section -->
+                            <div class="py-4"></div>
+                            <div class="py-4 w-fit">
+                    <span class="px-6 py-2 bg-project-red text-white rounded-full whitespace-nowrap">
+                        {{ 'referrals.how-it-works.member' | transloco }}
+                    </span>
+                            </div>
+                            <div class="py-4 w-fit">
+                    <span class="px-6 py-2 bg-[#92959D] text-white rounded-full whitespace-nowrap">
+                        {{ 'referrals.how-it-works.silver' | transloco }}
+                    </span>
+                            </div>
+                            <div class="py-4 w-fit">
+                    <span class="px-6 py-2 bg-[#E18A07] text-white rounded-full whitespace-nowrap">
+                        {{ 'referrals.how-it-works.gold' | transloco }}
+                    </span>
+                            </div>
+
+                            <!-- Status Section -->
+                            <div class="flex flex-col py-6 border-b border-b-project-lavender">
+                    <span class="text-md text-project-waterloo mb-5 px-0.5">
+                        {{ 'referrals.how-it-works.status' | transloco }}
+                    </span>
+                                <span class="text-md text-project-licorice-500 px-0.5">
+                        {{ 'referrals.how-it-works.what-need' | transloco }}
+                    </span>
+                            </div>
+                            <div class="pb-6 pt-[62px] border-b border-b-project-red">
+                    <span class="text-[15px] text-project-licorice-500 px-0.5">
+                        {{ 'referrals.how-it-works.sign-up' | transloco }}
+                    </span>
+                            </div>
+                            <div class="pb-6 pt-[62px] border-b border-b-[#92959D]">
+                    <span class="text-[15px] text-project-licorice-500 px-0.5">
+                       {{ silverGoal }} {{ 'referrals.how-it-works.referral1' | transloco }}
+                        <strong> {{ silverGoalAmount | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}</strong>
+                    </span>
+                            </div>
+                            <div class="pb-6 pt-[62px] border-b border-b-[#E18A07]">
+                    <span class="text-[15px] text-project-licorice-500 px-0.5">
+                      {{ goldGoal }}  {{ 'referrals.how-it-works.referral5' | transloco }}
+                        <strong> {{ goldGoalAmount | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}</strong>
+                    </span>
+                            </div>
+
+                            <!-- Benefits Section -->
+                            <div class="flex flex-col py-6 border-b border-b-project-lavender">
+                    <span class="text-md text-project-waterloo mb-5 px-0.5">
+                        {{ 'referrals.how-it-works.your-benefits' | transloco }}
+                    </span>
+                                <span class="text-md text-project-licorice-500 mb-5 px-0.5">
+                        {{ 'referrals.how-it-works.more-cash' | transloco }} <br>
+                                    {{ 'referrals.how-it-works.purchases' | transloco }}
+                    </span>
+                                <span class="text-md text-project-licorice-500 px-0.5">
+                        {{ 'referrals.how-it-works.share-friends' | transloco }}
+                    </span>
+                            </div>
+
+                            <div class="flex flex-col py-6 border-b border-b-project-red mt-[40px]">
+                    <span class="text-[15px] text-project-licorice-500 mb-[14px] px-0.5">
+                        {{ 'referrals.how-it-works.cash-brands' | transloco }}
+                        {{ 'referrals.how-it-works.brands' | transloco }}
+                    </span>
+                                <span class="text-[15px] text-project-licorice-500 px-0.5">
+                        {{ memberReward }}%
+                    </span>
+                            </div>
+
+                            <div class="flex flex-col py-6 border-b border-b-[#92959D] mt-[40px]">
+                                <p class="font-plex text-[15px]">
+                                    {{ 'referrals.how-it-works.member-rewards' | transloco }}
+                                </p>
+                                <p class="font-plex text-[15px] font-semibold mb-[21px] md:mb-[14px]">
+                                    + {{ silverPercentage }}%</p>
+                                <span class="text-[15px] text-project-licorice-500 px-0.5">
+                        {{ silverFriendsPercentage }}%
+                    </span>
+                            </div>
+
+                            <div class="flex flex-col py-6 border-b border-b-[#E18A07] mt-[40px]">
+                                <p class="font-plex text-[15px]">
+                                    {{ 'referrals.how-it-works.member-rewards' | transloco }}
+                                </p>
+                                <p class="font-plex text-[15px] font-semibold mb-[21px] md:mb-[14px]">
+                                    + {{ goldPercentage }}%</p>
+                                <span class="text-[15px] text-project-licorice-500 px-0.5">
+                        {{ goldFriendsPercentage }}%
+                    </span>
+                            </div>
+
+                            <!-- Referral Benefit Section -->
+                            <div class="flex flex-col py-6">
+                    <span class="text-md text-project-waterloo mb-5 px-0.5">
+                        {{ 'referrals.how-it-works.friends-benefits' | transloco }}
+                    </span>
+                                <span class="text-md text-project-licorice-500 pl-0.5 px-0.75">
+                        {{ 'referrals.how-it-works.status-recommended' | transloco }}
+                    </span>
+                            </div>
+
+                            <div class="pt-6 mt-[38px]">
+                    <span class="text-[15px] text-project-licorice-500 mt-[38px]">
+                        {{ 'referrals.how-it-works.silver' | transloco }}
+                    </span>
+                            </div>
+
+                            <div class="pt-6 mt-[38px]">
+                    <span class="text-[15px] text-project-licorice-500 mt-[38px]">
+                        {{ 'referrals.how-it-works.silver' | transloco }}
+                    </span>
+                            </div>
+
+                            <div class="pt-6 mt-[38px]">
+                    <span class="text-[15px] text-project-licorice-500">
+                        {{ 'referrals.how-it-works.silver' | transloco }}
+                    </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes Section - Outside scrollable area -->
+                <div class="flex flex-row py-6 border-t border-t-project-lavender gap-16">
+                    <div class="flex flex-col gap-5 w-full">
+            <span class="text-[15px] text-project-licorice-500">
+                {{ 'referrals.how-it-works.notes' | transloco }}
+            </span>
+                        <span class="text-sm text-project-waterloo">
+                            <strong>*</strong> {{ 'referrals.how-it-works.notes-text' | transloco }}
+            </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col bg-project-youngBlue p-6 rounded-[20px]">
+
+                <span class="font-plex text-white text-3xl mb-5 font-extralight">
+                    Reach <span
+                    class="text-project-grandis"> {{ ('membership-level.' + getNextMembershipLevel($userLevel().level)) | transloco }}</span> and unlock an extra {{ $totalRevenue() | number: '1.2-2' | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}
+                    .</span>
+
+                <span class="font-plex text-white text-[15px] text-justify font-extralight">
+                    As your status is {{ ('membership-level.' + $userLevel().level) | transloco }}
+                    , you earn {{ getInfoBaseOnMembershipLevel($userLevel().level)?.percentageOnReward }}% of your friends' all-time cashback.
+                    Reach {{ ('membership-level.' + getInfoBaseOnMembershipLevel(getNextMembershipLevel($userLevel().level))?.level) | transloco }}
+                    to unlock {{ getInfoBaseOnMembershipLevel(getNextMembershipLevel($userLevel().level))?.percentageOnReward }}
+                    %
+                     ({{ $doubleValue() | number: '1.2-2' | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}).
+                    <span class="underline"> How to reach next level?</span>
+                </span>
+
+                <progress class="progress progress-warning w-full mt-6 my-1 bg-white"
+                          [value]="$userLevel().valueSpent"
+                          [max]="$goalValue()"></progress>
+
+                <div class="flex justify-between w-full mb-8">
+                    <span class="text-project-wildsand text-sm font-plex">
+                        {{ $userLevel().valueSpent | currency: $user().currency : 'symbol-narrow' : '1.2-2' }} spent
+                    </span>
+                    <span class="text-project-wildsand text-sm font-plex">
+                        {{ $goalValue() | currency: $user().currency : 'symbol-narrow' : '1.2-2' }} Goal
+                    </span>
+                </div>
+
+                <button
+                    class="bg-white border flex items-center gap-1 border-project-licorice-500 rounded p-2.5 text-md font-plex text-project-licorice-500 cursor-copy w-fit h-7 min-h-7"
+                    [cdkCopyToClipboard]="$referralLink()" (click)="informCopy()">
+                    <mat-icon svgIcon="duplicate" class="icon-size-4"></mat-icon>
+                    {{ 'referrals.copy' | transloco }}
+                </button>
+            </div>
+        </div>
+
+    } @loading (minimum 500ms) {
+        <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+            <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+        </div>
+    }
+
+} @else {
+    <div class="flex flex-col lg:grid lg:grid-cols-[1fr_320px] gap-7 w-full lg:gap-48 font-plex mt-8">
+
+        @defer {
+            <div class="w-full">
+
+
+                <div class="w-full mx-auto p-6 bg-project-wildsand rounded-[20px] shadow-md">
+                    <div class="grid grid-cols-4 gap-x-5">
+
+                        <!-- Header Section -->
+                        <div class="py-4">
+                        </div>
+                        <div class="py-4 w-fit">
+                    <span class="px-6 py-2 bg-project-red text-white rounded-full">
+                        {{ 'referrals.how-it-works.member' | transloco }}
+                    </span>
+                        </div>
+                        <div class="py-4 w-fit">
+                    <span class="px-6 py-2 bg-[#92959D] text-white rounded-full">
+                        {{ 'referrals.how-it-works.silver' | transloco }}
+                    </span>
+                        </div>
+                        <div class="py-4 w-fit">
+                    <span class="px-6 py-2 bg-[#E18A07] text-white rounded-full">
+                        {{ 'referrals.how-it-works.gold' | transloco }}
+                    </span>
+                        </div>
+
+                        <!-- Status Section -->
+                        <div class="flex flex-col py-6 border-b border-b-project-lavender">
+                    <span class="text-md text-project-waterloo mb-5 px-0.5">
+                        {{ 'referrals.how-it-works.status' | transloco }}
+                    </span>
+                            <span class="text-md text-project-licorice-500 px-0.5">
+                        {{ 'referrals.how-it-works.what-need' | transloco }}
+                    </span>
+                        </div>
+                        <div class="pb-6 pt-[62px] border-b border-b-project-red">
+                    <span class="text-[15px] text-project-licorice-500 px-0.5">
+                        {{ 'referrals.how-it-works.sign-up' | transloco }}
+                    </span>
+                        </div>
+                        <div class="pb-6 pt-[62px] border-b border-b-[#92959D]">
+                    <span class="text-[15px] text-project-licorice-500 px-0.5">
+                       {{ silverGoal }} {{ 'referrals.how-it-works.referral1' | transloco }}
+                        <strong> {{ silverGoalAmount | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}</strong>
+                    </span>
+                        </div>
+                        <div class="pb-6 pt-[62px] border-b border-b-[#E18A07]">
+                    <span class="text-[15px] text-project-licorice-500 px-0.5">
+                      {{ goldGoal }}  {{ 'referrals.how-it-works.referral5' | transloco }}
+                        <strong> {{ goldGoalAmount | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}</strong>
+                    </span>
+                        </div>
+
+                        <!-- Benefits Section -->
+                        <div class="flex flex-col py-6 border-b border-b-project-lavender">
+                    <span class="text-md text-project-waterloo mb-5 px-0.5">
+                        {{ 'referrals.how-it-works.your-benefits' | transloco }}
+                    </span>
+                            <span class="text-md text-project-licorice-500 mb-5 px-0.5">
+                        {{ 'referrals.how-it-works.more-cash' | transloco }} <br>
+                                {{ 'referrals.how-it-works.purchases' | transloco }}
+                    </span>
+                            <span class="text-md text-project-licorice-500 px-0.5">
+                        {{ 'referrals.how-it-works.share-friends' | transloco }}
+                    </span>
+                        </div>
+
+                        <div class="flex flex-col py-6 border-b border-b-project-red mt-[40px]">
+                    <span
+                        class="hidden md:block lg:hidden xl:block text-[15px] text-project-licorice-500 mb-[14px] px-0.5">
+                        {{ 'referrals.how-it-works.cash-brands' | transloco }} <br>
+                        {{ 'referrals.how-it-works.brands' | transloco }}
+                    </span>
+                            <span
+                                class="block md:hidden lg:block xl:hidden text-[15px] text-project-licorice-500 mb-[14px] px-0.5">
+                        {{ 'referrals.how-it-works.cash-brands' | transloco }}
+                                {{ 'referrals.how-it-works.brands' | transloco }}
+                    </span>
+                            <span class="text-[15px] text-project-licorice-500 px-0.5">
+                        {{ memberReward }}%
+                    </span>
+                        </div>
+
+                        <div class="flex flex-col py-6 border-b border-b-[#92959D] mt-[40px]">
+                            <p class="font-plex text-[15px]">
+                                {{ 'referrals.how-it-works.member-rewards' | transloco }}
+                            </p>
+                            <p class="font-plex text-[15px] font-semibold mb-[21px] md:mb-[14px]">
+                                + {{ silverPercentage }}%</p>
+
+                            <span class="text-[15px] text-project-licorice-500 px-0.5">
+                        {{ silverFriendsPercentage }}%
+                    </span>
+                        </div>
+
+                        <div class="flex flex-col py-6 border-b border-b-[#E18A07] mt-[40px]">
+                            <p class="font-plex text-[15px]">
+                                {{ 'referrals.how-it-works.member-rewards' | transloco }}
+                            </p>
+                            <p class="font-plex text-[15px] font-semibold mb-[21px] md:mb-[14px]">
+                                + {{ goldPercentage }}%</p>
+
+                            <span class="text-[15px] text-project-licorice-500 px-0.5">
+                        {{ goldFriendsPercentage }}%
+                    </span>
+                        </div>
+
+                        <!-- Referral Benefit Section -->
+                        <div class="flex flex-col py-6">
+                    <span class="text-md text-project-waterloo mb-5 px-0.5">
+                        {{ 'referrals.how-it-works.friends-benefits' | transloco }}
+                    </span>
+                            <span class="text-md text-project-licorice-500 pl-0.5 px-0.75">
+                        {{ 'referrals.how-it-works.status-recommended' | transloco }}
+                    </span>
+                        </div>
+
+                        <div class="pt-6 mt-[38px]">
+                    <span class="text-[15px] text-project-licorice-500 mt-[38px]">
+                        {{ 'referrals.how-it-works.silver' | transloco }}
+                    </span>
+                        </div>
+
+                        <div class="pt-6 mt-[38px]">
+                    <span class="text-[15px] text-project-licorice-500 mt-[38px]">
+                        {{ 'referrals.how-it-works.silver' | transloco }}
+                    </span>
+                        </div>
+
+                        <div class="pt-6 mt-[38px]">
+                    <span class="text-[15px] text-project-licorice-500">
+                        {{ 'referrals.how-it-works.silver' | transloco }}
+                    </span>
+                        </div>
+
+                        <!-- Notes Section -->
+                        <div class="flex flex-row py-6 border-t border-t-project-lavender col-span-4 gap-16">
+                            <div class="flex flex-col gap-5 w-1/2">
+                        <span class="text-[15px] text-project-licorice-500">
+                            {{ 'referrals.how-it-works.notes' | transloco }}
+                        </span>
+                                <span class="text-sm text-project-waterloo">
+                                    <strong>*</strong> {{ 'referrals.how-it-works.notes-text' | transloco }}
+                        </span>
+                            </div>
+
+                            <div class="w-1/2">
+                                <img [ngSrc]="'../../../../../../assets/images/referrals/ref_img.webp'" width="20"
+                                     height="10" alt="referral-images">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col w-1/2 lg:w-full gap-5 mx-auto">
+                <!--        Yellow box-->
+                <div class="rounded-[20px] px-[25px] pt-9 pb-[25px] bg-project-grandis">
+                    <div class="flex flex-row gap-2.5 mb-[45px] items-center">
+                        <mat-icon svgIcon="two_persons" class="icon-size-5"></mat-icon>
+                        <span class="text-md font-plex text-project-licorice-500 leading-[30px]">
+                    {{ 'referrals.your-referrals.earnings' | transloco }}
+                </span>
+                    </div>
+                    <span class="text-6xl font-plex text-project-licorice-500">
+                    {{ $totalRevenue() | number: '1.2-2' | currency: $user()?.currency : 'symbol-narrow' : '1.2-2' }}
+            </span>
+                </div>
+
+                <!--        Blue box-->
+                <div class="flex flex-col bg-project-youngBlue pl-[25px] pr-9 pt-10 pb-[25px] rounded-[20px]">
+
+                <span class="font-plex text-white text-4xl mb-5 font-extralight">
+            Reach <span
+                    class="text-project-grandis"> {{ ('membership-level.' + getNextMembershipLevel($userLevel().level)) | transloco }}</span> and unlock an extra {{ $totalRevenue() | number: '1.2-2' | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}
+                    .
+          </span>
+
+                    <span class="font-plex text-white text-[15px] text-justify font-extralight">
+                    As your status is {{ ('membership-level.' + $userLevel().level) | transloco }}
+                        , you earn {{ getInfoBaseOnMembershipLevel($userLevel().level)?.percentageOnReward }}% of your friends' all-time cashback.
+                    Reach {{ ('membership-level.' + getInfoBaseOnMembershipLevel(getNextMembershipLevel($userLevel().level))?.level) | transloco }}
+                        to unlock {{ getInfoBaseOnMembershipLevel(getNextMembershipLevel($userLevel().level))?.percentageOnReward }}
+                        %
+                     ({{ $doubleValue() | number: '1.2-2' | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}).
+                    <span class="underline"> How to reach next level?</span>
+          </span>
+
+                    <progress class="progress progress-warning w-full mt-[25px] my-1 bg-white"
+                              [value]="$userLevel().valueSpent"
+                              [max]="$goalValue()"></progress>
+
+                    <div class="flex justify-between w-full mb-8">
+            <span class="text-project-wildsand text-sm font-plex">
+              {{ $userLevel().valueSpent | currency: $user().currency : 'symbol-narrow' : '1.2-2' }} spent
+            </span>
+                        <span class="text-project-wildsand text-sm font-plex">
+              {{ $goalValue() | currency: $user().currency : 'symbol-narrow' : '1.2-2' }} Goal
+            </span>
+                    </div>
+
+                    <img [ngSrc]="'../../../../../../assets/images/referrals/info.webp'" width="20" height="10"
+                         alt="ref-info-cont" class="pl-3">
+
+                </div>
+
+            </div>
+        } @loading (minimum 500ms) {
+            <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+                <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+            </div>
+        }
+    </div>
+}

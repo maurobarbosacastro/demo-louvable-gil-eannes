@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0nprfrh" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.30.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+  <bpmn:collaboration id="Collaboration_1r9fwku">
+    <bpmn:participant id="Participant_0upo9yn" name="USER MIGRATION" processRef="user-migration-flow" />
+    <bpmn:textAnnotation id="TextAnnotation_1m5zjoj">
+      <bpmn:text>Create user from csv</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1tpqn57" associationDirection="None" sourceRef="create-user-from-migration" targetRef="TextAnnotation_1m5zjoj" />
+    <bpmn:textAnnotation id="TextAnnotation_0evnzwh">
+      <bpmn:text>Validate if action != "UPDATE_PASSWORD"</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1t2zmqa" associationDirection="None" sourceRef="verify-user-from-migration" targetRef="TextAnnotation_0evnzwh" />
+  </bpmn:collaboration>
+  <bpmn:process id="user-migration-flow" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_012bwoa</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_0e7dq0e">
+      <bpmn:incoming>Flow_07m3d3a</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_012bwoa" sourceRef="StartEvent_1" targetRef="create-user-from-migration" />
+    <bpmn:sequenceFlow id="Flow_07m3d3a" sourceRef="verify-user-from-migration" targetRef="Event_0e7dq0e" />
+    <bpmn:sequenceFlow id="Flow_0h6uomf" sourceRef="create-user-from-migration" targetRef="verify-user-from-migration" />
+    <bpmn:task id="create-user-from-migration" name="Create user from migration">
+      <bpmn:incoming>Flow_012bwoa</bpmn:incoming>
+      <bpmn:outgoing>Flow_0h6uomf</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:userTask id="verify-user-from-migration" name="Verify process exist">
+      <bpmn:incoming>Flow_0h6uomf</bpmn:incoming>
+      <bpmn:outgoing>Flow_07m3d3a</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1r9fwku">
+      <bpmndi:BPMNShape id="Participant_0upo9yn_di" bpmnElement="Participant_0upo9yn" isHorizontal="true">
+        <dc:Bounds x="160" y="110" width="620" height="240" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="222" y="212" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0e7dq0e_di" bpmnElement="Event_0e7dq0e">
+        <dc:Bounds x="692" y="212" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_123ulh8_di" bpmnElement="create-user-from-migration">
+        <dc:Bounds x="320" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1gr0d3r_di" bpmnElement="verify-user-from-migration">
+        <dc:Bounds x="520" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_012bwoa_di" bpmnElement="Flow_012bwoa">
+        <di:waypoint x="258" y="230" />
+        <di:waypoint x="320" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07m3d3a_di" bpmnElement="Flow_07m3d3a">
+        <di:waypoint x="620" y="230" />
+        <di:waypoint x="692" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h6uomf_di" bpmnElement="Flow_0h6uomf">
+        <di:waypoint x="420" y="230" />
+        <di:waypoint x="520" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1t2zmqa_di" bpmnElement="Association_1t2zmqa">
+        <di:waypoint x="612" y="190" />
+        <di:waypoint x="643" y="161" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1tpqn57_di" bpmnElement="Association_1tpqn57">
+        <di:waypoint x="412" y="190" />
+        <di:waypoint x="443" y="161" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_0evnzwh_di" bpmnElement="TextAnnotation_0evnzwh">
+        <dc:Bounds x="620" y="120" width="150" height="41" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1m5zjoj_di" bpmnElement="TextAnnotation_1m5zjoj">
+        <dc:Bounds x="420" y="120" width="100" height="41" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

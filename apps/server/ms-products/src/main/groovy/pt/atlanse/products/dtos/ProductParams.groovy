@@ -1,0 +1,23 @@
+package pt.atlanse.products.dtos
+
+import groovy.transform.TupleConstructor
+import io.micronaut.core.annotation.Introspected
+import io.micronaut.core.annotation.Nullable
+import io.micronaut.serde.annotation.Serdeable
+
+@Introspected
+@TupleConstructor
+@Serdeable.Deserializable
+class ProductParams {
+    @Nullable
+    String name
+
+    @Nullable
+    String brand
+
+    @Nullable
+    String department
+
+    @Nullable
+    String state
+}

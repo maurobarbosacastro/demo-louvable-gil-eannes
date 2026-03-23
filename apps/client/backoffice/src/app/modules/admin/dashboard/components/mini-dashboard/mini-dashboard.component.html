@@ -1,0 +1,19 @@
+<div class="w-full">
+    <atl-ng-table [tableConfiguration]="tableConfig()"
+                  [bodyCustomTemplate]="bodyCustomTemplate"/>
+
+    <ng-template #bodyCustomTemplate let-implicit>
+        @if (implicit.row.rowValue === 'Warning') {
+            @if (implicit.column.id === 'rowValue' || implicit.rowVal === defaultValue) {
+                <span class="text-base">{{ implicit.rowVal }}</span>
+            } @else {
+                <div class="flex gap-2 items-center hover:underline hover:cursor-pointer hover:decoration-project-red" (click)="navigateToCashback(implicit)">
+                    <span class="text-project-red text-normal">{{ implicit.rowVal }}</span>
+                    <mat-icon svgIcon="warning-info" class="icon-size-5"></mat-icon>
+                </div>
+            }
+        } @else {
+            <span>{{ implicit.rowVal }}</span>
+        }
+    </ng-template>
+</div>

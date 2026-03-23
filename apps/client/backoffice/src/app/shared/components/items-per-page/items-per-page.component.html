@@ -1,0 +1,14 @@
+<div class="flex items-center h-10">
+    <p class="pl-8">{{'items-per-page.items-per-page' | transloco}}</p>
+        <div *ngIf="options as option" class="scale-75">
+            <app-select
+                    id="items-per-page"
+                    [options]="option"
+                    [emptyOption]="false"
+                    (valueChange)="selectItem($event)"
+                    [initValue]="default"
+                    [placeholder]="defaultItemsPerPage">
+            </app-select>
+    </div>
+    <p  class="pr-2 "><b>{{minItemNumber}}</b>-<b>{{maxItemNumber}}</b> {{'items-per-page.of' | transloco}} <b>{{totalItems}}</b> </p>
+</div>

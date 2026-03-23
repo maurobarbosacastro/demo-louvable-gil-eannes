@@ -1,0 +1,22 @@
+<div class="rounded-3xl flex items-center justify-between bg-feamoney-purple dark z-50 h-10 w-64">
+    <button (click)="previousPage()"
+        [disabled]="page <= 1"
+        class="text-white flex">
+        <mat-icon
+            class="text-white ml-4 mr-2 w-4 h-4"
+            svgIcon="heroicons_solid:arrow-left"
+        >
+        </mat-icon>
+        Prev
+    </button>
+    <span>{{page}}/{{total}}</span>
+    <button (click)="nextPage()"
+        [disabled]="page >= total"
+        class="text-white flex">Next
+        <mat-icon
+            class="text-white mr-4 ml-2 w-4 h-4"
+            svgIcon="heroicons_solid:arrow-right"
+        >
+        </mat-icon>
+    </button>
+</div>

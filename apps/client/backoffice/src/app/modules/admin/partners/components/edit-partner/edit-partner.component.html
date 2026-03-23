@@ -1,0 +1,248 @@
+<div class="flex flex-col justify-between h-full overflow-x-hidden px-2 pt-2 pb-8">
+
+    <div>
+        <div class="flex justify-end mb-15">
+            <mat-icon svgIcon="close-modal" class="cursor-pointer" (click)="closeModal()"></mat-icon>
+        </div>
+
+        <h2 class="text-4xl text-project-licorice-500">{{ $editPartner() ? ('partner.edit-partner' | transloco) : ('partner.new-partner' | transloco) }}</h2>
+        <form [formGroup]="partnerForm" class="mt-10">
+            <div class="flex flex-col">
+
+                <!-- Name field -->
+                <div class="mb-6">
+                    <label for="name"
+                           class="block text-project-waterloo font-normal text-md">{{ 'partner.name' | transloco }}</label>
+                    <div class="relative">
+                        <input type="text" id="name"
+                               [formControl]="nameControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': nameControl.invalid && !nameControl.untouched && nameControl.dirty}"
+                               class="w-full pb-2 pt-1 border-b border-project-brand-500 placeholder:text-project-waterloo focus:outline-none  focus:border-licorice text-licorice">
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left" *ngIf="nameControl.invalid && !nameControl.untouched && nameControl.dirty"
+                                 [attr.data-tip]="nameControl.hasError('required') ? ('partner.name-required' | transloco) : ('partner.name-invalid' | transloco)">
+                                <mat-icon
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Code field -->
+                <div class="mb-6">
+                    <label for="code"
+                           class="block text-project-waterloo font-normal text-md">{{ 'partner.code' | transloco }}</label>
+                    <div class="relative">
+                        <input type="text" id="code" readonly
+                               [formControl]="codeControl"
+                               class="w-full pb-2 pt-1 border-b border-project-brand-500 placeholder:text-project-waterloo focus:outline-none  focus:border-licorice text-licorice">
+                    </div>
+                </div>
+
+                <!-- eCommercePlatform field -->
+                <div class="mb-6">
+                    <label for="eCommercePlatform"
+                           class="block text-project-waterloo font-normal text-md">{{ 'partner.eCommercePlatform' | transloco }}</label>
+                    <div class="relative">
+                        <input type="text" id="eCommercePlatform"
+                               [formControl]="eCommercePlatformControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': eCommercePlatformControl.invalid && !eCommercePlatformControl.untouched && eCommercePlatformControl.dirty}"
+                               class="w-full pb-2 pt-1 border-b border-project-brand-500 placeholder:text-project-waterloo focus:outline-none  focus:border-licorice text-licorice">
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 *ngIf="eCommercePlatformControl.invalid && !eCommercePlatformControl.untouched && eCommercePlatformControl.dirty"
+                                 [attr.data-tip]="eCommercePlatformControl.hasError('required') ? ('partner.eCommercePlatform-required' | transloco) : ('partner.eCommercePlatform-invalid' | transloco) ">
+                                <mat-icon
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CommissionRate field -->
+                <!--<div class="mb-6">
+                    <label for="commissionRate"
+                           class="block text-project-waterloo font-normal text-md">{{ 'partner.commissionRate' | transloco }}</label>
+                    <div class="relative">
+                        <input type="number" min="0" step="0.1" id="commissionRate"
+                               [formControl]="commissionRateControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': commissionRateControl.invalid && !commissionRateControl.untouched && commissionRateControl.dirty}"
+                               class="w-full pb-2 pt-1 border-b border-project-brand-500 placeholder:text-project-waterloo focus:outline-none  focus:border-licorice text-licorice">
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 *ngIf="commissionRateControl.invalid && !commissionRateControl.untouched && commissionRateControl.dirty"
+                                 [attr.data-tip]="getCommissionRateErrorMessage() | transloco">
+                                <mat-icon
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <!-- ValidationPeriod field -->
+                <div class="mb-6">
+                    <label for="validationPeriod" class="block text-project-waterloo font-normal text-md">{{ 'partner.validationPeriod' | transloco }}</label>
+                    <div class="relative">
+                        <input type="number" min="0" step="1" id="validationPeriod"
+                               [formControl]="validationPeriodControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': validationPeriodControl.invalid && !validationPeriodControl.untouched && validationPeriodControl.dirty}"
+                               class="w-full pb-2 pt-1 border-b border-project-brand-500 placeholder:text-project-waterloo focus:outline-none  focus:border-licorice text-licorice">
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 *ngIf="validationPeriodControl.invalid && !validationPeriodControl.untouched && validationPeriodControl.dirty"
+                                 [attr.data-tip]="validationPeriodControl.hasError('required') ? ('partner.validationPeriod-required' | transloco) : ('partner.validationPeriod-invalid' | transloco) ">
+                                <mat-icon
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DeepLink field -->
+                <div class="mb-6">
+                    <label for="deepLink"
+                           class="block text-project-waterloo font-normal text-md">{{ 'partner.deepLink' | transloco }}</label>
+                    <div class="relative">
+                        <input type="text" id="deepLink"
+                               [formControl]="deepLinkControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': deepLinkControl.invalid && !deepLinkControl.untouched && deepLinkControl.dirty}"
+                               class="w-full pb-2 pt-1 border-b border-project-brand-500 placeholder:text-project-waterloo focus:outline-none  focus:border-licorice text-licorice">
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 *ngIf="deepLinkControl.invalid && !deepLinkControl.untouched && deepLinkControl.dirty"
+                                 [attr.data-tip]="deepLinkControl.hasError('required') ? ('partner.deepLink-required' | transloco) : ('partner.deepLink-invalid' | transloco) ">
+                                <mat-icon
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DeepLinkIdentifier field -->
+                <div class="mb-6">
+                    <label for="deepLinkIdentifier"
+                           class="block text-project-waterloo font-normal text-md">{{ 'partner.deepLinkIdentifier' | transloco }}</label>
+                    <div class="relative">
+                        <input type="text" id="deepLinkIdentifier"
+                               [formControl]="deepLinkIdentifierControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': deepLinkIdentifierControl.invalid && !deepLinkIdentifierControl.untouched && deepLinkIdentifierControl.dirty}"
+                               class="w-full pb-2 pt-1 border-b border-project-brand-500 placeholder:text-project-waterloo focus:outline-none  focus:border-licorice text-licorice">
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 *ngIf="deepLinkIdentifierControl.invalid && !deepLinkIdentifierControl.untouched && deepLinkIdentifierControl.dirty"
+                                 [attr.data-tip]="deepLinkIdentifierControl.hasError('required') ? ('partner.deepLinkIdentifier-required' | transloco) : ('partner.deepLinkIdentifier-invalid' | transloco) ">
+                                <mat-icon
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SubIdentifier field -->
+                <div class="mb-6">
+                    <label for="subIdentifier"
+                           class="block text-project-waterloo font-normal text-md">{{ 'partner.subIdentifier' | transloco }}</label>
+                    <div class="relative">
+                        <input type="text" id="subIdentifier"
+                               [formControl]="subIdentifierControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': subIdentifierControl.invalid && !subIdentifierControl.untouched && subIdentifierControl.dirty}"
+                               class="w-full pb-2 pt-1 border-b border-project-brand-500 placeholder:text-project-waterloo focus:outline-none  focus:border-licorice text-licorice">
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 *ngIf="subIdentifierControl.invalid && !subIdentifierControl.untouched && subIdentifierControl.dirty"
+                                 [attr.data-tip]="subIdentifierControl.hasError('required') ? ('partner.subIdentifier-required' | transloco) : ('partner.subIdentifier-invalid' | transloco) ">
+                                <mat-icon
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PercentageTagpeak field -->
+                <!--<div class="mb-6">
+                    <label for="percentageTagpeak"
+                           class="block text-project-waterloo font-normal text-md">{{ 'partner.percentageTagpeak' | transloco }}</label>
+                    <div class="relative">
+                        <input type="number" min="0" max="100" step="0.1" id="percentageTagpeak"
+                               [formControl]="percentageTagpeakControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': percentageTagpeakControl.invalid && !percentageTagpeakControl.untouched && percentageTagpeakControl.dirty}"
+                               class="w-full pb-2 pt-1 border-b border-project-brand-500 placeholder:text-project-waterloo focus:outline-none  focus:border-licorice text-licorice">
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 *ngIf="percentageTagpeakControl.invalid && !percentageTagpeakControl.untouched && percentageTagpeakControl.dirty"
+                                 [attr.data-tip]="getPercentageTagpeakErrorMessage() | transloco">
+                                <mat-icon
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                &lt;!&ndash; PercentageInvested field &ndash;&gt;
+                <div class="mb-6">
+                    <label for="percentageInvested"
+                           class="block text-project-waterloo font-normal text-md">{{ 'partner.percentageInvested' | transloco }}</label>
+                    <div class="relative">
+                        <input type="number" min="0" max="100" step="0.1" id="percentageInvested"
+                               [formControl]="percentageInvestedControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': percentageInvestedControl.invalid && !percentageInvestedControl.untouched && percentageInvestedControl.dirty}"
+                               class="w-full pb-2 pt-1 border-b border-project-brand-500 placeholder:text-project-waterloo focus:outline-none  focus:border-licorice text-licorice">
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 *ngIf="percentageInvestedControl.invalid && !percentageInvestedControl.untouched && percentageInvestedControl.dirty"
+                                 [attr.data-tip]="getPercentageInvestedErrorMessage() | transloco">
+                                <mat-icon
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+            </div>
+        </form>
+
+    </div>
+
+</div>
+
+<div class="flex justify-between">
+    <button
+        class="py-2.5 px-10 border border-project-licorice-500 bg-white  text-project-licorice-500 rounded  textButton flex justify-center cursor-pointer my-4"
+        type="button"
+        (click)="closeModal()">
+        {{ 'misc.cancel' | transloco }}
+    </button>
+    <button
+        class="py-2.5 px-10 bg-project-licorice-500 text-white rounded  textButton flex justify-center cursor-pointer my-4"
+        (click)="savePartner()">
+        {{ 'misc.save' | transloco }}
+
+    </button>
+</div>

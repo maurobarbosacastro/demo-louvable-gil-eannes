@@ -1,0 +1,7 @@
+micronaut:
+  application:
+    name: msDataman
+netty:
+  default:
+    allocator:
+      max-order: 3

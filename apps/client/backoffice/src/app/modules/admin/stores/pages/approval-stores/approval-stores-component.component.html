@@ -1,0 +1,35 @@
+
+<atl-ng-table *ngIf="$tableConfig()"
+              class="custom-table"
+              id="table"
+              [tableConfiguration]="$tableConfig()"
+              [bodyCustomTemplate]="bodyCustomTemplate"
+              [totalPages]="total"
+              [totalSize]="totalSize"
+              [resetPaginator]="page$ | async"
+              (onActionClick)="clickTableAction($event)"
+              (onSortAndPageChange)="onSortAndPageChange($event)" />
+
+<ng-template #bodyCustomTemplate let-implicit>
+    @switch (implicit.column.id) {
+        @case ('name') {
+            <span class="text-base" [matTooltip]="implicit.row.uuid">
+                {{ implicit.rowVal }}
+            </span>
+        }
+        @case ('status') {
+            <span class="text-base">{{ implicit.rowVal | titlecase }}</span>
+        }
+        @case ('createdAt') {
+            <span class="text-base">
+                {{ implicit.rowVal | date: 'dd/MM/yyyy' }}
+            </span>
+        }
+        @case ('user') {
+            <span class="text-base" [matTooltip]="implicit.row.user.uuid">
+                {{ implicit.row.user.name }} ({{implicit.row.user.email}})
+            </span>
+
+        }
+    }
+</ng-template>

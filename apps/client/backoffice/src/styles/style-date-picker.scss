@@ -1,0 +1,9 @@
+::ng-deep .mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical){
+    border-color: theme('colors.project.youngBlue') !important;
+    background-color: white !important;
+}
+
+::ng-deep .mat-calendar-body-selected {
+    background-color: theme('colors.project.youngBlue') !important;
+    color: white !important;
+}

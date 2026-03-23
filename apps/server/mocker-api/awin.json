@@ -1,0 +1,1351 @@
+[
+  {
+    "id": 1686303587,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 11640,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "approved",
+    "commissionAmount": {
+      "amount": 0.09,
+      "currency": "EUR"
+    },
+    "saleAmount": {
+      "amount": 1.61,
+      "currency": "EUR"
+    },
+    "ipHash": "5689983364951891909",
+    "customerCountry": "US",
+    "clickRefs": {
+      "clickRef": "TP-1"
+    },
+    "clickDate": "2024-09-30T11:25:00",
+    "transactionDate": "2024-09-30T11:36:00",
+    "validationDate": "2024-10-31T08:42:00",
+    "type": "Commission group transaction",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 662,
+    "amended": false,
+    "amendReason": null,
+    "oldSaleAmount": null,
+    "oldCommissionAmount": null,
+    "clickDevice": "Apple Mac",
+    "transactionDevice": "Unknown",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "ES",
+    "orderRef": null,
+    "customParameters": null,
+    "transactionParts": [
+      {
+        "commissionGroupId": 244203,
+        "amount": 1.61,
+        "commissionAmount": 0.09,
+        "advertiserCost": null,
+        "commissionGroupCode": "7.0",
+        "commissionGroupName": "other Categories",
+        "trackedParts": [
+          {
+            "code": "7.0",
+            "amount": 1.8,
+            "currency": "USD"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": {
+      "amount": 1.8,
+      "currency": "USD"
+    },
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  },
+  {
+    "id": 1686303077,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 11640,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "approved",
+    "commissionAmount": {
+      "amount": 0.03,
+      "currency": "EUR"
+    },
+    "saleAmount": {
+      "amount": 0.54,
+      "currency": "EUR"
+    },
+    "ipHash": "-6761281198068663310",
+    "customerCountry": "US",
+    "clickRefs": {
+      "clickRef": "TP-1"
+    },
+    "clickDate": "2024-09-30T11:25:00",
+    "transactionDate": "2024-09-30T11:36:00",
+    "validationDate": "2024-12-27T18:42:00",
+    "type": "Commission group transaction",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 662,
+    "amended": false,
+    "amendReason": null,
+    "oldSaleAmount": null,
+    "oldCommissionAmount": null,
+    "clickDevice": "Apple Mac",
+    "transactionDevice": "Unknown",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "ES",
+    "orderRef": null,
+    "customParameters": null,
+    "transactionParts": [
+      {
+        "commissionGroupId": 244203,
+        "amount": 0.54,
+        "commissionAmount": 0.03,
+        "advertiserCost": null,
+        "commissionGroupCode": "7.0",
+        "commissionGroupName": "other Categories",
+        "trackedParts": [
+          {
+            "code": "7.0",
+            "amount": 0.6,
+            "currency": "USD"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": {
+      "amount": 0.6,
+      "currency": "USD"
+    },
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  },
+  {
+    "id": 1686174997,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 30759,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "approved",
+    "commissionAmount": {
+      "amount": 1.31,
+      "currency": "EUR"
+    },
+    "saleAmount": {
+      "amount": 65.62,
+      "currency": "EUR"
+    },
+    "ipHash": "7774840690929079045",
+    "customerCountry": "PT",
+    "clickRefs": {
+      "clickRef": "TP-2"
+    },
+    "clickDate": "2024-09-30T07:35:00",
+    "transactionDate": "2024-09-30T07:38:00",
+    "validationDate": "2024-11-11T15:00:00",
+    "type": "Commission group transaction",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 216,
+    "amended": false,
+    "amendReason": null,
+    "oldSaleAmount": null,
+    "oldCommissionAmount": null,
+    "clickDevice": "Unknown",
+    "transactionDevice": "Unknown",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "PT",
+    "orderRef": null,
+    "customParameters": null,
+    "transactionParts": [
+      {
+        "commissionGroupId": 372325,
+        "amount": 65.62,
+        "commissionAmount": 1.31,
+        "advertiserCost": null,
+        "commissionGroupCode": "EXISTING",
+        "commissionGroupName": "EXISTING",
+        "trackedParts": [
+          {
+            "code": "EXISTING",
+            "amount": 65.62,
+            "currency": "EUR"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": null,
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  },
+  {
+    "id": 1686029359,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 30759,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "approved",
+    "commissionAmount": {
+      "amount": 1.83,
+      "currency": "EUR"
+    },
+    "saleAmount": {
+      "amount": 91.49,
+      "currency": "EUR"
+    },
+    "ipHash": "-1024395037335063530",
+    "customerCountry": "PT",
+    "clickRefs": {
+      "clickRef": "TP-3"
+    },
+    "clickDate": "2024-09-29T23:03:00",
+    "transactionDate": "2024-09-29T23:09:00",
+    "validationDate": "2024-11-11T15:00:00",
+    "type": "Commission group transaction",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 382,
+    "amended": false,
+    "amendReason": null,
+    "oldSaleAmount": null,
+    "oldCommissionAmount": null,
+    "clickDevice": "Android Mobile",
+    "transactionDevice": "Android Mobile",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "PT",
+    "orderRef": null,
+    "customParameters": null,
+    "transactionParts": [
+      {
+        "commissionGroupId": 372325,
+        "amount": 91.49,
+        "commissionAmount": 1.83,
+        "advertiserCost": null,
+        "commissionGroupCode": "EXISTING",
+        "commissionGroupName": "EXISTING",
+        "trackedParts": [
+          {
+            "code": "EXISTING",
+            "amount": 91.49,
+            "currency": "EUR"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": null,
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  },
+  {
+    "id": 1686303081,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 11640,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "approved",
+    "commissionAmount": {
+      "amount": 0.14,
+      "currency": "EUR"
+    },
+    "saleAmount": {
+      "amount": 2.58,
+      "currency": "EUR"
+    },
+    "ipHash": "1060661986579276425",
+    "customerCountry": "US",
+    "clickRefs": {
+      "clickRef": "TP-1"
+    },
+    "clickDate": "2024-09-30T11:25:00",
+    "transactionDate": "2024-09-30T11:36:00",
+    "validationDate": "2024-10-18T15:26:00",
+    "type": "Commission group transaction",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 662,
+    "amended": false,
+    "amendReason": null,
+    "oldSaleAmount": null,
+    "oldCommissionAmount": null,
+    "clickDevice": "Apple Mac",
+    "transactionDevice": "Unknown",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "ES",
+    "orderRef": null,
+    "customParameters": null,
+    "transactionParts": [
+      {
+        "commissionGroupId": 244203,
+        "amount": 2.58,
+        "commissionAmount": 0.14,
+        "advertiserCost": null,
+        "commissionGroupCode": "7.0",
+        "commissionGroupName": "other Categories",
+        "trackedParts": [
+          {
+            "code": "7.0",
+            "amount": 2.89,
+            "currency": "USD"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": {
+      "amount": 2.89,
+      "currency": "USD"
+    },
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  },
+  {
+    "id": 1686303398,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 11640,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "pending",
+    "commissionAmount": {
+      "amount": 0.01,
+      "currency": "EUR"
+    },
+    "saleAmount": {
+      "amount": 0.13,
+      "currency": "EUR"
+    },
+    "ipHash": "-2853112236784725498",
+    "customerCountry": "US",
+    "clickRefs": {
+      "clickRef": "TP-1"
+    },
+    "clickDate": "2024-09-30T11:25:00",
+    "transactionDate": "2024-09-30T11:36:00",
+    "validationDate": null,
+    "type": "Commission group transaction",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 661,
+    "amended": false,
+    "amendReason": null,
+    "oldSaleAmount": null,
+    "oldCommissionAmount": null,
+    "clickDevice": "Apple Mac",
+    "transactionDevice": "Unknown",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "ES",
+    "orderRef": null,
+    "customParameters": null,
+    "transactionParts": [
+      {
+        "commissionGroupId": 244203,
+        "amount": 0.13,
+        "commissionAmount": 0.01,
+        "advertiserCost": null,
+        "commissionGroupCode": "7.0",
+        "commissionGroupName": "other Categories",
+        "trackedParts": [
+          {
+            "code": "7.0",
+            "amount": 0.15,
+            "currency": "USD"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": {
+      "amount": 0.15,
+      "currency": "USD"
+    },
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  },
+  {
+    "id": 1686303414,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 11640,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "approved",
+    "commissionAmount": {
+      "amount": 0.09,
+      "currency": "EUR"
+    },
+    "saleAmount": {
+      "amount": 1.61,
+      "currency": "EUR"
+    },
+    "ipHash": "-439646875162241098",
+    "customerCountry": "US",
+    "clickRefs": {
+      "clickRef": "TP-1"
+    },
+    "clickDate": "2024-09-30T11:25:00",
+    "transactionDate": "2024-09-30T11:36:00",
+    "validationDate": "2024-11-27T20:40:00",
+    "type": "Commission group transaction",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 662,
+    "amended": false,
+    "amendReason": null,
+    "oldSaleAmount": null,
+    "oldCommissionAmount": null,
+    "clickDevice": "Apple Mac",
+    "transactionDevice": "Unknown",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "ES",
+    "orderRef": null,
+    "customParameters": null,
+    "transactionParts": [
+      {
+        "commissionGroupId": 244203,
+        "amount": 1.61,
+        "commissionAmount": 0.09,
+        "advertiserCost": null,
+        "commissionGroupCode": "7.0",
+        "commissionGroupName": "other Categories",
+        "trackedParts": [
+          {
+            "code": "7.0",
+            "amount": 1.8,
+            "currency": "USD"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": {
+      "amount": 1.8,
+      "currency": "USD"
+    },
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  },
+  {
+    "id": 1686303358,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 11640,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "approved",
+    "commissionAmount": {
+      "amount": 0.9,
+      "currency": "EUR"
+    },
+    "saleAmount": {
+      "amount": 16.79,
+      "currency": "EUR"
+    },
+    "ipHash": "-439646875162241098",
+    "customerCountry": "US",
+    "clickRefs": {
+      "clickRef": "TP-1"
+    },
+    "clickDate": "2024-09-30T11:25:00",
+    "transactionDate": "2024-09-30T11:36:00",
+    "validationDate": "2024-10-18T14:56:00",
+    "type": "Commission group transaction",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 662,
+    "amended": false,
+    "amendReason": null,
+    "oldSaleAmount": null,
+    "oldCommissionAmount": null,
+    "clickDevice": "Apple Mac",
+    "transactionDevice": "Unknown",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "ES",
+    "orderRef": null,
+    "customParameters": null,
+    "transactionParts": [
+      {
+        "commissionGroupId": 244203,
+        "amount": 16.79,
+        "commissionAmount": 0.9,
+        "advertiserCost": null,
+        "commissionGroupCode": "7.0",
+        "commissionGroupName": "other Categories",
+        "trackedParts": [
+          {
+            "code": "7.0",
+            "amount": 18.79,
+            "currency": "USD"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": {
+      "amount": 18.79,
+      "currency": "USD"
+    },
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  },
+  {
+    "id": 1686303040,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 11640,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "approved",
+    "commissionAmount": {
+      "amount": 0.14,
+      "currency": "EUR"
+    },
+    "saleAmount": {
+      "amount": 2.54,
+      "currency": "EUR"
+    },
+    "ipHash": "-4920649882161588066",
+    "customerCountry": "US",
+    "clickRefs": {
+      "clickRef": "TP-1"
+    },
+    "clickDate": "2024-09-30T11:25:00",
+    "transactionDate": "2024-09-30T11:36:00",
+    "validationDate": "2024-10-18T14:56:00",
+    "type": "Commission group transaction",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 662,
+    "amended": false,
+    "amendReason": null,
+    "oldSaleAmount": null,
+    "oldCommissionAmount": null,
+    "clickDevice": "Apple Mac",
+    "transactionDevice": "Unknown",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "ES",
+    "orderRef": null,
+    "customParameters": null,
+    "transactionParts": [
+      {
+        "commissionGroupId": 244203,
+        "amount": 2.54,
+        "commissionAmount": 0.14,
+        "advertiserCost": null,
+        "commissionGroupCode": "7.0",
+        "commissionGroupName": "other Categories",
+        "trackedParts": [
+          {
+            "code": "7.0",
+            "amount": 2.84,
+            "currency": "USD"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": {
+      "amount": 2.84,
+      "currency": "USD"
+    },
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  },
+  {
+    "id": 1686620573,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 6776,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "approved",
+    "commissionAmount": {
+      "amount": 6.7,
+      "currency": "USD"
+    },
+    "saleAmount": {
+      "amount": 167.41,
+      "currency": "USD"
+    },
+    "ipHash": "1416828060654477851",
+    "customerCountry": "GB",
+    "clickRefs": {
+      "clickRef": "TP-4"
+    },
+    "clickDate": "2024-09-30T17:54:00",
+    "transactionDate": "2024-09-30T17:58:00",
+    "validationDate": "2024-12-12T20:08:00",
+    "type": "Mobile App Purchase",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 219,
+    "amended": true,
+    "amendReason": "To final booking price",
+    "oldSaleAmount": {
+      "amount": 167.69,
+      "currency": "USD"
+    },
+    "oldCommissionAmount": {
+      "amount": 6.71,
+      "currency": "USD"
+    },
+    "clickDevice": "Android Mobile",
+    "transactionDevice": "Unknown",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "US",
+    "orderRef": null,
+    "customParameters": [
+      {
+        "key": "2",
+        "value": "2"
+      },
+      {
+        "key": "3",
+        "value": "ma"
+      },
+      {
+        "key": "4",
+        "value": "app"
+      },
+      {
+        "key": "5",
+        "value": "Essaouira"
+      },
+      {
+        "key": "6",
+        "value": "44000"
+      },
+      {
+        "key": "7",
+        "value": "2024-10-01"
+      },
+      {
+        "key": "8",
+        "value": "2024-10-03"
+      },
+      {
+        "key": "10",
+        "value": "2"
+      },
+      {
+        "key": "14",
+        "value": "Les Jardins De Mogador yoga et SPA"
+      },
+      {
+        "key": "17",
+        "value": "1"
+      },
+      {
+        "key": "18",
+        "value": "leisure"
+      },
+      {
+        "key": "21",
+        "value": "pt"
+      },
+      {
+        "key": "23",
+        "value": "pt"
+      },
+      {
+        "key": "24",
+        "value": "Porto"
+      }
+    ],
+    "transactionParts": [
+      {
+        "commissionGroupId": 104979,
+        "amount": 167.41,
+        "commissionAmount": 6.7,
+        "advertiserCost": null,
+        "commissionGroupCode": "DEFAULT",
+        "commissionGroupName": "DEFAULT",
+        "trackedParts": [
+          {
+            "code": "MA",
+            "amount": 167.69,
+            "currency": "USD"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": null,
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  },
+  {
+    "id": 1686303082,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 11640,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "approved",
+    "commissionAmount": {
+      "amount": 0.05,
+      "currency": "EUR"
+    },
+    "saleAmount": {
+      "amount": 0.89,
+      "currency": "EUR"
+    },
+    "ipHash": "1060661986579276425",
+    "customerCountry": "US",
+    "clickRefs": {
+      "clickRef": "TP-1"
+    },
+    "clickDate": "2024-09-30T11:25:00",
+    "transactionDate": "2024-09-30T11:36:00",
+    "validationDate": "2024-10-31T08:38:00",
+    "type": "Commission group transaction",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 662,
+    "amended": false,
+    "amendReason": null,
+    "oldSaleAmount": null,
+    "oldCommissionAmount": null,
+    "clickDevice": "Apple Mac",
+    "transactionDevice": "Unknown",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "ES",
+    "orderRef": null,
+    "customParameters": null,
+    "transactionParts": [
+      {
+        "commissionGroupId": 244203,
+        "amount": 0.89,
+        "commissionAmount": 0.05,
+        "advertiserCost": null,
+        "commissionGroupCode": "7.0",
+        "commissionGroupName": "other Categories",
+        "trackedParts": [
+          {
+            "code": "7.0",
+            "amount": 1,
+            "currency": "USD"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": {
+      "amount": 1,
+      "currency": "USD"
+    },
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  },
+  {
+    "id": 1686303437,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 11640,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "pending",
+    "commissionAmount": {
+      "amount": 0.21,
+      "currency": "EUR"
+    },
+    "saleAmount": {
+      "amount": 3.83,
+      "currency": "EUR"
+    },
+    "ipHash": "-4920649882161588066",
+    "customerCountry": "US",
+    "clickRefs": {
+      "clickRef": "TP-1"
+    },
+    "clickDate": "2024-09-30T11:25:00",
+    "transactionDate": "2024-09-30T11:36:00",
+    "validationDate": null,
+    "type": "Commission group transaction",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 662,
+    "amended": false,
+    "amendReason": null,
+    "oldSaleAmount": null,
+    "oldCommissionAmount": null,
+    "clickDevice": "Apple Mac",
+    "transactionDevice": "Unknown",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "ES",
+    "orderRef": null,
+    "customParameters": null,
+    "transactionParts": [
+      {
+        "commissionGroupId": 244203,
+        "amount": 3.83,
+        "commissionAmount": 0.21,
+        "advertiserCost": null,
+        "commissionGroupCode": "7.0",
+        "commissionGroupName": "other Categories",
+        "trackedParts": [
+          {
+            "code": "7.0",
+            "amount": 4.29,
+            "currency": "USD"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": {
+      "amount": 4.29,
+      "currency": "USD"
+    },
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  },
+  {
+    "id": 1686303080,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 11640,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "approved",
+    "commissionAmount": {
+      "amount": 0.09,
+      "currency": "EUR"
+    },
+    "saleAmount": {
+      "amount": 1.66,
+      "currency": "EUR"
+    },
+    "ipHash": "-190574628871774235",
+    "customerCountry": "US",
+    "clickRefs": {
+      "clickRef": "TP-1"
+    },
+    "clickDate": "2024-09-30T11:25:00",
+    "transactionDate": "2024-09-30T11:36:00",
+    "validationDate": "2024-10-18T14:58:00",
+    "type": "Commission group transaction",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 662,
+    "amended": false,
+    "amendReason": null,
+    "oldSaleAmount": null,
+    "oldCommissionAmount": null,
+    "clickDevice": "Apple Mac",
+    "transactionDevice": "Unknown",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "ES",
+    "orderRef": null,
+    "customParameters": null,
+    "transactionParts": [
+      {
+        "commissionGroupId": 244203,
+        "amount": 1.66,
+        "commissionAmount": 0.09,
+        "advertiserCost": null,
+        "commissionGroupCode": "7.0",
+        "commissionGroupName": "other Categories",
+        "trackedParts": [
+          {
+            "code": "7.0",
+            "amount": 1.86,
+            "currency": "USD"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": {
+      "amount": 1.86,
+      "currency": "USD"
+    },
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  },
+  {
+    "id": 1685705445,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 6776,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "approved",
+    "commissionAmount": {
+      "amount": 2.06,
+      "currency": "USD"
+    },
+    "saleAmount": {
+      "amount": 51.52,
+      "currency": "USD"
+    },
+    "ipHash": "1416828060654477851",
+    "customerCountry": "GB",
+    "clickRefs": {
+      "clickRef": "TP-10"
+    },
+    "clickDate": "2024-09-29T12:41:00",
+    "transactionDate": "2024-09-29T13:02:00",
+    "validationDate": "2025-01-05T12:24:00",
+    "type": "Commission group transaction",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 1287,
+    "amended": false,
+    "amendReason": null,
+    "oldSaleAmount": null,
+    "oldCommissionAmount": null,
+    "clickDevice": "Apple Mac",
+    "transactionDevice": "Unknown",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "US",
+    "orderRef": null,
+    "customParameters": [
+      {
+        "key": "2",
+        "value": "7"
+      },
+      {
+        "key": "3",
+        "value": "in"
+      },
+      {
+        "key": "4",
+        "value": "desktop"
+      },
+      {
+        "key": "5",
+        "value": "Arambol"
+      },
+      {
+        "key": "6",
+        "value": "403512"
+      },
+      {
+        "key": "7",
+        "value": "2024-11-03"
+      },
+      {
+        "key": "8",
+        "value": "2024-11-10"
+      },
+      {
+        "key": "10",
+        "value": "1"
+      },
+      {
+        "key": "14",
+        "value": "Tranquilo Arambol"
+      },
+      {
+        "key": "17",
+        "value": "1"
+      },
+      {
+        "key": "18",
+        "value": "leisure"
+      },
+      {
+        "key": "21",
+        "value": "en"
+      },
+      {
+        "key": "23",
+        "value": "pt"
+      },
+      {
+        "key": "24",
+        "value": ""
+      }
+    ],
+    "transactionParts": [
+      {
+        "commissionGroupId": 104979,
+        "amount": 51.52,
+        "commissionAmount": 2.06,
+        "advertiserCost": null,
+        "commissionGroupCode": "DEFAULT",
+        "commissionGroupName": "DEFAULT",
+        "trackedParts": [
+          {
+            "code": "IN",
+            "amount": 51.52,
+            "currency": "USD"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": null,
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  },
+  {
+    "id": 1686303021,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 11640,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "approved",
+    "commissionAmount": {
+      "amount": 0.04,
+      "currency": "EUR"
+    },
+    "saleAmount": {
+      "amount": 0.79,
+      "currency": "EUR"
+    },
+    "ipHash": "-3992529962546417644",
+    "customerCountry": "US",
+    "clickRefs": {
+      "clickRef": "TP-1"
+    },
+    "clickDate": "2024-09-30T11:25:00",
+    "transactionDate": "2024-09-30T11:36:00",
+    "validationDate": "2024-12-27T18:34:00",
+    "type": "Commission group transaction",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 661,
+    "amended": false,
+    "amendReason": null,
+    "oldSaleAmount": null,
+    "oldCommissionAmount": null,
+    "clickDevice": "Apple Mac",
+    "transactionDevice": "Unknown",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "ES",
+    "orderRef": null,
+    "customParameters": null,
+    "transactionParts": [
+      {
+        "commissionGroupId": 244203,
+        "amount": 0.79,
+        "commissionAmount": 0.04,
+        "advertiserCost": null,
+        "commissionGroupCode": "7.0",
+        "commissionGroupName": "other Categories",
+        "trackedParts": [
+          {
+            "code": "7.0",
+            "amount": 0.88,
+            "currency": "USD"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": {
+      "amount": 0.88,
+      "currency": "USD"
+    },
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  },
+  {
+    "id": 1686303062,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 11640,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "approved",
+    "commissionAmount": {
+      "amount": 0.07,
+      "currency": "EUR"
+    },
+    "saleAmount": {
+      "amount": 1.38,
+      "currency": "EUR"
+    },
+    "ipHash": "-6761281198068663310",
+    "customerCountry": "US",
+    "clickRefs": {
+      "clickRef": "TP-1"
+    },
+    "clickDate": "2024-09-30T11:25:00",
+    "transactionDate": "2024-09-30T11:36:00",
+    "validationDate": "2024-10-31T09:01:00",
+    "type": "Commission group transaction",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 661,
+    "amended": false,
+    "amendReason": null,
+    "oldSaleAmount": null,
+    "oldCommissionAmount": null,
+    "clickDevice": "Apple Mac",
+    "transactionDevice": "Unknown",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "ES",
+    "orderRef": null,
+    "customParameters": null,
+    "transactionParts": [
+      {
+        "commissionGroupId": 244203,
+        "amount": 1.38,
+        "commissionAmount": 0.07,
+        "advertiserCost": null,
+        "commissionGroupCode": "7.0",
+        "commissionGroupName": "other Categories",
+        "trackedParts": [
+          {
+            "code": "7.0",
+            "amount": 1.54,
+            "currency": "USD"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": {
+      "amount": 1.54,
+      "currency": "USD"
+    },
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  },
+  {
+    "id": 1686303067,
+    "url": "https://www.tagpeak.com",
+    "advertiserId": 11640,
+    "publisherId": 1256165,
+    "commissionSharingPublisherId": null,
+    "commissionSharingSelectedRatePublisherId": null,
+    "campaign": null,
+    "siteName": "https://www.tagpeak.com",
+    "commissionStatus": "approved",
+    "commissionAmount": {
+      "amount": 1.1,
+      "currency": "EUR"
+    },
+    "saleAmount": {
+      "amount": 15.9,
+      "currency": "EUR"
+    },
+    "ipHash": "8729875152963727845",
+    "customerCountry": "US",
+    "clickRefs": {
+      "clickRef": "TP-1"
+    },
+    "clickDate": "2024-09-30T11:25:00",
+    "transactionDate": "2024-09-30T11:36:00",
+    "validationDate": "2024-11-27T20:46:00",
+    "type": "Commission group transaction",
+    "declineReason": null,
+    "voucherCodeUsed": false,
+    "voucherCode": null,
+    "lapseTime": 662,
+    "amended": false,
+    "amendReason": null,
+    "oldSaleAmount": null,
+    "oldCommissionAmount": null,
+    "clickDevice": "Apple Mac",
+    "transactionDevice": "Unknown",
+    "customerAcquisition": null,
+    "publisherUrl": "https://tagpeak.com/",
+    "advertiserCountry": "ES",
+    "orderRef": null,
+    "customParameters": null,
+    "transactionParts": [
+      {
+        "commissionGroupId": 244207,
+        "amount": 15.9,
+        "commissionAmount": 1.1,
+        "advertiserCost": null,
+        "commissionGroupCode": "9.0",
+        "commissionGroupName": "Non-Electronics see description",
+        "trackedParts": [
+          {
+            "code": "9.0",
+            "amount": 17.79,
+            "currency": "USD"
+          }
+        ]
+      }
+    ],
+    "paidToPublisher": false,
+    "paymentId": 0,
+    "transactionQueryId": 0,
+    "trackedCurrencyAmount": {
+      "amount": 17.79,
+      "currency": "USD"
+    },
+    "originalSaleAmount": null,
+    "advertiserCost": {
+      "amount": null,
+      "currency": null
+    },
+    "basketProducts": null
+  }
+]

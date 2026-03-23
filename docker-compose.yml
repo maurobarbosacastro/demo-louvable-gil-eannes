@@ -1,0 +1,373 @@
+version: '3'
+
+volumes:
+    # Create a volume to store the certificates, there is a constraint to make sure
+    # Traefik is always deployed to the same Docker node with the same volume containing
+    # the HTTPS certificates
+    traefik-private-certificates:
+    redis-data:
+
+
+networks:
+    # Use the previously created public network "traefik-private", shared with other
+    # services that need to be publicly available via this Traefik
+    traefik-private:
+        driver: bridge
+
+services:
+    redis:
+        image: redis:8.0.2-alpine
+        container_name: redis
+        restart: on-failure
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis-data:/data
+
+    redis-commander:
+        image: rediscommander/redis-commander:latest
+        container_name: redis-commander
+        platform: linux/amd64
+        environment:
+            - REDIS_HOSTS=local:host.docker.internal:6379
+        ports:
+            - "8888:8081"
+        depends_on:
+            - redis
+
+    traefik:
+        image: "traefik:v2.9"
+        container_name: "traefik"
+        command:
+            #- "--log.level=DEBUG"
+            - "--api.insecure=true"
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
+            - "--entryPoints.web.address=:80"
+            #      Tracing
+            - "--tracing.zipkin=true"
+            - "--tracing.zipkin.httpEndpoint=http://host.docker.internal:9411/api/v2/spans"
+            - "--tracing.zipkin.sameSpan=true"
+        ports:
+            - "80:80"
+            - "8080:8080"
+        volumes:
+            - "/var/run/docker.sock:/var/run/docker.sock:ro"
+        networks:
+            - traefik-private
+
+    #DATABASE
+    postgres:
+        image: postgres:16.0
+        restart: on-failure
+        volumes:
+            - ./docker-postgresql-multiple-databases:/docker-entrypoint-initdb.d
+            - "${POSTGRES_VOLUME}"
+        environment:
+            POSTGRES_MULTIPLE_DATABASES: ${KEYCLOAK_DB}, ${TAGPEAK_DB}, ${IMAGES_DB}, ${SHOPIFY_DB}, ${EMAIL_DB} #diferent databases
+            POSTGRES_USER: "${POSTGRES_USER}"
+            POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+        ports:
+            - "${POSTGRES_PORTS}"
+        networks:
+            - traefik-private
+        depends_on:
+            traefik:
+                condition: service_started
+
+
+    #AUTHENTICATION PROVIDER
+    keycloak:
+        build:
+            context: ./apps/server/keycloak
+        environment:
+            KEYCLOAK_ADMIN: "${KEYCLOAK_ADMIN_USERNAME}"
+            KEYCLOAK_ADMIN_PASSWORD: "${KEYCLOAK_ADMIN_PASSWORD}"
+        ports:
+            - "8444:8443"
+            - "8081:8080"
+        networks:
+            - traefik-private
+        restart: on-failure
+        #    volumes:
+        #      - .docker/keycloak/themes/:/opt/keycloak/themes/
+        #    entrypoint: ["/opt/keycloak/bin/kc.sh", "start", "--optimized"]
+        entrypoint: [
+            "/opt/keycloak/bin/kc.sh", "start-dev", "--db=postgres",
+            "--spi-theme-welcome-theme=tagpeak",
+            "--spi-theme-cache-themes=false",
+            "--spi-theme-cache-templates=false"
+        ]
+        depends_on:
+            postgres:
+                condition: service_started
+            traefik:
+                condition: service_started
+
+        # Dev: The local files are used to build a local image
+
+    mailhog-dev:
+        image: mailhog/mailhog
+        container_name: mailhog
+        logging:
+            driver: 'none'  # disable saving logs
+        ports:
+            - 1025:1025 # smtp server
+            - 8025:8025 # web ui
+        networks:
+            - traefik-private
+
+#    products-dev:
+#        build:
+#            context: ./apps/server/ms-products
+#        volumes:
+#            - .docker/products-data/:/var/lib/products/data
+#        env_file:
+#            - .env
+#        ports:
+#            - "8090:8090"
+#        networks:
+#            - traefik-private
+#        labels:
+#            - "traefik.enable=true"
+#            - "traefik.http.routers.products.rule=Host(`localhost`)&&PathPrefix(`/products`)"
+#            - "traefik.http.routers.products.entrypoints=web"
+#            - "traefik.http.routers.products.middlewares=products-stripprefix@docker"
+#            - "traefik.http.middlewares.products-stripprefix.stripprefix.prefixes=/products"
+#            - "traefik.http.services.products.loadbalancer.server.port=8090"
+#        restart: on-failure
+#
+#    eduquiz-dev:
+#        build:
+#            context: ./apps/server/ms-eduquiz
+#        volumes:
+#            - .docker/eduquiz-data/:/var/lib/eduquiz/data
+#        env_file:
+#            - .env
+#        ports:
+#            - "8091:8091"
+#        networks:
+#            - traefik-private
+#        labels:
+#            - "traefik.enable=true"
+#            - "traefik.http.routers.eduquiz.rule=Host(`localhost`)&&PathPrefix(`/eduquiz`)"
+#            - "traefik.http.routers.eduquiz.entrypoints=web"
+#            - "traefik.http.routers.eduquiz.middlewares=eduquiz-stripprefix@docker"
+#            - "traefik.http.middlewares.eduquiz-stripprefix.stripprefix.prefixes=/eduquiz"
+#            - "traefik.http.services.eduquiz.loadbalancer.server.port=8091"
+#        restart: on-failure
+#
+#    firebase-dev:
+#        build:
+#            context: ./apps/server/ms-firebase
+#        volumes:
+#            - .docker/firebase-data/:/var/lib/firebase/data
+#        env_file:
+#            - .env
+#        ports:
+#            - "8092:8092"
+#        networks:
+#            - traefik-private
+#        labels:
+#            - "traefik.enable=true"
+#            - "traefik.http.routers.firebase.rule=Host(`localhost`)&&PathPrefix(`/firebase`)"
+#            - "traefik.http.routers.firebase.entrypoints=web"
+#            - "traefik.http.routers.firebase.middlewares=firebase-stripprefix@docker"
+#            - "traefik.http.middlewares.firebase-stripprefix.stripprefix.prefixes=/firebase"
+#            - "traefik.http.services.firebase.loadbalancer.server.port=8092"
+#        restart: on-failure
+#
+
+    email-dev:
+        build:
+            context: ./apps/server/ms-email
+        volumes:
+            - .docker/email-data/:/var/lib/email/data
+        env_file:
+            - .env
+        ports:
+            - "8093:8093"
+        networks:
+            - traefik-private
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.email.rule=Host(`localhost`)&&PathPrefix(`/email`)"
+            - "traefik.http.routers.email.entrypoints=web"
+            - "traefik.http.routers.email.middlewares=email-stripprefix@docker"
+            - "traefik.http.middlewares.email-stripprefix.stripprefix.prefixes=/email"
+            - "traefik.http.services.email.loadbalancer.server.port=8093"
+        restart: on-failure
+        depends_on:
+            postgres:
+                condition: service_started
+            keycloak:
+                condition: service_started
+            traefik:
+                condition: service_started
+
+
+#    blog-dev:
+#        build:
+#            context: ./apps/server/ms-blog
+#        volumes:
+#            - .docker/blog-data/:/var/lib/blog/data
+#        env_file:
+#            - .env
+#        ports:
+#            - "8094:8094"
+#        networks:
+#            - traefik-private
+#        labels:
+#            - "traefik.enable=true"
+#            - "traefik.http.routers.blog.rule=Host(`localhost`)&&PathPrefix(`/blog`)"
+#            - "traefik.http.routers.blog.entrypoints=web"
+#            - "traefik.http.routers.blog.middlewares=blog-stripprefix@docker"
+#            - "traefik.http.middlewares.blog-stripprefix.stripprefix.prefixes=/blog"
+#            - "traefik.http.services.blog.loadbalancer.server.port=8094"
+#        restart: on-failure
+#        depends_on:
+#            postgres:
+#                condition: service_started
+#            keycloak:
+#                condition: service_started
+#            traefik:
+#                condition: service_started
+
+#    company-dev:
+#        build:
+#            context: ./apps/server/ms-company
+#        volumes:
+#            - .docker/blog-data/:/var/lib/company/data
+#        env_file:
+#            - .env
+#        ports:
+#            - "8095:8095"
+#        networks:
+#            - traefik-private
+#        labels:
+#            - "traefik.enable=true"
+#            - "traefik.http.routers.company.rule=Host(`localhost`)&&PathPrefix(`/company`)"
+#            - "traefik.http.routers.company.entrypoints=web"
+#            - "traefik.http.routers.company.middlewares=blog-stripprefix@docker"
+#            - "traefik.http.middlewares.company-stripprefix.stripprefix.prefixes=/company"
+#            - "traefik.http.services.company.loadbalancer.server.port=8095"
+#        restart: on-failure
+
+    tagpeak-dev:
+        build:
+            context: ./apps/server/ms-tagpeak
+        volumes:
+            - .docker/tagpeak-data/:/var/lib/tagpeak/data
+        env_file:
+            - .env
+        ports:
+            - "8097:8097"
+        networks:
+            - traefik-private
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.tagpeak.entrypoints=web"
+            - "traefik.http.services.tagpeak.loadbalancer.server.port=8097"
+            - "traefik.http.routers.tagpeak.rule=Host(`localhost`)&&PathPrefix(`/tagpeak`)"
+            - "traefik.http.routers.tagpeak.middlewares=tagpeak-stripprefix@docker"
+            - "traefik.http.middlewares.tagpeak-stripprefix.stripprefix.prefixes=/tagpeak"
+        restart: on-failure
+        depends_on:
+            postgres:
+                condition: service_started
+            keycloak:
+                condition: service_started
+            traefik:
+                condition: service_started
+
+    images-dev:
+        build:
+            context: ./apps/server/ms-images
+        volumes:
+            - .docker/images-data/:/var/lib/images/data
+        env_file:
+            - .env
+        ports:
+            - "8099:8099"
+        networks:
+            - traefik-private
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.images.entrypoints=web"
+            - "traefik.http.services.images.loadbalancer.server.port=8099"
+            - "traefik.http.routers.images.rule=Host(`localhost`)&&PathPrefix(`/images`)"
+            - "traefik.http.routers.images.middlewares=images-stripprefix@docker"
+            - "traefik.http.middlewares.images-stripprefix.stripprefix.prefixes=/images"
+        restart: on-failure
+        depends_on:
+            postgres:
+                condition: service_started
+            keycloak:
+                condition: service_started
+            traefik:
+                condition: service_started
+
+    shopify-dev:
+        build:
+            context: ./apps/server/ms-shopify
+        volumes:
+            - .docker/shopify-data/:/var/lib/shopify/data
+        env_file:
+            - .env
+        ports:
+            - "8297:8297"
+        networks:
+            - traefik-private
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.shopify.entrypoints=web"
+            - "traefik.http.services.shopify.loadbalancer.server.port=8297"
+            - "traefik.http.routers.shopify.rule=Host(`localhost`)&&PathPrefix(`/shopify`)"
+            - "traefik.http.routers.shopify.middlewares=shopify-stripprefix@docker"
+            - "traefik.http.middlewares.shopify-stripprefix.stripprefix.prefixes=/shopify"
+        restart: on-failure
+        depends_on:
+            postgres:
+                condition: service_started
+            keycloak:
+                condition: service_started
+            traefik:
+                condition: service_started
+
+    cj-dev:
+        build:
+            context: ./apps/server/ms-cj
+        volumes:
+            - .docker/cj-data/:/var/lib/cj/data
+        env_file:
+            - .env
+        ports:
+            - "8098:8098"
+        networks:
+            - traefik-private
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.cj-affiliate.entrypoints=web"
+            - "traefik.http.services.cj-affiliate.loadbalancer.server.port=8098"
+            - "traefik.http.routers.cj-affiliate.rule=Host(`localhost`)&&PathPrefix(`/cj-affiliate`)"
+            - "traefik.http.routers.cj-affiliate.middlewares=cj-affiliate-stripprefix@docker"
+            - "traefik.http.middlewares.cj-affiliate-stripprefix.stripprefix.prefixes=/cj-affiliate"
+        restart: on-failure
+        depends_on:
+            postgres:
+                condition: service_started
+            keycloak:
+                condition: service_started
+            traefik:
+                condition: service_started
+
+    #Zipkins
+    zipkin:
+        image: openzipkin/zipkin
+        env_file:
+            - ./.env
+        ports:
+            - "9411:9411"
+        networks:
+            - traefik-private
+

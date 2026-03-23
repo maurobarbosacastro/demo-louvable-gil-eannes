@@ -1,0 +1,477 @@
+<div class="shop-no-filter">
+    @defer {
+
+        <div class="overlap-wrapper sm:px-2.5">
+
+            <div class=" w-full mt-3.5">
+                <div class="w-full banner-bg"
+                     [ngClass]="{
+                        'default-banner-bg': !$store().banner
+                    }"
+                     [ngStyle]="{
+                        'background-image': $store().banner ? 'linear-gradient(359.72deg, #32334C 5.95%, rgba(50, 51, 76, 0) 95.64%),  url(' + $store().banner + ')' : null
+                    }"
+                >
+
+                    <!--            Top menu-->
+                    <div class="flex justify-between items-center relative px-4 pt-4 md:pt-9 md:px-8 2xl:px-11">
+                        <mat-icon svgIcon="tagpeak-logo" class="logo-tagpeak cursor-pointer" (click)="openTagpeak()"></mat-icon>
+
+                        <div class="md:hidden block">
+                            <div class="flex flex-row items-center gap-6" (click)="openLogin()"
+                                 *ngIf="!$authenticated()">
+                                <button
+                                    class="button border bg-transparent border-[#32334C] text-wrapper-2 !text-[#32334C] rounded"
+                                    [ngClass]="{
+                                        'border-white text-white': !$store().banner,
+                                        'border-project-licorice-500  text-project-licorice-500': $store().banner
+                                    }"
+                                >
+                                    {{ 'auth.login' | transloco }}
+                                </button>
+                                <mat-icon svgIcon="menu-black" class="icon-size-8"></mat-icon>
+                            </div>
+                        </div>
+
+                        <div class="md:block hidden">
+                            <div class="flex flex-row items-center gap-6">
+                                <button *ngIf="!$authenticated()"
+                                    class="button border bg-transparent border-project-licorice-500 text-wrapper-2 rounded"
+                                    (click)="openLogin()"
+                                    [ngClass]="{
+                                        'border-white text-white': !$store().banner,
+                                        'border-project-licorice-500  text-project-licorice-500': $store().banner
+                                    }"
+                                >
+                                    {{ 'auth.login' | transloco }}
+                                </button>
+                                <button
+                                    class="button border border-project-red bg-project-red text-wrapper-2 rounded text-project-wildsand"
+                                    (click)="openSignUp()">
+                                    {{ (!$authenticated() ? 'stores.join-tagpeak' : 'stores.my-dashboard') | transloco }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--      Image Store Information-->
+                    <div
+                        class="flex flex-col py-2 md:flex-row justify-start md:justify-between md:mt-60 lg:mt-[20rem] md:mb-[-95px] items-start relative md:pt-6 2xl:mt-[40rem]">
+                        <div class="flex flex-col md:flex-row md:justify-between md:w-[55%] mt-40 md:mt-0 pl-4">
+                        <span class="xl:text-[80px] md:text-[70px] text-[42px] leading-[50px] text-[#F6F3F4] mb-10 md:mb-0 sm:pl-6">
+                          {{ $store().name }}
+                        </span>
+                            <button
+                                class="storeButton w-fit md:px-5 md:py-2.5 mb-20 md:mb-0 lg:text-[25px] text-[18px] z-99999 font-plex font-normal text-project-licorice-500"
+                                (click)="goToStore(); $event.stopPropagation()">
+                                {{ 'stores.details.go-to-store' | transloco }}
+                            </button>
+                        </div>
+
+                        <div class="flex flex-row  w-full md:w-[45%] px-5 sm:justify-around sm:gap-0 gap-5">
+                            <div class="flex flex-col border-l border-l-[#9C98D1] pl-3 max-w-1/2 md:h-[123px]">
+                          <span
+                              class="text-[15px] sm:text-[18px] leading-none text-[#9C98D1] break-words mb-3 font-plex">
+                            {{ 'stores.details.average-time' | transloco }}
+                          </span>
+                                <span class="text-[18px] lg:text-[25px] leading-none text-[#F6F3F4] mb-3 md:mb-2.5">
+                                    {{ $store().averageRewardActivationTime }}
+                                  </span>
+                            </div>
+
+                            <div class="flex flex-col border-l border-l-[#9C98D1] pl-3 max-w-1/2">
+                          <span
+                              class="text-[15px] sm:text-[18px] leading-none text-[#9C98D1] break-words mb-3">
+                            {{ 'stores.details.inital-price' | transloco }}
+                          </span>
+                                <span class="text-[18px] sm:text-[25px] leading-none text-[#F6F3F4] mb-2.5 md:mb-1.5">
+                              {{ $store().percentageCashout }} %
+                            </span>
+
+                                <div class="flex flex-row gap-1 items-center">
+                            <span
+                                class="text-[13px] leading-none text-[#F6F3F4]">
+                              {{ 'stores.details.potential-to-grow' | transloco }}
+                            </span>
+                                    <mat-icon svgIcon="trending_up" class="icon-size-4"></mat-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--        Store info -->
+            <div class="w-full bg-white">
+
+                <!--      Carrousel(mobile) and corresponding desktop-->
+                <div class="flex items-center justify-center bg-project-youngBlue px-5 md:py-10 md:mt-22">
+
+                    <!--        MOBILE-->
+                    <tagpeak-carousel class="w-full my-15 relative md:hidden"
+                                      [$templates]="[slide1,slide2,slide3]"
+                                      [$bgClassSlideIndicator]="'!bg-project-grandis'"
+                                      [$slideIndicatorType]="'ROUNDED'" />
+
+                    <ng-template #slide1>
+                        <div class="flex justify-between items-start h-full flex-col">
+                            <div class="rectangle-6 px-5 flex flex-row gap-2 !p-6">
+                                <div class="ellipse flex justify-center items-center">01</div>
+                                <p class="text-wrapper-22 break-words">{{ 'stores.details.make-purchase' | transloco }}</p>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                    <ng-template #slide2>
+                        <div class="flex justify-between items-start h-full flex-col">
+                            <div class="rectangle-6 px-5 flex flex-row gap-2 !p-6">
+                                <div class="ellipse flex justify-center items-center">02</div>
+                                <p class="text-wrapper-22 break-words">{{ 'stores.details.brands-pay' | transloco }}</p>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                    <ng-template #slide3>
+                        <div class="flex justify-between items-start h-full flex-col">
+                            <div class="rectangle-6 px-5 flex flex-row gap-2 !p-6">
+                                <div class="ellipse flex justify-center items-center">03</div>
+                                <p class="text-wrapper-22 break-words">{{ 'stores.details.follow-dash' | transloco }}</p>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                    <!--        Desktop-->
+                    <div class="md:flex md:flex-row gap-5 hidden w-full justify-around">
+
+                        <div class="flex justify-between items-start h-full flex-col max-w-1/3">
+                            <div class="rectangle-6 px-5 flex flex-row gap-2 !p-6">
+                                <div class="ellipse flex justify-center items-center">01</div>
+                                <p class="text-wrapper-22 break-words">{{ 'stores.details.make-purchase' | transloco }}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-start h-full flex-col max-w-1/3">
+                            <div class="rectangle-6 px-5 flex flex-row gap-2 !p-6">
+                                <div class="ellipse flex justify-center items-center">02</div>
+                                <p class="text-wrapper-22 break-words">{{ 'stores.details.brands-pay' | transloco }}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-start h-full flex-col max-w-1/3">
+                            <div class="rectangle-6 px-5 flex flex-row gap-2 !p-6">
+                                <div class="ellipse flex justify-center items-center">03</div>
+                                <p class="text-wrapper-22 break-words">{{ 'stores.details.follow-dash' | transloco }}</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="flex flex-col md:flex-row mt-18 md:justify-between sm:px-6">
+
+                    <div class="flex flex-col md:w-[40%]">
+                        <div class="flex flex-col px-5">
+
+           <span class="text-[28px] sm:text-[50px] leading-[32px] text-project-licorice-500">
+                            {{ 'stores.details.brand' | transloco }}
+                          </span>
+
+                            <span
+                                class="break-words text-justify text-[15px] leading-[18px] text-project-waterloo mt-7">
+                            {{ $store().shortDescription }}
+                            </span>
+
+                            <!--          TODO: clarify how to show this-->
+                            <span
+                                class="hidden font-medium font-bold text-[15px] leading-[18px] text-project-waterloo mt-7">
+                            {{ 'stores.details.available-cash' | transloco }}
+                          </span>
+
+                        </div>
+
+                        <span class="p-5 break-words text-justify text-project-waterloo inner-html-break-lines"
+                             [innerHTML]="processTermsAndConditions($store().termsAndConditions)">
+                        </span>
+                    </div>
+
+                    <div class="flex flex-col px-5 md:w-[40%]">
+                        <div class="flex flex-row justify-between items-center">
+                            <span
+                                class="text-[18px] md:text-[25px] leading-[20px] font-plex font-normal"> {{ $store().name }}</span>
+                            <button
+                                class="storeButton py-2.5 leading-none !bg-project-licorice-500 !text-white font-plex font-normal text-[15px]"
+                                (click)="goToStore(); $event.stopPropagation()">
+                                {{ 'stores.details.go-to-store' | transloco }}
+                            </button>
+                        </div>
+
+                        <div class="flex flex-col gap-2.5 py-5">
+                            <div class="flex justify-between items-start h-full flex-col">
+                                <div class="rectangle-6 px-5 flex flex-row gap-2.5 !p-6 !bg-project-grandis">
+                                    <div class="ellipse flex justify-center items-center !bg-[#F6F3F4]">
+                                        <mat-icon svgIcon="chip" class="icon-size-4"></mat-icon>
+                                    </div>
+                                    <p class="text-wrapper-22 break-words font-normal text-project-licorice-500 leading-5">{{ 'stores.details.store-text' | transloco }}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between items-start h-full flex-col">
+                                <div class="rectangle-6 px-5 flex flex-row gap-2.5 !p-6 !bg-project-grandis">
+                                    <div class="ellipse flex justify-center items-center !bg-[#F6F3F4]">
+                                        <mat-icon svgIcon="cookie" class="icon-size-4"></mat-icon>
+                                    </div>
+                                    <p class="text-wrapper-22 break-words">{{ 'stores.details.cookies-text' | transloco }}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between items-start h-full flex-col">
+                                <div class="rectangle-6 px-5 flex flex-row gap-2.5 !p-6 !bg-project-grandis">
+                                    <div class="ellipse flex justify-center items-center !bg-[#F6F3F4]">
+                                        <mat-icon svgIcon="add-group" class="icon-size-4"></mat-icon>
+                                    </div>
+                                    <p class="text-wrapper-22 break-words">{{ 'stores.details.blockers-text' | transloco }}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between items-start h-full flex-col">
+                                <div class="rectangle-6 px-5 flex flex-row gap-2.5 !p-6 !bg-project-grandis">
+                                    <div class="ellipse flex justify-center items-center !bg-[#F6F3F4]">
+                                        <mat-icon svgIcon="shopping" class="icon-size-4"></mat-icon>
+                                    </div>
+                                    <p class="text-wrapper-22 break-words">{{ 'stores.details.complete-text' | transloco }}</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <!--            For shoppers and about us-->
+                <div
+                    class="flex sm:flex-row flex-col gap-5 w-full mt-20 md:px-9 px-5 md:min-h-[29rem] items-center">
+
+                    <!--                Shop now -->
+                    <div
+                        class="relative rounded-[20px] flex items-center bg-[#FDCA65] w-full">
+                        <div class="flex items-center absolute right-0 top-0 lg:right-[5px] lg:top-[7px]">
+                            <img class="rounded-tr-[20px] lg:scale-110"
+                                 [ngSrc]="'../../../../assets/images/stores/shop1.svg'"
+                                 width="20" height="30"
+                                 alt="image">
+                        </div>
+
+                        <div
+                            class="flex items-center absolute left-[37%] sm:left-[32%] md:left-[42%] lg:left-[57%] top-[20%] md:top-[24%] 2xl:left-[78%]">
+                            <img class="lg:scale-110"
+                                 [ngSrc]="'../../../../assets/images/stores/shop2.svg'"
+                                 width="20" height="30"
+                                 alt="image">
+                        </div>
+
+                        <div class="flex items-center absolute right-4 top-[45%]">
+                            <img class="lg:scale-110"
+                                 [ngSrc]="'../../../../assets/images/stores/shop3.svg'"
+                                 width="20" height="30"
+                                 alt="image">
+                        </div>
+
+                        <div
+                            class="flex items-center absolute bottom-[17%] right-[35%] lg:right-[20%] 2xl:right-[11%]">
+                            <img class="lg:scale-110"
+                                 [ngSrc]="'../../../../assets/images/stores/shop4.svg'"
+                                 width="20" height="30"
+                                 alt="image">
+                        </div>
+
+                        <div
+                            class="relative z-1 flex flex-col justify-between gap-5 w-full min-h-[25rem] h-full px-5 py-5">
+                            <div class="flex justify-between items-center pt-2.5">
+                                <div
+                                    class="text-wrapper-30 md:text-7xl text-3xl text-project-licorice-500">{{ 'stores.details.shop-now' | transloco }}
+                                </div>
+                                <a href="https://app.tagpeak.com/#/stores"
+                                    class="button group-17 md:w-15 w-10 md:h-15 h-10 flex justify-center items-center
+                                    hover:bg-project-licorice-500 transition-transform hover:-rotate-45 hover:text-white">
+                                    <svg width="30" height="31" viewBox="0 0 30 31" fill="none" xmlns="http://www.w3.org/2000/svg" class="hover:text-white">
+<path d="M0.650757 15.5002L28.935 15.5002" stroke="CurrentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M14.7929 1.35805L28.935 15.5002L14.7929 29.6423" stroke="CurrentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+                                </a>
+                            </div>
+                            <div class="frame-2 ">
+                                <a href="https://app.tagpeak.com/#/stores"
+                                    class="button frame-2 bg-project-wildsand text-wrapper-32 text-project-licorice-500 text-[15px]">{{ 'stores.explore' | transloco }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--                For shoppers-->
+                    <div
+                        class="relative rounded-[20px] min-h-[25rem] sm:h-[25rem] w-full flex items-center store-bg-image ">
+
+                        <div
+                            class="relative z-1 flex flex-col justify-between gap-5 w-full h-full px-5 py-5">
+                            <div class="flex justify-between pt-2.5  min-h-[25rem] sm:min-h-0">
+                                <div
+                                    class="text-wrapper-30 md:text-7xl text-3xl">{{ 'stores.for-shoppers' | transloco }}
+                                </div>
+                                <a href="https://tagpeak.com/for-shoppers"
+                                    class="button group-17 md:w-15 w-10 md:h-15 h-10 flex justify-center items-center cursor-pointer
+                                    hover:bg-project-licorice-500 transition-transform hover:-rotate-45 hover:text-white">
+
+<svg width="30" height="31" viewBox="0 0 30 31" fill="none" xmlns="http://www.w3.org/2000/svg" class="hover:text-white">
+<path d="M0.650757 15.5002L28.935 15.5002" stroke="CurrentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M14.7929 1.35805L28.935 15.5002L14.7929 29.6423" stroke="CurrentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+                                </a>
+                            </div>
+                            <div class="frame-2 bg-project-licorice-900">
+                                <a href="https://tagpeak.com/for-shoppers"
+                                    class="button text-wrapper-32 text-white">{{ 'stores.explore' | transloco }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <!--            Footer -->
+                <footer class="footer mt-20 w-full">
+                    <div class="w-full h-full bg-project-licorice-500 px-10 rounded-b-[20px]">
+                        <div
+                            class="flex md:flex-row flex-col md:justify-between px-5 md:px-9 pt-15 mb-5 gap-7 md:gap-36 w-full">
+                            <div class="flex flex-col md:items-start md:w-1/3 w-full gap-8">
+                                <p class="p md:text-7xl md:text-start leading-[55px]">{{ 'stores.footer.title' | transloco }}</p>
+                                <p class="text-wrapper-11 leading-[23px] md:text-xl md:w-2/3 md:text-start">
+                                    {{ 'stores.footer.sub-title' | transloco }}
+                                </p>
+
+                                <form [formGroup]="emailForm" class="md:hidden mt-8 md:mt-13 flex gap-2.5 w-full">
+                                    <input
+                                        class="input input-bordered border-[#d9d9d9] text-white bg-transparent w-full rounded"
+                                        [formControl]="emailControl"
+                                        placeholder="{{ 'stores.footer.enter-email'  | transloco }}" />
+                                    <button
+                                        class="button button-bordered bg-white text-project-licorice-500 w-22 rounded"
+                                        (click)="submitNewsletter()">{{ 'misc.submit' | transloco }}
+                                    </button>
+                                </form>
+                            </div>
+
+
+                            <div
+                                class="flex md:flex-row flex-col justify-end w-full md:w-1/2 gap-10 md:gap-32 md:mt-0 mt-13 md:mr-16">
+                                <div class="flex flex-col gap-4">
+                                    <div class="text-wrapper-5">{{ 'stores.footer.info.tagpeak' | transloco }}</div>
+                                    <a [href]="environment.commercial.about"
+                                       class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.about' | transloco }}
+                                    </a>
+                                    <a [href]="environment.commercial.contacts"
+                                       class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.contact-us' | transloco }}
+                                    </a>
+                                    <a [href]="environment.commercial.forPartners"
+                                       class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.for-partners' | transloco }}
+                                    </a>
+                                    <a [href]="environment.commercial.forEmployees"
+                                       class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.for-employees' | transloco }}
+                                    </a>
+                                    <a [href]="environment.commercial.news"
+                                       class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.news' | transloco }}
+                                    </a>
+                                </div>
+
+                                <div class="flex flex-col gap-4">
+                                    <div class="text-wrapper-5">{{ 'stores.footer.info.platform' | transloco }}</div>
+                                    <a href="https://app.tagpeak.com/#/sign-in"
+                                       class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.login' | transloco }}
+                                    </a>
+                                    <a href="https://app.tagpeak.com/#/stores"
+                                       class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.our-brands' | transloco }}
+                                    </a>
+                                    <a [href]="environment.commercial.faqUrl"
+                                       class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.faqs' | transloco }}
+                                    </a>
+                                </div>
+
+                                <div class="flex flex-col gap-4">
+                                    <div class="text-wrapper-5">{{ 'stores.footer.info.legal' | transloco }}</div>
+                                    <a [href]="environment.commercial.termsAndConditions"
+                                       class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.terms-conditions' | transloco }}
+                                    </a>
+                                    <a [href]="environment.commercial.privacyPolicy"
+                                       class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.privacy-policy' | transloco }}
+                                    </a>
+                                </div>
+                            </div>
+
+                            <img class="line md:hidden my-10"
+                                 src="https://c.animaapp.com/79UEXjah/img/line-13.svg" />
+                        </div>
+
+                        <div
+                            class="hidden md:flex md:flex-row flex-col md:justify-between px-5 md:px-9 mb-5 gap-7 md:gap-36 w-full">
+                            <div class="hidden md:flex w-full gap-5 justify-between items-center">
+                                <form [formGroup]="emailForm" class="flex gap-2.5 w-128">
+                                    <input
+                                        class="input input-bordered border-[#d9d9d9] bg-transparent w-full rounded"
+                                        [formControl]="emailControl"
+                                        placeholder="{{ 'stores.footer.enter-email'  | transloco }}" />
+                                    <button
+                                        class="button button-bordered bg-white text-project-licorice-500 w-22 rounded"
+                                        (click)="submitNewsletter()">{{ 'misc.submit' | transloco }}
+                                    </button>
+                                </form>
+
+                                <div class="flex gap-9 justify-center items-center">
+                                    <div class="text-wrapper-12">{{ 'stores.footer.follow-us' | transloco }}</div>
+                                    <div class="flex gap-2 justify-center items-center">
+                                        <div class="group-wrapper flex justify-center items-center cursor-pointer" (click)="openLinkedin()">
+                                            <mat-icon svgIcon="linked-in" class="icon-size-4"></mat-icon>
+                                        </div>
+                                        <div class="vector-wrapper flex justify-center items-center cursor-pointer" (click)="openTwitter()">
+                                            <mat-icon svgIcon="twitter" class="icon-size-4"></mat-icon>
+                                        </div>
+                                        <div class="img-wrapper flex justify-center items-center cursor-pointer" (click)="openInstagram()">
+                                            <mat-icon svgIcon="instagram" class="icon-size-4"></mat-icon>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex flex-col justify-center items-center w-full md:px-9 px-5 mb-5 gap-5 md:mt-20">
+                            <div class="md:hidden w-full flex gap-5 justify-center items-center">
+                                <div class="text-wrapper-12">{{ 'stores.footer.follow-us' | transloco }}</div>
+                                <div class="flex gap-2 justify-center items-center">
+                                    <div class="group-wrapper flex justify-center items-center cursor-pointer" (click)="openLinkedin()">
+                                        <mat-icon svgIcon="linked-in" class="icon-size-4"></mat-icon>
+                                    </div>
+                                    <div class="vector-wrapper flex justify-center items-center cursor-pointer" (click)="openTwitter()">
+                                        <mat-icon svgIcon="twitter" class="icon-size-4"></mat-icon>
+                                    </div>
+                                    <div class="img-wrapper flex justify-center items-center cursor-pointer" (click)="openInstagram()">
+                                        <mat-icon svgIcon="instagram" class="icon-size-4"></mat-icon>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="w-full flex justify-end">
+                                <p class="text-wrapper-14">© {{ currentYear }} Tagpeak. All rights reserved.</p>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    } @loading (minimum 500ms) {
+        <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+            <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+        </div>
+    }
+</div>

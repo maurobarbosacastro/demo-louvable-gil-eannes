@@ -1,0 +1,111 @@
+.custom-table {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-feature-settings: normal;
+
+    & ::ng-deep .mat-mdc-table {
+        --mdc-typography-body-medium-font-family: 'IBM Plex Sans', sans-serif;
+        --mdc-typography-body-large-font-family: 'IBM Plex Sans', sans-serif;
+        --mdc-typography-body-small-font-family: 'IBM Plex Sans', sans-serif;
+        --mdc-typography-title-small-font-family: 'IBM Plex Sans', sans-serif;
+    }
+
+    & ::ng-deep .mat-mdc-header-cell,
+    & ::ng-deep .mat-mdc-cell,
+    & ::ng-deep .mat-mdc-footer-cell {
+        font-family: 'IBM Plex Sans', sans-serif !important;
+        font-feature-settings: normal;
+    }
+
+    & ::ng-deep .mat-mdc-table .mdc-data-table__row:not(.mdc-data-table__row--selected):hover {
+        background-color: theme('colors.project.sideMenu') !important;
+    }
+
+    & ::ng-deep td, mat-cell {
+        border: none !important;
+    }
+
+    & ::ng-deep th, mat-header-cell {
+        border: none !important;
+    }
+}
+
+.table-cashback {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-feature-settings: normal;
+
+    & ::ng-deep .mat-mdc-table {
+        --mdc-typography-body-medium-font-family: 'IBM Plex Sans', sans-serif;
+        --mdc-typography-body-large-font-family: 'IBM Plex Sans', sans-serif;
+        --mdc-typography-body-small-font-family: 'IBM Plex Sans', sans-serif;
+        --mdc-typography-title-small-font-family: 'IBM Plex Sans', sans-serif;
+    }
+
+    & ::ng-deep .mat-mdc-header-cell,
+    & ::ng-deep .mat-mdc-cell,
+    & ::ng-deep .mat-mdc-footer-cell {
+        font-family: 'IBM Plex Sans', sans-serif !important;
+        font-feature-settings: normal;
+    }
+
+    ::ng-deep.mat-column-id {
+        max-width: 100px !important;
+    }
+
+    ::ng-deep td.mat-column-id {
+        white-space: nowrap; /* Prevent text wrapping */
+        overflow: hidden; /* Hide overflowing text */
+        text-overflow: ellipsis; /* Add "..." if the text overflows */
+    }
+
+    ::ng-deep .mat-column-exitStoreUser, ::ng-deep .mat-column-title {
+        min-width: 250px !important;
+        max-width: 250px !important;
+    }
+
+    ::ng-deep .mat-column-date {
+        min-width: 120px !important;
+        max-width: 120px !important;
+    }
+
+    ::ng-deep td:first-child {
+        background-color: white;
+    }
+    // To override the background color of td:first-child in hover
+    ::ng-deep .mat-mdc-table .mdc-data-table__row:not(.mdc-data-table__row--selected):hover ::ng-deep td:first-child {
+            background-color: theme('colors.project.sideMenu') !important;
+    }
+
+    ::ng-deep th:first-child {
+        background-color: white;
+    }
+}
+
+
+.table-client-withdrawals {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-feature-settings: normal;
+
+    & ::ng-deep .mat-mdc-table {
+        --mdc-typography-body-medium-font-family: 'IBM Plex Sans', sans-serif;
+        --mdc-typography-body-large-font-family: 'IBM Plex Sans', sans-serif;
+        --mdc-typography-body-small-font-family: 'IBM Plex Sans', sans-serif;
+        --mdc-typography-title-small-font-family: 'IBM Plex Sans', sans-serif;
+    }
+
+    & ::ng-deep .mat-mdc-header-cell,
+    & ::ng-deep .mat-mdc-cell,
+    & ::ng-deep .mat-mdc-footer-cell {
+        font-family: 'IBM Plex Sans', sans-serif !important;
+        font-feature-settings: normal;
+    }
+
+    ::ng-deep .mat-column-uuid {
+        max-width: 100px !important;
+    }
+
+    ::ng-deep td.mat-column-uuid {
+        white-space: nowrap; /* Prevent text wrapping */
+        overflow: hidden; /* Hide overflowing text */
+        text-overflow: ellipsis; /* Add "..." if the text overflows */
+    }
+}

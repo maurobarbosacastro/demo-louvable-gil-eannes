@@ -1,0 +1,333 @@
+<div class="flex flex-col gap-15 p-2 overflow-y-scroll overflow-x-hidden">
+    <div class="flex justify-end">
+        <mat-icon svgIcon="close-modal" class="cursor-pointer" (click)="closeModal()"></mat-icon>
+    </div>
+
+    <span class="text-4xl">{{ 'cashback.details.title-details' | transloco }}</span>
+
+    <form [formGroup]="cashbackForm" class="w-full">
+
+        <!-- Exit Click -->
+        <div class="mb-6">
+            <label for="exitClick" class="text-md font-normal text-project-waterloo ">{{ 'cashback.details.exit-click' | transloco }} </label>
+            <div class="relative flex items-center">
+                <label class="w-full flex items-center gap-3 border-b border-project-licorice-900 pb-2">
+                    <input type="text" id="exitClick"  [formControl]="exitClickControl"
+                           [ngClass]="{'border-project-red placeholder:!text-project-red': exitClickControl.hasError('required')  && !exitClickControl.untouched}"
+                           tagpeakInputStyle class="!border-none"/>
+                    <button class="btn bg-white text-project-licorice-900 border-project-licorice-900 min-h-9 h-9 text-lg font-normal" (click)="validateIt()">
+                        {{ 'cashback.details.validate-it' | transloco }}
+                        @if ($validate().activated) {
+                            @if ($validate().done) {
+                                @if ($validate().valid) {
+                                    <mat-icon svgIcon="check" class="text-green-500"></mat-icon>
+                                } @else {
+                                    <mat-icon svgIcon="wrong" class="text-red-500 scale-75"></mat-icon>
+                                }
+                            } @else {
+                                <span class="loading loading-spinner"></span>
+                            }
+                        }
+                    </button>
+                </label>
+
+                <div class="absolute right-30 top-3.5 flex">
+                    <div class="tooltip tooltip-error tooltip-left"
+                         [attr.data-tip]="'store.field-required' | transloco">
+                        <mat-icon
+                            *ngIf="(exitClickControl.hasError('required') ) && !exitClickControl.untouched"
+                            class="icon-size-4 cursor-pointer text-project-red"
+                            [svgIcon]="'error'"
+                        ></mat-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Currency -->
+        <div class="mb-6">
+            <label for="currency"
+                   class="text-md font-normal text-project-waterloo">{{ 'cashback.details.currency' | transloco }}</label>
+            <input type="text" id="currency"
+                   [formControl]="currencyControl"
+                   tagpeakInputStyle tagpeakReadonlyInput/>
+        </div>
+
+        <!-- Price Day Zero -->
+        <div class="mb-6">
+            <label for="priceDayZero"
+                   class="block text-project-waterloo font-normal text-md">{{ 'cashback.details.price-day-zero' | transloco }}
+            </label>
+            <div class="relative">
+                <input type="text" id="priceDayZero"
+                       [formControl]="priceDayZeroControl"
+                       tagpeakInputStyle>
+            </div>
+        </div>
+
+        <!-- Initial Date & End Date -->
+        <div class="flex gap-5">
+            <div class="mb-6 w-full">
+                <label for="startDate"
+                       class="block text-project-waterloo font-normal text-md">{{ 'cashback.details.initial-date' | transloco }}
+                </label>
+                <div class="relative">
+                    <input type="text" id="startDate" [matDatepicker]="pickerStart" (click)="pickerStart.open()"
+                           [formControl]="initialDateControl" [max]="cashbackForm.value.endDate"
+                           class="cursor-pointer" tagpeakInputStyle readonly/>
+                    <mat-datepicker #pickerStart class="custom-picker"></mat-datepicker>
+                </div>
+            </div>
+
+            <div class="mb-6 w-full">
+                <label for="endDate"
+                       class="block text-project-waterloo font-normal text-md">{{ 'cashback.details.end-date' | transloco }}
+                </label>
+                <div class="relative">
+                    <input type="text" id="endDate" [matDatepicker]="pickerEnd" (click)="pickerEnd.open()"
+                           [formControl]="endDateControl"  [min]="cashbackForm.value.initialDate"
+                           class="cursor-pointer" tagpeakInputStyle readonly/>
+                    <mat-datepicker #pickerEnd class="custom-picker"></mat-datepicker>
+                </div>
+            </div>
+        </div>
+
+        <!-- Isin & Conid -->
+        <div class="flex gap-5">
+            <div class="mb-6 w-full">
+                <label for="isin"
+                       class="block text-project-waterloo font-normal text-md">{{ 'cashback.details.isin' | transloco }}
+                </label>
+                <div class="relative">
+                    <input type="text" id="isin"
+                           [formControl]="isinControl"
+                           tagpeakInputStyle>
+                </div>
+            </div>
+
+            <div class="mb-6 w-full">
+                <label for="conid"
+                       class="block text-project-waterloo font-normal text-md">{{ 'cashback.details.conid' | transloco }}
+                </label>
+                <div class="relative">
+                    <input type="text" id="conid"
+                           [formControl]="conidControl"
+                           tagpeakInputStyle>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- Title -->
+        <div class="mb-6">
+            <label for="title"
+                   class="block text-project-waterloo font-normal text-md">{{ 'cashback.details.title' | transloco }}
+            </label>
+            <div class="relative">
+                <input type="text" id="title"
+                       [formControl]="titleControl"
+                       [ngClass]="{'border-project-red placeholder:!text-project-red': titleControl.hasError('required')  && !titleControl.untouched}"
+                       tagpeakInputStyle >
+
+                <div class="absolute right-0 top-2 flex ">
+                    <div class="tooltip tooltip-error tooltip-left"
+                         [attr.data-tip]="'store.field-required' | transloco">
+                        <mat-icon
+                            *ngIf="(titleControl.hasError('required') ) && !titleControl.untouched"
+                            class="icon-size-4 cursor-pointer text-project-red"
+                            [svgIcon]="'error'"
+                        ></mat-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details -->
+        <div class="mb-6">
+            <label for="details"
+                   class="block text-project-waterloo font-normal text-md">{{ 'cashback.details.details' | transloco }}
+            </label>
+            <div class="relative">
+                <input type="text" id="details"
+                       [formControl]="detailsControl"
+                       tagpeakInputStyle >
+            </div>
+        </div>
+
+        <!-- Order Value & Network Commission -->
+        <div class="flex gap-5">
+            <div class="mb-6 w-full">
+                <label for="order-value"
+                       class="block text-project-waterloo font-normal text-md">{{ 'cashback.details.order-value' | transloco }}
+                </label>
+                <div class="relative">
+                    <input type="text" id="order-value"
+                           [formControl]="orderValueControl"
+                           [ngClass]="{'border-project-red placeholder:!text-project-red': orderValueControl.hasError('required')  && !orderValueControl.untouched}"
+                           tagpeakInputStyle tagpeakReadonlyInput >
+
+                    <div class="absolute right-0 top-2 flex">
+                        <div class="tooltip tooltip-error tooltip-left"
+                             [attr.data-tip]="'store.field-required' | transloco">
+                            <mat-icon
+                                *ngIf="(orderValueControl.hasError('required') ) && !orderValueControl.untouched"
+                                class="icon-size-4 cursor-pointer text-project-red"
+                                [svgIcon]="'error'"
+                            ></mat-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6 w-full">
+                <label for="network-commission"
+                       class="block text-project-waterloo font-normal text-md">{{ 'cashback.details.network-commission' | transloco }}
+                </label>
+                <div class="relative">
+                    <input type="text" id="network-commission"
+                           [formControl]="networkCommissionControl"
+                           [ngClass]="{'border-project-red placeholder:!text-project-red': networkCommissionControl.hasError('required')  && !networkCommissionControl.untouched}"
+                           tagpeakInputStyle >
+
+                    <div class="absolute right-0 top-2 flex ">
+                        <div class="tooltip tooltip-error tooltip-left"
+                             [attr.data-tip]="'store.field-required' | transloco">
+                            <mat-icon
+                                *ngIf="(networkCommissionControl.hasError('required') ) && !networkCommissionControl.untouched"
+                                class="icon-size-4 cursor-pointer text-project-red"
+                                [svgIcon]="'error'"
+                            ></mat-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cashback -->
+        <div class="mb-6 w-full">
+            <label for="cashback"
+                   class="block text-project-waterloo font-normal text-md">{{ 'cashback.details.cashback' | transloco }}
+            </label>
+            <div class="relative">
+                <input type="text" id="cashback"
+                       [formControl]="cashbackControl"
+                       [ngClass]="{'border-project-red placeholder:!text-project-red': cashbackControl.hasError('required')  && !cashbackControl.untouched}"
+                       tagpeakInputStyle >
+
+                <div class="absolute right-0 top-2 flex ">
+                    <div class="tooltip tooltip-error tooltip-left"
+                         [attr.data-tip]="'store.field-required' | transloco">
+                        <mat-icon
+                            *ngIf="(cashbackControl.hasError('required') ) && !cashbackControl.untouched"
+                            class="icon-size-4 cursor-pointer text-project-red"
+                            [svgIcon]="'error'"
+                        ></mat-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Date & Status -->
+        <div class="flex gap-5">
+            <div class="mb-6 w-full">
+                <label for="orderPick"
+                       class="block text-project-waterloo font-normal text-md">{{ 'cashback.details.order-date' | transloco }}
+                </label>
+                <div class="relative">
+                    <input type="text" id="orderPick" [matDatepicker]="pickerOrder" (click)="pickerOrder.open()"
+                           [formControl]="orderDateControl"
+                           [min]="cashbackForm.value.initialDate" [max]="cashbackForm.value.endDate"
+                           readonly
+                           class="cursor-pointer  !text-project-waterloo" tagpeakInputStyle
+                           [ngClass]="{'border-project-red placeholder:!text-project-red': orderDateControl.hasError('required')  && !orderDateControl.untouched}"/>
+                    <mat-datepicker #pickerOrder class="custom-picker"></mat-datepicker>
+
+                    <div class="absolute right-0 top-2 flex ">
+                        <div class="tooltip tooltip-error tooltip-left"
+                             [attr.data-tip]="'store.field-required' | transloco">
+                            <mat-icon
+                                *ngIf="(orderDateControl.hasError('required') ) && !orderDateControl.untouched"
+                                class="icon-size-4 cursor-pointer text-project-red"
+                                [svgIcon]="'error'"
+                            ></mat-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6 w-full">
+                <label for="status"
+                       class="text-md font-normal text-project-waterloo">{{ 'cashback.details.status' | transloco }}</label>
+                <div class="relative">
+                    <div class="dropdown w-full">
+                        <div tabindex="0" role="button">
+                            <label class="flex items-center gap-2 border-b border-project-licorice-900">
+                                <input type="text" id="status"
+                                       value="{{ 'status.'+getStatusValue(statusControl.value) | transloco}}"
+                                       readonly
+                                       class="cursor-pointer !text-inherit !border-none" tagpeakInputStyle />
+                                <mat-icon svgIcon="arrow_drop_down"></mat-icon>
+                            </label>
+                        </div>
+                        <ul tabindex="0" class="dropdown-content menu bg-white rounded-box z-10 w-full p-2 shadow mt-1">
+                            @for (status of status; track status.value) {
+                                <li class="w-full hover:bg-[#4237DA33] rounded hover:text-project-youngBlue">
+                                    <a class="flex justify-between"
+                                       (click)="setFormControlValue('status', status.value)">
+                                        {{ status.label | transloco }}
+                                        @if (cashbackForm.value?.status?.includes(status.value)) {
+                                            <mat-icon svgIcon="check" class="icon-size-4 icon-color"></mat-icon>
+                                        }
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Override Price -->
+        <div class="mb-6">
+            <label for="override-price"
+                   class="block text-project-waterloo font-normal text-md">{{ 'cashback.details.override-price' | transloco }}
+            </label>
+            <div class="relative">
+                <input type="text" id="override-price"
+                       [formControl]="overridePriceControl"
+                       tagpeakInputStyle>
+            </div>
+        </div>
+
+        <!-- Unit -->
+        <div class="mb-6">
+            <label for="unit"
+                   class="block text-project-waterloo font-normal text-md">{{ 'cashback.details.unit' | transloco }}
+            </label>
+            <div class="relative">
+                <input type="text" id="unit"
+                       [formControl]="unitControl"
+                       tagpeakInputStyle tagpeakReadonlyInput>
+            </div>
+        </div>
+
+        <!-- Current Cash Reward -->
+        <div class="mb-6">
+            <label for="current-cash-reward"
+                   class="block text-project-waterloo font-normal text-md">{{ 'cashback.details.current-cash-reward' | transloco }}
+            </label>
+            <div class="relative">
+                <input type="text" id="current-cash-reward"
+                       [formControl]="currentCashRewardControl"
+                       tagpeakInputStyle tagpeakReadonlyInput>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<div class="flex flex-row justify-between items-center mt-6">
+    <button class="btn border-project-licorice-900 bg-white text-project-licorice-900 text-lg font-normal" (click)="closeModal()">{{ 'misc.cancel' | transloco }}</button>
+    <button class="btn bg-project-licorice-900 text-white text-lg font-normal" (click)="editCashback()">{{ 'misc.submit' | transloco }}</button>
+</div>

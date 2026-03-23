@@ -1,0 +1,255 @@
+<div
+    class="m-4 flex flex-col md:flex-row p-5 md:items-start sm:justify-center md:justify-start flex-auto min-w-0 md:p-2.5 bg-white rounded-[2.5rem]">
+
+    <div
+        class=" w-1/2 relative sm:hidden rounded-[2rem] hidden md:flex flex-auto overflow-hidden bg-gray-800 dark:border-l flex-col h-[95vh]">
+        <tagpeak-carousel #carousel class="w-full h-full "
+                          [$templates]="[slide1, slide2, slide3]"
+                          [$action]="action"
+                          [$bgClassSlideIndicator]="'!bg-white'"
+                          [$image]="image" />
+
+    </div>
+    <ng-template #slide1>
+        <div class="bg-project-youngBlue flex justify-center items-start h-full flex-col ">
+            <img [ngSrc]="'../../../../assets/images/carousel/slide1.png'" width="90" height="90" alt="slide1" priority
+                 class="w-[90%] ml-15">
+            <div class="bg-project-grandis px-2 py-0.5 rounded ml-8 mb-4">
+                <span class="text-sm text-project-youngBlue font-bold">{{ 'auth.carousel.new' | transloco }} · </span>
+                <span class="text-sm text-project-youngBlue">{{ 'auth.carousel.refer-earn' | transloco }}  </span>
+            </div>
+            <div class="w-80 ml-8 mb-12">
+                <h2 class="text-3xl text-project-brand-500">{{ 'auth.carousel.slide1.title' | transloco }}</h2>
+                <p class="text-[15px] text-project-brand-500">
+                    {{ 'auth.carousel.slide1.subtitle' | transloco }}
+                </p>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #slide2>
+        <div class="bg-project-youngBlue flex justify-between items-start h-full flex-col">
+            <img [ngSrc]="'../../../../assets/images/carousel/slide2.png'" width="90" height="90" alt="slide2"
+                 class="w-[80%] ml-26 pt-30">
+            <div class="w-80 ml-8 pb-36">
+                <h2 class="text-3xl text-project-brand-500">{{ 'auth.carousel.slide2.title' | transloco }}</h2>
+                <p class="text-[15px] text-project-brand-500">
+                    {{ 'auth.carousel.slide2.subtitle' | transloco }}
+                </p>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #slide3>
+        <div class="bg-project-youngBlue flex justify-between items-start h-full flex-col">
+            <img [ngSrc]="'../../../../assets/images/carousel/slide3.png'" width="90" height="90" alt="slide3"
+                 class="w-[70%] ml-auto">
+            <div class="pb-24 ml-8">
+                <div class="bg-project-grandis px-2 py-0.5 rounded mb-4 w-fit">
+                    <span class="text-sm text-project-youngBlue font-bold">{{ 'auth.carousel.new' | transloco }}
+                        · </span>
+                    <span class="text-sm text-project-youngBlue">{{ 'auth.carousel.refer-earn' | transloco }}  </span>
+                </div>
+                <div class="w-80">
+                    <h2 class="text-3xl text-project-brand-500">{{ 'auth.carousel.slide3.title' | transloco }}</h2>
+                    <p class="text-[15px] text-project-brand-500">
+                        {{ 'auth.carousel.slide3.subtitle' | transloco }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #action>
+        <div
+            (click)="goBack()"
+            class=" bg-white rounded px-2.5 py-2 cursor-pointer items-center flex text-md gap-1 leading-none text-project-licorice-500">
+            <mat-icon [svgIcon]="'chevron_backward'" class="icon-size-5 text-project-licorice-500" />
+            {{ 'auth.carousel.button-back' | transloco }}
+        </div>
+    </ng-template>
+
+    <ng-template #image>
+        <div>
+            <img ngSrc="../../../../assets/images/logo/logo_white.svg" width="123" height="30" alt="logo">
+        </div>
+    </ng-template>
+
+
+    <div
+        class="flex justify-start h-full md:w-full lg:w-1/2 py-8 md:px-4 md:p-16 sm:p-8 rounded-none shadow-none items-center sm:w-full ">
+        <div class="w-full md:pr-30 md:pl-26 sm:px-10 ">
+
+            <div class="md:hidden block mb-40 md:mb-0">
+                <img ngSrc="../../../../assets/images/logo/logo.svg" class="sm:scale-[0.55] scale-110" width="123" height="30" alt="logo">
+            </div>
+
+            <!-- Title -->
+            <div class=" mb-5 text-4xl font-normal text-project-licorice-500 leading-none">
+                {{ 'auth.sign-in-title' | transloco }}
+            </div>
+            <div class="flex items-baseline mb-10">
+                <div class="text-project-waterloo font-normal">{{ 'auth.sign-in-subtitle' | transloco }}</div>
+                <a
+                    class="ml-1  text-project-youngBlue underline"
+                    [routerLink]="['/sign-up']"
+                >{{ 'auth.sign-up-here' | transloco }}.
+                </a>
+            </div>
+
+
+            <!-- Sign In form -->
+            <form class="mt-8" [formGroup]="signInForm" #signInNgForm="ngForm" (ngSubmit)="signIn($event)">
+
+
+                <!-- Email field -->
+                <div class="mb-4">
+                    <label for="email"
+                           class="block text-project-waterloo font-normal text-md">{{ 'auth.email' | transloco }}</label>
+                    <div class="relative">
+                        <input type="text" id="email"
+                               placeholder="{{ 'auth.your' | transloco}} {{ 'auth.email' | transloco}}"
+                               [formControl]="emailControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red':(( emailControl.hasError('required') || emailControl.hasError('email')) && !emailControl.untouched) || wrongCredentials}"
+
+                               class="w-full pb-2 pt-1 border-b border-project-brand-500 placeholder:text-project-waterloo focus:outline-none  focus:border-project-licorice-500 text-project-licorice-500">
+
+                        <div class="tooltip tooltip-error absolute right-0"
+                             [attr.data-tip]="emailControl.hasError('required') ? ('auth.email-required' | transloco) : ('auth.email-invalid' | transloco) ">
+                            <mat-icon
+                                *ngIf="( emailControl.hasError('required') || emailControl.hasError('email')) && !emailControl.untouched"
+                                class="icon-size-4 cursor-pointer text-project-red"
+                                [svgIcon]="'error'"
+                            ></mat-icon>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Password field -->
+                <div class="mb-4">
+                    <label for="password"
+                           class="block text-project-waterloo font-normal text-md">{{ 'auth.password' | transloco }}</label>
+                    <div class="relative">
+                        <input id="password"
+                               placeholder="{{ 'auth.your' | transloco}} {{ 'auth.password' | transloco}}"
+                               [formControl]="passwordControl"
+                               type="password"
+                               #passwordField
+                               [ngClass]="{'border-project-red placeholder:text-project-red': (passwordControl.hasError('required') && !passwordControl.untouched) || wrongCredentials}"
+                               class="w-full pb-2 pt-1 border-b border-project-brand-500 placeholder:text-project-waterloo focus:outline-none  focus:border-project-licorice-500 text-project-licorice-500">
+
+                        <div class="absolute right-0 top-0 flex gap-1">
+                            <div
+                                *ngIf="passwordControl.hasError('required') && !passwordControl.untouched"
+                                class="tooltip tooltip-error "
+                                [attr.data-tip]="passwordControl.hasError('required') ? ('auth.password-required' | transloco) : null ">
+                                <mat-icon
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+
+                            <mat-icon
+                                (click)="passwordField.type === 'password'
+    ? (passwordField.type = 'text')
+    : (passwordField.type = 'password')"
+                                class="icon-size-4 cursor-pointer"
+                                [svgIcon]="passwordField.type === 'password' ? 'visibility_off' : 'visibility'"
+                            ></mat-icon>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="flex justify-between items-center">
+                    <!-- Remember me-->
+                    <div class="text-md text-project-waterloo flex items-center leading-none">
+                        <input type="checkbox"
+                               [formControl]="rememberMeControl"
+                               class="cursor-pointer bg-project-youngBlue mr-2"
+                               id="rememberMe"
+                        />
+                        {{ 'auth.remember-me' | transloco }}
+                    </div>
+
+                    <!-- Forgot password-->
+                    <a
+                        class="text-md text-project-licorice-500 hover:underline"
+                        [routerLink]="['/forgot-password']"
+                    >{{ 'auth.forgot-password' | transloco }}
+                    </a>
+
+                </div>
+
+                <!--   Error Alert-->
+                <div *ngIf="wrongCredentials"
+                     class="flex items-center justify-start text-project-red text-md mt-2 mb-4">
+                    <mat-icon
+                        class="icon-size-4 cursor-pointer text-project-red mr-1"
+                        [svgIcon]="'error'"
+                    ></mat-icon>
+                    {{ 'auth.wrong-credentials' | transloco }}
+                </div>
+
+                <!-- Alert Need Reset Password -->
+                <div *ngIf="$needResetPassword()"
+                     class="flex items-center justify-start text-project-red text-md mt-2 mb-4">
+                    <mat-icon
+                        class="icon-size-4 cursor-pointer text-project-red mr-1"
+                        [svgIcon]="'error'"
+                    ></mat-icon>
+                    {{ 'auth.need_reset_password' | transloco }}
+                </div>
+
+
+                <!-- Submit button -->
+                <button
+                    class="w-full py-2.5 px-5 bg-project-licorice-500 text-white rounded flex justify-center"
+                    [ngClass]="{'mt-8': !wrongCredentials}"
+                    [disabled]="signInForm.disabled"
+                >
+                    <span *ngIf="!signInForm.disabled">
+                        {{ 'auth.login' | transloco }}
+                    </span>
+                    <mat-progress-spinner
+                        *ngIf="signInForm.disabled"
+                        [diameter]="24"
+                        [mode]="'indeterminate'"
+                        [color]="'accent'"
+                    ></mat-progress-spinner>
+                </button>
+            </form>
+
+            <!-- Socials Divider -->
+            @if (environment.features.authSocials) {
+                <div>
+                    <div class="flex items-center mt-10 mb-5">
+                        <div class="flex-grow border-t border-project-waterloo"></div>
+                        <span
+                            class="mx-4 font-normal text-sm text-project-waterloo">{{ 'auth.or-login-with' | transloco }}</span>
+                        <div class="flex-grow border-t border-project-waterloo"></div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button
+                            (click)="loginWithSocial(SocialProviders.FACEBOOK)"
+                            class="flex justify-center items-center w-full bg-[#1A77F2] py-2 rounded text-white text-[15px]">
+                            <mat-icon class="icon-size-4 mr-1 text-white" [svgIcon]="'facebook'"></mat-icon>
+                            Facebook
+                        </button>
+                        <button
+                            (click)="loginWithSocial(SocialProviders.GOOGLE)"
+                            class="flex justify-center w-full py-2 rounded text-project-licorice-500 border border-project-licorice-500 text-[15px] items-center">
+                            <mat-icon class="icon-size-4 text-project-licorice-500 mr-1"
+                                      [svgIcon]="'google'"></mat-icon>
+                            Google
+                        </button>
+                    </div>
+                </div>
+            }
+
+
+        </div>
+    </div>
+</div>
+

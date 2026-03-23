@@ -1,0 +1,30 @@
+{
+    "name": "frontoffice",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "apps/client/frontoffice/src",
+    "tags": [],
+    "targets": {
+        "build": {
+            "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+            "executor": "@nxtensions/astro:build",
+            "options": {}
+        },
+        "dev": {
+            "executor": "@nxtensions/astro:dev",
+            "options": {}
+        },
+        "preview": {
+            "dependsOn": [
+                {
+                    "target": "build"
+                }
+            ],
+            "executor": "@nxtensions/astro:preview",
+            "options": {}
+        },
+        "check": {
+            "executor": "@nxtensions/astro:check"
+        }
+    }
+}

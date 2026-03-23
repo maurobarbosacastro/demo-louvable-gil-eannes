@@ -1,0 +1,306 @@
+@if ($isMobile()) {
+    @defer {
+        <div class="flex flex-col pt-0" *ngIf="$reward() && $transaction()">
+            <div class="flex flex-col gap-6 border-b border-project-brand-500 pb-4">
+                <div class="flex flex-row justify-between">
+                    @if ($transaction()?.store?.logo) {
+                        <mat-icon [svgIcon]="$transaction().store.logo" class="w-15 h-15"></mat-icon>
+                    }
+                    <mat-icon svgIcon="close-modal" (click)="closeModal()" class="cursor-pointer"></mat-icon>
+                </div>
+                <div class="flex flex-col gap-10">
+                    <div class="flex flex-col">
+                        <span class="text-4xl text-project-licorice-600">{{ $transaction().store.name }}</span>
+                        <span
+                            class="text-sm text-project-waterloo">{{ 'dashboard.purchased-on' | transloco }} {{ $transaction().orderDate | date: 'MMM d, yyyy' }}</span>
+                    </div>
+                    <div class="flex flex-row justify-between"
+                         [ngClass]="{'gap-2.5': $reward()?.state === StatusEnum.LIVE}">
+                        <button
+                            class="btn bg-white border-project-licorice-500 text-project-licorice-500 px-5 py-1.5 rounded font-normal text-lg min-h-9 h-9"
+                            (click)="visitStore()">{{ 'dashboard.details.revisit-store' | transloco }}
+                        </button>
+                        @if ($reward()?.state === StatusEnum.LIVE) {
+                            <button
+                                class="btn btn-sm border border-project-red bg-project-red text-white px-4 !max-h-9 !h-9 text-md font-normal gap-1 rounded"
+                                (click)="stopReward()">
+                                <mat-icon svgIcon="table_stop" class="icon-size-4">
+                                </mat-icon>
+                                {{ 'dashboard.stop' | transloco }}
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-row w-full mt-8 gap-8">
+                <div class="flex flex-col gap-6 border-b border-project-brand-500 pb-5 w-full">
+                    <div class="flex items-center gap-1">
+                        <mat-icon svgIcon="clock" class="icon-size-4"></mat-icon>
+                        <span>{{ 'dashboard.table.status' | transloco }}</span>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <div class="float-start">
+                            <tagpeak-status-container [$status]="$reward()?.state"/>
+                        </div>
+                        @if ($reward().endDate) {
+                            <div class="flex flex-col justify-end">
+
+                                @if ($reward().state === 'LIVE') {
+                                    <span class="text-lg">{{ $reward()?.endDate | date: 'MMM d, yyyy' }}</span>
+                                    <span class="text-sm text-project-waterloo">
+                                        @let days = differenceInCalendarDays($reward().endDate, today);
+                                        @if (days > 0) {
+                                            <span
+                                                class="text-sm">{{ days }} {{ 'dashboard.days-left' | transloco }}</span>
+                                        } @else {
+                                            <span
+                                                class="text-sm">0 {{ 'dashboard.days-left' | transloco }}</span>
+                                        }
+                                </span>
+                                } @else {
+                                    @if ($reward().state === 'STOPPED') {
+                                        <span class="text-lg"></span>
+                                        <span class="text-sm text-project-waterloo">
+                                        since {{ $reward().stoppedAt | date: 'MMM d, yyyy' }}
+                                    </span>
+                                    } @else if ($reward().state === 'EXPIRED' || $reward().state === 'FINISHED') {
+                                        <span class="text-lg"></span>
+                                        <span class="text-sm text-project-waterloo">
+                                        @if (!!$reward().stoppedAt) {
+                                            since {{ $reward().stoppedAt | date: 'MMM d, yyyy' }}
+                                        } @else {
+                                            since {{ $reward().endDate | date: 'MMM d, yyyy' }}
+                                        }
+                                    </span>
+                                    } @else {
+                                        <span>-</span>
+                                    }
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-5 justify-between w-full mt-5">
+                <div class="flex flex-col w-1/2 gap-8 border-b border-project-brand-500 pb-5">
+                    <div class="flex items-center gap-3">
+                        <mat-icon svgIcon="stars" class="icon-size-5"></mat-icon>
+                        <span
+                            class="text-md text-project-licorice-900">{{ 'reward-summary.live-rewards' | transloco }}</span>
+                    </div>
+                    <span
+                        class="text-6xl text-project-youngBlue">{{ $reward()?.currentRewardUser | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}</span>
+                </div>
+
+                <div class="flex flex-col w-1/2 gap-8 border-b border-project-brand-500 pb-5">
+                    <div class="flex items-center gap-3">
+                        <mat-icon svgIcon="sell" class="icon-size-4"></mat-icon>
+                        <span
+                            class="text-md text-project-licorice-900">{{ 'dashboard.details.order-total-price' | transloco }}</span>
+                    </div>
+                    <span
+                        class="text-6xl text-project-waterloo">{{ $transaction().amountUser | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}</span>
+                </div>
+            </div>
+
+            <div class="2xl:my-14 mt-6 w-full">
+                <tagpeak-line-chart [$chartOptions]="$chartOptions()"/>
+            </div>
+
+            <div class="w-full flex items-end">
+                <div class="flex flex-col items-start border-t border-project-brand-500 w-full">
+                    @if ($reward()?.state === StatusEnum.LIVE) {
+                        <div class="flex flex-col w-full gap-4 mt-5">
+                            <span
+                                class="text-lg text-project-licorice-600">{{ 'dashboard.details.stop-anytime' | transloco }}</span>
+                            <span
+                                class="text-sm text-project-waterloo">{{ 'dashboard.details.stop-anytime-info' | transloco }}</span>
+                        </div>
+                    }
+                    <div class="flex flex-col mt-8 w-full"
+                         [ngClass]="$reward()?.state !== StatusEnum.LIVE ? 'w-full' : 'w-1/2'">
+                        <div class="grid grid-cols-2 grid-rows-3 gap-x-full gap-y-2.5">
+                            <span
+                                class="text-md text-project-waterloo self-center">{{ 'dashboard.details.ref' | transloco }}</span>
+                            <span
+                                class="text-lg text-project-licorice-600 text-end">{{ $transaction().storeVisit.reference }}</span>
+                            <span
+                                class="text-md text-project-waterloo self-center">{{ 'dashboard.purchased-on' | transloco }}</span>
+                            <span
+                                class="text-lg text-project-licorice-600 text-end">{{ $transaction().orderDate | date: 'MMM d, yyyy' }}</span>
+                            <span
+                                class="text-md text-project-waterloo self-center">{{ 'dashboard.table.stop-date' | transloco }}</span>
+                            <span class="text-lg text-project-licorice-600 text-end">
+                        @if (!!$reward().stoppedAt) {
+                            {{ $reward().stoppedAt | date: 'MMM d, yyyy' }}
+                        } @else {
+                            {{ $reward().endDate | date: 'MMM d, yyyy' }}
+                        }
+
+                        </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    } @loading (minimum 500ms) {
+        <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+            <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+        </div>
+    }
+
+
+} @else {
+    @defer {
+        <div class="flex flex-col p-4 pt-0" *ngIf="$reward() && $transaction()">
+            <div class="flex flex-col gap-6 2xl:gap-8 border-b border-project-brand-500 pb-4">
+                <div class="flex flex-row justify-between">
+                    @if ($transaction()?.store?.logo) {
+                        <mat-icon [svgIcon]="$transaction().store.logo" class="w-15 h-15"></mat-icon>
+                    }
+                    <mat-icon svgIcon="close-modal" (click)="closeModal()" class="cursor-pointer"></mat-icon>
+                </div>
+                <div class="flex flex-row justify-between items-center">
+                    <div class="flex flex-col">
+                        <span class="text-4xl text-project-licorice-600">{{ $transaction().store.name }}</span>
+                        <span
+                            class="text-sm text-project-waterloo">{{ 'dashboard.purchased-on' | transloco }} {{ $transaction().orderDate | date: 'MMM d, yyyy' }}</span>
+                    </div>
+                    <div class="flex flex-row" [ngClass]="{'gap-2.5': $reward()?.state === StatusEnum.LIVE}">
+                        <button
+                            class="btn bg-white border-project-licorice-500 text-project-licorice-500 px-5 py-1.5 rounded font-normal text-lg min-h-9 h-9"
+                            (click)="visitStore()">{{ 'dashboard.details.revisit-store' | transloco }}
+                        </button>
+                        @if ($reward()?.state === StatusEnum.LIVE) {
+                            <button
+                                class="btn btn-sm border border-project-red bg-project-red text-white px-4 !max-h-9 !h-9 text-md font-normal gap-1 rounded"
+                                (click)="stopReward()">
+                                <mat-icon svgIcon="table_stop" class="icon-size-4">
+                                </mat-icon>
+                                {{ 'dashboard.stop' | transloco }}
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-row w-full mt-8 2xl:mt-13 gap-8">
+                <div class="flex flex-col gap-9 border-b border-project-brand-500 pb-5 w-1/3">
+                    <div class="flex items-center gap-3">
+                        <mat-icon svgIcon="clock" class="icon-size-5"></mat-icon>
+                        <span>{{ 'dashboard.table.status' | transloco }}</span>
+                    </div>
+                    <div class="flex items-center justify-between h-full">
+                        <div class="float-start">
+                            <tagpeak-status-container [$status]="$reward()?.state"/>
+                        </div>
+                        @if ($reward().endDate) {
+                            <div class="flex flex-col justify-end">
+
+                                @if ($reward().state === 'LIVE') {
+                                    <span class="text-lg">{{ $reward()?.endDate | date: 'MMM d, yyyy' }}</span>
+                                    <span class="text-sm text-project-waterloo">
+                                        @let days = differenceInCalendarDays($reward().endDate, today);
+                                        @if (days > 0) {
+                                            <span
+                                                class="text-sm">{{ days }} {{ 'dashboard.days-left' | transloco }}</span>
+                                        } @else {
+                                            <span
+                                                class="text-sm">0 {{ 'dashboard.days-left' | transloco }}</span>
+                                        }
+                                </span>
+                                } @else {
+                                    @if ($reward().state === 'STOPPED') {
+                                        <span class="text-lg"></span>
+                                        <span class="text-sm text-project-waterloo">
+                                        since {{ $reward().stoppedAt | date: 'MMM d, yyyy' }}
+                                    </span>
+                                    } @else if ($reward().state === 'EXPIRED' || $reward().state === 'FINISHED') {
+                                        <span class="text-lg"></span>
+                                        <span class="text-sm text-project-waterloo">
+                                        @if (!!$reward().stoppedAt) {
+                                            since {{ $reward().stoppedAt | date: 'MMM d, yyyy' }}
+                                        } @else {
+                                            since {{ $reward().endDate | date: 'MMM d, yyyy' }}
+                                        }
+                                    </span>
+                                    } @else {
+                                        <span>-</span>
+                                    }
+                                }
+                            </div>
+
+                        }
+                    </div>
+                </div>
+
+                <div class="flex flex-col w-1/3 gap-9 border-b border-project-brand-500 pb-5">
+                    <div class="flex items-center gap-3">
+                        <mat-icon svgIcon="stars" class="icon-size-5"></mat-icon>
+                        <span
+                            class="text-md text-project-licorice-900">{{ 'reward-summary.live-rewards' | transloco }}</span>
+                    </div>
+                    <span
+                        class="text-6xl text-project-youngBlue">{{ $reward()?.currentRewardUser | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}</span>
+                </div>
+
+                <div class="flex flex-col w-1/3 gap-9 border-b border-project-brand-500 pb-5">
+                    <div class="flex items-center gap-3">
+                        <mat-icon svgIcon="sell" class="icon-size-5"></mat-icon>
+                        <span
+                            class="text-md text-project-licorice-900">{{ 'dashboard.details.order-total-price' | transloco }}</span>
+                    </div>
+                    <span
+                        class="text-6xl text-project-waterloo">{{ $transaction().amountUser | currency: $user().currency : 'symbol-narrow' : '1.2-2' }}</span>
+                </div>
+            </div>
+
+            <div class="2xl:my-14 mt-6 w-full">
+                <tagpeak-line-chart [$chartOptions]="$chartOptions()"/>
+            </div>
+
+            <div class="w-full flex items-end h-full">
+                <div class="flex flex-row justify-between items-center border-t border-project-brand-500 w-full">
+                    @if ($reward()?.state === StatusEnum.LIVE) {
+                        <div class="flex flex-col w-1/2 gap-4 mt-5">
+                            <span
+                                class="text-lg text-project-licorice-600">{{ 'dashboard.details.stop-anytime' | transloco }}</span>
+                            <span
+                                class="text-sm text-project-waterloo">{{ 'dashboard.details.stop-anytime-info' | transloco }}</span>
+                        </div>
+                    }
+                    <div class="flex flex-col items-end mt-5"
+                         [ngClass]="$reward()?.state !== StatusEnum.LIVE ? 'w-full' : 'w-1/2'">
+                        <div class="grid grid-cols-2 grid-rows-3 gap-x-16 gap-y-2.5">
+                            <span
+                                class="text-md text-project-waterloo self-center">{{ 'dashboard.details.ref' | transloco }}</span>
+                            <span
+                                class="text-lg text-project-licorice-600 text-end">{{ $transaction().storeVisit.reference }}</span>
+                            <span
+                                class="text-md text-project-waterloo self-center">{{ 'dashboard.purchased-on' | transloco }}</span>
+                            <span
+                                class="text-lg text-project-licorice-600 text-end">{{ $transaction().orderDate | date: 'MMM d, yyyy' }}</span>
+                            <span
+                                class="text-md text-project-waterloo self-center">{{ 'dashboard.table.stop-date' | transloco }}</span>
+                            <span class="text-lg text-project-licorice-600 text-end">
+                        @if (!!$reward().stoppedAt) {
+                            {{ $reward().stoppedAt | date: 'MMM d, yyyy' }}
+                        } @else {
+                            {{ $reward().endDate | date: 'MMM d, yyyy' }}
+                        }
+
+                        </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    } @loading (minimum 500ms) {
+        <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+            <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+        </div>
+    }
+}

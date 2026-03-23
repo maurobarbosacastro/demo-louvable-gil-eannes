@@ -1,0 +1,386 @@
+<div class="shop-no-filter">
+    @defer {
+        <div class="overlap-wrapper sm:px-2.5">
+
+            <div class="w-full bg-project-youngBlue rounded-t-[20px] px-5 pt-5 pb-10 mt-3.5 ">
+
+                <!--            Top menu-->
+                <div class="flex justify-between items-center">
+                    <mat-icon svgIcon="tagpeak-logo" class="logo-tagpeak cursor-pointer" (click)="openTagpeak()"></mat-icon>
+
+                <div class="md:hidden block">
+                    <div class="flex flex-row items-center gap-6" (click)="openLogin()" *ngIf="!$authenticated()">
+                        <button class="button border bg-transparent border-project-sideMenu text-wrapper-2 rounded hover:bg-project-licorice-600 hover:text-white hover:border-project-licorice-600 transition-all duration-400 ease-in-out">
+                            {{ 'auth.login' | transloco }}
+                        </button>
+                        <mat-icon svgIcon="menu" class="icon-size-8"></mat-icon>
+                    </div>
+                </div>
+
+                    <div class="md:block hidden">
+                        <div class="flex flex-row items-center gap-6">
+                            <button *ngIf="!$authenticated()" (click)="openLogin()"
+                                    class="button border bg-transparent border-project-sideMenu text-wrapper-2 rounded hover:bg-project-licorice-600 hover:text-white hover:border-project-licorice-600 transition-all duration-400 ease-in-out">
+                                {{ 'auth.login' | transloco }}
+                            </button>
+                            <button (click)="openSignUp()"
+                                    class="button border border-project-red bg-project-red text-wrapper-2 rounded hover:bg-project-licorice-600 hover:text-white hover:border-project-licorice-600 transition-all duration-400 ease-in-out">
+                                {{ (!$authenticated() ? 'stores.join-tagpeak' : 'stores.my-dashboard') | transloco }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!--            Filters-->
+                <div class="mt-24 w-full">
+                    <div class="lg:hidden block text-wrapper-15">{{ 'stores.search-title' | transloco }}</div>
+
+                    <form [formGroup]="filterForm" class="mt-10 flex flex-col lg:flex-row gap-4 items-center">
+                        <div class="lg:block hidden mr-13 text-wrapper-15">{{ 'stores.search-title' | transloco }}</div>
+                        <tagpeak-custom-dropdown class="w-full"
+                                                 [placeholder]="'stores.country-placeholder'"
+                                                 [$options]="$mappedCountries()"
+                                                 [value]="countryControl?.value?.name ?? ''"
+                                                 [control]="countryControl"
+                                                 [css]="styleDropdown"
+                                                 [iconCheckOption]="iconCheckOption"
+                                                 [isReadonly]="false"
+                                                 [showDefaultValue]="false"
+                                                 (valueChangesEvent)="setCountry($event)"
+
+                        />
+
+                        <tagpeak-custom-dropdown class="w-full"
+                                                 [placeholder]="'stores.category-placeholder'"
+                                                 [$options]="$mappedCategories()"
+                                                 [value]="categoryControl?.value?.name ?? ''"
+                                                 [control]="categoryControl"
+                                                 [css]="styleDropdown"
+                                                 [iconCheckOption]="iconCheckOption"
+                                                 [isReadonly]="false"
+                                                 [showDefaultValue]="false"
+                                                 (valueChangesEvent)="setCategory($event)"
+
+                        />
+
+                        <div class="w-full">
+                            <div class="overlap-4 flex justify-between items-center pl-5 h-13 bg-white">
+                                <div class="flex gap-2.5">
+                                    <mat-icon class="icon-size-5"
+                                              svgIcon="search"></mat-icon>
+                                    <input class="text-wrapper-19x placeholder:text-project-waterloo" (keyup.enter)="searchName()"
+                                           [formControl]="searchFilterForm"
+                                           placeholder="{{ 'stores.search' | transloco }}" />
+                                </div>
+                                <button class="button overlap-group-2 flex justify-center items-center"
+                                        (click)="searchName()">
+                                    <div class="text-wrapper-18">{{ 'stores.search' | transloco }}
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!--        Stores-->
+            <div class="bg-white sm:pt-24 pt-20">
+                <div class="bg-project-sideMenu w-auto flex items-center justify-center rounded-[20px] mx-5"
+                     [ngClass]="$stores().length === 0 ? 'min-h-[27.5rem]' : 'min-h-auto'">
+                    @if ($stores()?.length === 0) {
+                        <div class="w-fit h-full flex flex-col sm:flex-row items-center justify-center gap-2">
+                            <mat-icon class="icon-size-5 text-project-red" svgIcon="info-warning"></mat-icon>
+                            <p class="text-wrapper-20 w-[60%] sm:w-full">{{ (countryControl?.value === null ? 'stores.select-country' : 'stores.no-stores-found') | transloco }}</p>
+                        </div>
+                    } @else {
+                        @defer {
+                            <div class="flex flex-col justify-center gap-10 w-full px-5 py-6">
+                                <div class="flex flex-col md:flex-row md:justify-between gap-5">
+                                <span>{{ 'stores.stores-available' | transloco }} <span
+                                    class="font-bold">{{ countryControl?.value?.name }}</span></span>
+                                    <form [formGroup]="filterForm" class="flex items-center gap-2">
+                                        <span>{{ 'stores.sort-by' | transloco }}</span>
+                                        <select [formControl]="sortControl"
+                                                class="bg-transparent font-bold h-full text-[15px] border-none">
+                                            @for (sort of sortList; track sort.value) {
+                                                <option [value]="sort.value"> {{ sort.label }}</option>
+                                            }
+                                        </select>
+                                    </form>
+                                </div>
+
+                                <div class="flex gap-5 w-full">
+                                    <div
+                                        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 2xl:grid-cols-9 grid-flow-row gap-5 w-full">
+                                        @for (store of $stores(); track store.uuid) {
+                                            <div class="flex flex-col justify-center items-center gap-5 !cursor-pointer"
+                                                 (click)="openStore(store.uuid)">
+                                                <div
+                                                    class="rounded-full p-5 bg-white w-36 md:w-40 h-36 md:h-40 flex justify-center items-center">
+                                                    @if (store.logo) {
+                                                        <img [ngSrc]="store.logo" [alt]="store.name+' logo'" width="100"
+                                                             height="100"
+                                                             class=" max-w-20 max-h-20 md:max-w-24 md:max-h-24"
+                                                        />
+                                                    }
+                                                </div>
+                                                <span class="text-[15px] text-center">{{ store.name }}</span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                                @if (showPagination()) {
+                                    <div class="w-full flex gap-2 items-center justify-center">
+                                        <button
+                                            (click)="previousPage()"
+                                            [hidden]="currentPage === 0"
+                                            class="px-3 py-1 border border-project-red bg-white text-project-red hover:bg-project-red hover:text-white rounded"
+                                            aria-label="Previous page">&lsaquo;
+                                        </button>
+
+                                    <ng-container *ngFor="let page of visiblePages()">
+                                        <button
+                                            (click)="changePage(page)"
+                                            [ngClass]="{
+                                                '!bg-project-red !text-white': page === currentPage,
+                                                '!bg-white !text-project-red' : page !== currentPage
+                                            }"
+                                            class="px-3 py-1 border rounded border-project-red hover:bg-project-red hover:text-white">
+                                            {{ Number(page) + 1 }}
+                                        </button>
+                                    </ng-container>
+
+                                        <button
+                                            (click)="nextPage()"
+                                            [hidden]="currentPage === (totalPages-1)"
+                                            class="px-3 py-1 border border-project-red bg-white text-project-red hover:bg-project-red hover:text-white rounded"
+                                            aria-label="Next page">&rsaquo;
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        } @loading (minimum 500ms) {
+                            <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+                                <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+                            </div>
+                        }
+                    }
+                </div>
+
+                <!--            How it works-->
+                <div class="bg-project-grandis mt-36 px-5 py-15">
+                    <div class="text-wrapper-21">{{ 'stores.how-it-works' | transloco }}</div>
+                    <div class="flex md:flex-row flex-col gap-5 w-full mt-13">
+                        <div class="rectangle-6 px-5 flex flex-col gap-10">
+                            <div class="ellipse  mt-5 flex justify-center items-center">01</div>
+                            <p class="text-wrapper-22">{{ 'stores.make-purchase' | transloco }}</p>
+                        </div>
+
+                        <div class="rectangle-6 px-5 flex flex-col gap-10">
+                            <div class="ellipse  mt-5 flex justify-center items-center">02</div>
+                            <p class="text-wrapper-22">{{ 'stores.we-invest' | transloco }}</p>
+                        </div>
+
+                        <div class="rectangle-6 px-5 flex flex-col gap-10">
+                            <div class="ellipse  mt-5 flex justify-center items-center">03</div>
+                            <p class="text-wrapper-22">{{ 'stores.follow-investment' | transloco }}</p>
+                        </div>
+
+                        <div class="rectangle-6 px-5 flex flex-col gap-10">
+                            <div class="ellipse  mt-5 flex justify-center items-center">04</div>
+                            <p class="text-wrapper-22">{{ 'stores.receive-cash' | transloco }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!--            For shoppers and about us-->
+                <div class="flex md:flex-row flex-col gap-5 w-full mt-36 md:px-9 px-5 md:min-h-[29rem]">
+
+                    <!--                For shoppers-->
+                    <div
+                        class="relative rounded-[20px] min-h-[27.5rem] md:w-1/2 flex items-center store-bg-image ">
+
+                        <div
+                            class="relative z-1 flex flex-col justify-between gap-5 w-full h-full px-5 py-5 min-h-[27.5rem]">
+                            <div class="flex justify-between items-center pt-2.5">
+                                <div
+                                    class="text-wrapper-30 md:text-7xl text-3xl">{{ 'stores.for-shoppers' | transloco }}
+                                </div>
+                                <a href="https://tagpeak.com/for-shoppers"
+                                    class="button group-17 md:w-15 w-10 md:h-15 h-10 flex justify-center items-center cursor-pointer
+                                    hover:bg-project-licorice-500 transition-transform hover:-rotate-45 hover:text-white">
+
+<svg width="30" height="31" viewBox="0 0 30 31" fill="none" xmlns="http://www.w3.org/2000/svg" class="hover:text-white">
+<path d="M0.650757 15.5002L28.935 15.5002" stroke="CurrentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M14.7929 1.35805L28.935 15.5002L14.7929 29.6423" stroke="CurrentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+                                </a>
+                            </div>
+                            <div class="frame-2 bg-project-licorice-900">
+                                <a href="https://tagpeak.com/for-shoppers"
+                                    class="button text-wrapper-32 text-white">{{ 'stores.explore' | transloco }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--                About us-->
+                    <div
+                        class="relative rounded-[20px] min-h-[27.5rem] md:w-1/2 w-auto flex items-center bg-project-licorice-500">
+                        <div
+                            class="relative z-1 flex flex-col justify-between gap-5 w-full min-h-[27.5rem] h-full px-5 py-5">
+                            <div class="flex justify-between items-center pt-2.5">
+                                <div class="text-wrapper-30 md:text-7xl text-3xl">{{ 'stores.about-us' | transloco }}
+                                </div>
+                                <a href="https://tagpeak.com/about" class="button group-17 md:w-15 w-10 md:h-15 h-10 flex justify-center items-center
+                                    hover:bg-project-licorice-500 transition-transform hover:-rotate-45 hover:text-white">
+                                    <svg width="30" height="31" viewBox="0 0 30 31" fill="none" xmlns="http://www.w3.org/2000/svg" class="hover:text-white">
+<path d="M0.650757 15.5002L28.935 15.5002" stroke="CurrentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M14.7929 1.35805L28.935 15.5002L14.7929 29.6423" stroke="CurrentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+
+                                </a>
+                            </div>
+                            <div class="frame-2 bg-white">
+                                <a href="https://tagpeak.com/about"
+                                    class="button text-wrapper-32 text-project-licorice-900">{{ 'stores.explore' | transloco }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--            Footer -->
+                <footer class="footer mt-20 w-full">
+                    <div class="w-full h-full bg-project-licorice-500 px-10 rounded-b-[20px]">
+                        <div
+                            class="flex md:flex-row flex-col md:justify-between px-5 md:px-9 pt-15 mb-5 gap-7 md:gap-36 w-full">
+                            <div class="flex flex-col md:items-start md:w-1/3 w-full gap-8">
+                                <p class="p md:text-7xl md:text-start leading-[55px]">{{ 'stores.footer.title' | transloco }}</p>
+                                <p class="text-wrapper-11 leading-[23px] md:text-xl md:w-2/3 md:text-start">
+                                    {{ 'stores.footer.sub-title' | transloco }}
+                                </p>
+
+                                <form [formGroup]="filterForm" class="md:hidden mt-8 md:mt-13 flex gap-2.5 w-full">
+                                    <input
+                                        class="input input-bordered border-[#d9d9d9] !text-white !placeholder-white bg-transparent w-full rounded"
+                                        [formControl]="emailControl"
+                                        placeholder="{{ 'stores.footer.enter-email'  | transloco }}" />
+                                    <button
+                                        class="button button-bordered bg-white text-project-licorice-500 px-5 rounded"
+                                        (click)="submitNewsletter()">{{ 'misc.submit' | transloco }}
+                                    </button>
+                                </form>
+                            </div>
+
+
+                            <div
+                                class="flex md:flex-row flex-col justify-end w-full md:w-1/2 gap-10 md:gap-32 md:mt-0 mt-13 md:mr-16">
+                                <div class="flex flex-col gap-4">
+                                    <div class="text-wrapper-5">{{ 'stores.footer.info.tagpeak' | transloco }}</div>
+                                    <a href="https://tagpeak.com/about"
+                                        class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.about' | transloco }}
+                                    </a>
+                                    <a href="https://tagpeak.com/contacts"
+                                        class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.contact-us' | transloco }}
+                                    </a>
+                                    <a href="https://tagpeak.com/for-partners"
+                                        class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.for-partners' | transloco }}
+                                    </a>
+                                    <a href="https://tagpeak.com/for-employees"
+                                        class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.for-employees' | transloco }}
+                                    </a>
+                                    <a href="https://tagpeak.com/news"
+                                        class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.news' | transloco }}
+                                    </a>
+                                </div>
+
+                                <div class="flex flex-col gap-4">
+                                    <div class="text-wrapper-5">{{ 'stores.footer.info.platform' | transloco }}</div>
+                                    <a href="https://app.tagpeak.com/#/sign-in"
+                                        class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.login' | transloco }}
+                                    </a>
+                                    <a href="https://app.tagpeak.com/#/stores"
+                                        class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.our-brands' | transloco }}
+                                    </a>
+                                    <a href="https://tagpeak.com/faqs"
+                                        class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.faqs' | transloco }}
+                                    </a>
+                                </div>
+
+                                <div class="flex flex-col gap-4">
+                                    <div class="text-wrapper-5">{{ 'stores.footer.info.legal' | transloco }}</div>
+                                    <a [href]="environment.commercial.termsAndConditions"
+                                        class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.terms-conditions' | transloco }}
+                                    </a>
+                                    <a [href]="environment.commercial.privacyPolicy"
+                                        class="text-wrapper-6 cursor-pointer">{{ 'stores.footer.info.privacy-policy' | transloco }}
+                                    </a>
+                                </div>
+                            </div>
+
+                            <img class="line md:hidden my-10" src="https://c.animaapp.com/79UEXjah/img/line-13.svg" />
+                        </div>
+
+                        <div
+                            class="hidden md:flex md:flex-row flex-col md:justify-between px-5 md:px-9 mb-5 gap-7 md:gap-36 w-full">
+                            <div class="hidden md:flex w-full gap-5 justify-between items-center">
+                                <form [formGroup]="filterForm" class="flex gap-2.5 w-128">
+                                    <input
+                                        class="input input-bordered border-[#d9d9d9] text-white bg-transparent w-full rounded placeholder:white"
+                                        [formControl]="emailControl"
+                                        placeholder="{{ 'stores.footer.enter-email'  | transloco }}" />
+                                    <button
+                                        class="button button-bordered bg-white text-project-licorice-500 w-22 rounded"
+                                        (click)="submitNewsletter()">{{ 'misc.submit' | transloco }}
+                                    </button>
+                                </form>
+
+                                <div class="flex gap-9 justify-center items-center">
+                                    <div class="text-wrapper-12">{{ 'stores.footer.follow-us' | transloco }}</div>
+                                    <div class="flex gap-2 justify-center items-center">
+                                        <div class="group-wrapper flex justify-center items-center cursor-pointer" (click)="openLinkedin()">
+                                            <mat-icon svgIcon="linked-in" class="icon-size-4"></mat-icon>
+                                        </div>
+                                        <div class="vector-wrapper flex justify-center items-center cursor-pointer" (click)="openTwitter()">
+                                            <mat-icon svgIcon="twitter" class="icon-size-4"></mat-icon>
+                                        </div>
+                                        <div class="img-wrapper flex justify-center items-center cursor-pointer" (click)="openInstagram()">
+                                            <mat-icon svgIcon="instagram" class="icon-size-4"></mat-icon>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col justify-center items-center w-full md:px-9 px-5 mb-5 gap-5 md:mt-20">
+                            <div class="md:hidden w-full flex gap-5 justify-center items-center">
+                                <div class="text-wrapper-12">{{ 'stores.footer.follow-us' | transloco }}</div>
+                                <div class="flex gap-2 justify-center items-center">
+                                    <div class="group-wrapper flex justify-center items-center cursor-pointer" (click)="openLinkedin()" >
+                                        <mat-icon svgIcon="linked-in" class="icon-size-4"></mat-icon>
+                                    </div>
+                                    <div class="vector-wrapper flex justify-center items-center cursor-pointer" (click)="openTwitter()">
+                                        <mat-icon svgIcon="twitter" class="icon-size-4"></mat-icon>
+                                    </div>
+                                    <div class="img-wrapper flex justify-center items-center cursor-pointer" (click)="openInstagram()">
+                                        <mat-icon svgIcon="instagram" class="icon-size-4"></mat-icon>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="w-full flex justify-end">
+                                <p class="text-wrapper-14">© {{ currentYear }} Tagpeak. All rights reserved.</p>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    } @loading (minimum 500ms) {
+        <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+            <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+        </div>
+    }
+</div>

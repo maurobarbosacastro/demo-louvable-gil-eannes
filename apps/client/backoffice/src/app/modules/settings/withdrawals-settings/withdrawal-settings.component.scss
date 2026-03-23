@@ -1,0 +1,17 @@
+.icon-size {
+    width: 10.25rem /* 164px */ !important;
+    height: 7rem /* 112px */ !important;
+    min-width: 10.25rem /* 164px */ !important;
+    min-height: 7rem /* 112px */ !important;
+    font-size: 10.25rem /* 164px */ !important;
+    line-height: 10.25rem /* 164px */ !important;
+}
+
+.icon-size svg {
+    width: 10.25rem /* 164px */ !important;
+    height: 7rem /* 112px */ !important;
+}
+
+.icon-color-licorice {
+    color: theme('colors.project.licorice.500');
+}

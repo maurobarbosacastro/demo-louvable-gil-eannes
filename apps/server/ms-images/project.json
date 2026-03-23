@@ -1,0 +1,54 @@
+{
+    "name": "ms-images",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "apps/server/ms-images",
+    "tags": [],
+    "targets": {
+        "build": {
+            "executor": "@nx-go/nx-go:build",
+            "options": {
+                "outputPath": "dist/apps/server/ms-images",
+                "main": "apps/server/ms-images/main.go"
+            }
+        },
+        "serve": {
+            "executor": "@nx-go/nx-go:serve",
+            "options": {
+                "main": "apps/server/ms-images/main.go"
+            }
+        },
+        "install": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "go install",
+                "cwd": "apps/server/ms-images"
+            }
+        },
+        "mod-download": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "go mod download",
+                "cwd": "apps/server/ms-images"
+            }
+        },
+        "tidy": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "go mod tidy",
+                "cwd": "apps/server/ms-images"
+            }
+        },
+        "test": {
+            "executor": "@nx-go/nx-go:test",
+            "options": {
+                "cover": true,
+                "race": true,
+                "verbose": true
+            }
+        },
+        "lint": {
+            "executor": "@nx-go/nx-go:lint"
+        }
+    }
+}

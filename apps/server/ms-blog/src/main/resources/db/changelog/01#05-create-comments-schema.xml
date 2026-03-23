@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="06-blog" author="Atlanse">
+		<createTable tableName="comments"
+		             remarks="A table to contain comments">
+
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints
+					nullable="false"
+					unique="true"
+					primaryKey="true"
+					primaryKeyName="comments_PK" />
+			</column>
+
+			<column name="version" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="article_id" type="BIGINT">
+				<constraints nullable="true"
+				             foreignKeyName="fk_comment_article"
+				             references="articles(id)"/>
+			</column>
+
+			<column name="parent_id" type="BIGINT">
+				<constraints nullable="true"
+				             foreignKeyName="fk_comment_comment"
+				             references="comments(id)"/>
+			</column>
+
+			<column name="hidden" type="boolean">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="text" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="created_by" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="updated_by" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+	</changeSet>
+</databaseChangeLog>

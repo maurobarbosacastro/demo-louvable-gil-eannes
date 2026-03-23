@@ -1,0 +1,165 @@
+@defer (when $withdrawalRequest()) {
+    <div class="h-full flex flex-col gap-10 px-2 pt-2 pb-8 overflow-y-scroll overflow-x-hidden">
+        <div class="flex justify-end mb-5">
+            <mat-icon svgIcon="close-modal" class="cursor-pointer" (click)="closeModal()"></mat-icon>
+        </div>
+
+        <span class="text-4xl">{{ 'cashout-request.details.title' | transloco }}</span>
+
+        <div class="flex flex-col gap-4">
+            <span class="text-lg">{{ 'cashout-request.details.payment-details' | transloco }}</span>
+
+            <form [formGroup]="cashoutForm[CashoutRequestForm.PAYMENT_DETAILS]" class="bg-[#F0F0F8] rounded-xl px-2.5 py-4">
+                <div class="flex flex-col">
+                    <div class="flex gap-4 items-center border-b border-project-lavender pb-4">
+                    <span
+                        class="text-project-lavender text-md w-28">{{ 'cashout-request.details.payment-method' | transloco }}</span>
+                        <span class="text-lg">{{ paymentMethodControl.value }}</span>
+                    </div>
+                    <div class="flex gap-4 items-center border-b border-project-lavender py-4">
+                    <span
+                        class="text-project-lavender text-md w-28">{{ 'cashout-request.details.bank-name' | transloco }}</span>
+                        <span class="text-lg">{{ bankNameControl.value }}</span>
+                    </div>
+                    <div class="flex gap-4 items-center border-b border-project-lavender py-4">
+                    <span
+                        class="text-project-lavender text-md w-28">{{ 'cashout-request.details.bank-address' | transloco }}</span>
+                        <span class="text-lg">{{ bankAddressControl.value}}</span>
+                    </div>
+                    <div class="flex gap-4 items-center border-b border-project-lavender py-4">
+                    <span
+                        class="text-project-lavender text-md w-28">{{ 'cashout-request.details.bank-account-title' | transloco }}</span>
+                        <span
+                            class="text-lg">{{ bankAccountTitleControl.value }}</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-project-lavender py-4">
+                        <div class="flex gap-4 items-center">
+                        <span
+                            class="text-project-lavender text-md w-28">{{ 'cashout-request.details.iban' | transloco }}</span>
+                            <span class="text-lg">{{ ibanControl.value }}</span>
+                        </div>
+                        <mat-icon svgIcon="open-in" class="icon-size-4 cursor-pointer" (click)="downloadFile()"></mat-icon>
+                    </div>
+                    <div class="flex items-center gap-4 border-b border-project-lavender py-4">
+                    <span
+                        class="text-project-lavender text-md w-28">{{ 'cashout-request.details.bank-country' | transloco }}</span>
+                        <span class="text-lg">{{ bankCountryControl.value }}</span>
+                    </div>
+                    <div class="flex items-center gap-4 border-b border-project-lavender py-4">
+                    <span
+                        class="text-project-lavender text-md w-28">{{ 'cashout-request.details.country' | transloco }}</span>
+                        <span class="text-lg">{{ countryControl.value }}</span>
+                    </div>
+                    <div class="flex items-center gap-4 pt-4">
+                    <span
+                        class="text-project-lavender text-md w-28">{{ 'cashout-request.details.vat-number' | transloco }}</span>
+                        <span class="text-lg">{{ vatControl.value }}</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <form [formGroup]="cashoutForm[CashoutRequestForm.CASHOUT_REQUEST_INFO]" class="w-full">
+            <div class="flex gap-5 w-full">
+                <div class="w-1/2">
+                    <label for="cashout-value"
+                           class="block text-project-waterloo font-normal text-md">{{ 'cashout-request.details.cashout-value' | transloco }}
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="cashout-value"
+                               readonly
+                               [formControl]="cashoutValueControl"
+                               class="w-full pb-2 pt-1 border-b placeholder:text-project-waterloo focus:outline-none  border-[#7A7B924D] text-project-waterloo">
+                    </div>
+                </div>
+
+                <div class="mb-6 w-1/2">
+                    <label
+                           class="text-md font-normal text-project-waterloo">{{ 'cashout-request.details.status' | transloco }}</label>
+                    <tagpeak-custom-dropdown [placeholder]="'withdrawals-request.status'"
+                                             [$options]="$mappedStatus()"
+                                             [value]="getStatus(this.statusControl.value)"
+                                             [control]="statusControl"
+                                             [css]="styleDropdown"
+                                             [iconCheckOption]="iconCheckOption"
+                                             [showDefaultValue]="false"
+                                             [iconResetValue]="false"
+                                             [isDisabled]="!isPendingState()"
+                                             (valueChangesEvent)="setFormControlValue(CashoutRequestForm.CASHOUT_REQUEST_INFO,'status', $event.value)"/>
+                </div>
+            </div>
+
+            <div class="flex gap-5 w-full">
+                <div class="mb-6 w-1/2">
+                    <label for="requested-date"
+                           class="block text-project-waterloo font-normal text-md">{{ 'cashout-request.details.requested-date' | transloco }}
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="requested-date"
+                               readonly
+                               [formControl]="requestDateControl"
+                               class="w-full pb-2 pt-1 border-b placeholder:text-project-waterloo focus:outline-none  border-[#7A7B924D] text-project-waterloo">
+                    </div>
+                </div>
+
+                <div class="mb-6 w-1/2">
+                    <label for="payment-date"
+                           class="block text-project-waterloo font-normal text-md">{{ 'cashout-request.details.payment-date' | transloco }} *
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="payment-date" [matDatepicker]="pickerPayment" (click)="isPendingState() ? pickerPayment.open() : null"
+                               readonly
+                               [formControl]="paymentDateControl"
+                               [min]="requestDateControl.value"
+                               class="w-full pb-2 pt-1 border-b placeholder:text-project-waterloo focus:outline-none  text-project-licorice-500"
+                               [ngClass]="isPendingState() ? 'border-project-licorice-500 cursor-pointer' : 'border-[#7A7B924D]'"/>
+                        <mat-datepicker #pickerPayment class="custom-picker"></mat-datepicker>
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(paymentDateControl.hasError('required') ) && !paymentDateControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label for="note"
+                       class="block text-project-waterloo font-normal text-md">{{ 'cashout-request.details.note' | transloco }}
+                </label>
+                <div class="relative">
+                <textarea rows="3" type="text" id="note"
+                          [readonly]="!isPendingState()"
+                          [formControl]="noteControl"
+                          class="w-full pb- pt-1 border-b focus:outline-none  border-project-sideMenu text-project-licorice-500"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    @if (isPendingState()) {
+        <div class="flex justify-between">
+            <button
+                class="py-2.5 px-10 border border-project-red bg-white  text-project-red rounded  textButton flex justify-center cursor-pointer my-4"
+                (click)="requestAction(StatusEnum.REJECTED)">
+                {{ 'withdrawals-request.buttons.reject' | transloco }}
+            </button>
+            <button
+                class="py-2.5 px-10 border border-green-600 text-white bg-green-600 rounded  textButton flex justify-center cursor-pointer my-4"
+                (click)="requestAction(StatusEnum.COMPLETED)">
+                {{ 'withdrawals-request.buttons.accept' | transloco }}
+
+            </button>
+        </div>
+    }
+
+} @loading (minimum 300ms) {
+    <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+        <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+    </div>
+}

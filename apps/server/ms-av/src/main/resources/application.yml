@@ -1,0 +1,7 @@
+micronaut:
+  application:
+    name: msAv
+netty:
+  default:
+    allocator:
+      max-order: 3

@@ -1,0 +1,28 @@
+<div class="w-full px-16 mt-8">
+    @defer {
+        <div class="flex justify-between max-h-[74px]">
+            <h3 class="flex items-center justify-center">{{ 'email.template-header' | transloco }}</h3>
+            <button class="addButton textButton flex justify-center cursor-pointer my-4"
+                    (click)="redirectToNewTemplate()">
+                {{ 'email.add-template' | transloco }}
+            </button>
+        </div>
+        <div class="mt-16">
+            <atl-ng-table *ngIf="$tableConfig()"
+                          class="custom-table"
+                          id="table"
+                          [tableConfiguration]="$tableConfig()"
+                          [totalPages]="total"
+                          [totalSize]="totalSize"
+                          [resetPaginator]="page$ | async"
+                          (onActionClick)="clickTableAction($event)"
+                          (onSortAndPageChange)="onSortAndPageChange($event)"
+            >
+            </atl-ng-table>
+        </div>
+    } @loading (minimum 300ms) {
+        <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+            <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+        </div>
+    }
+</div>

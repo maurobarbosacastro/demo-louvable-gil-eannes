@@ -1,63 +1,1446 @@
 stages:
+  - system
+  - manual-migrate
+  - install-package
+  - build
   - restart
+  - send-and-restart
+  - backup-deploy
+  - rollback-deploy
+  - sonar-analysis
+  - manual-deploy
 
 variables:
-  DEMO: "demo"
+  OP_ITEM_ATL_NEXUS: "op read op://ATL-INFRA/CI-CD-PIPELINE-ATL-NEXUS"
+  OP_ITEM_ATL_PIPELINE_QA: "op read op://ATL-INFRA/ATL-PIPELINE-QA"
+  SERVICE_MS_TAGPEAK: "ms-tagpeak"
+  SERVICE_MS_EMAIL: "ms-email"
+  SERVICE_MS_IMAGES: "ms-images"
+  SERVICE_MS_INTERACTIVE_BROKERS: "ms-interactive-brokers"
+  SERVICE_MS_FIREBASE_GO: "ms-firebase-go"
+  BACKOFFICE: "backoffice"
+  ENVIRONMENT_GROUP: "ATL-2024"
+  ATL_CACHE_BACKOFFICE: "cache-test-$PROJECT-backoffice"
+  ATL_CACHE_SHOPIFY_PLUGIN: "cache-$PROJECT-shopify-plugin"
+  GIT_SSL_NO_VERIFY: "1"
+  SERVICE_MS_CJ: "ms-cj"
+  SERVICE_MS_SHOPIFY: "ms-shopify"
+  SHOPIFY_PLUGIN: "shopify-plugin"
+  SSH_PATH_QA: "/home/atlanse"
+  SSH_PATH_STAGING: "/root/scripts"
+  SSH_PATH_PROD: "/root/scripts"
 
-# Restart deploy
-restart_deploy:
-  stage: restart
-  image: ubuntu:latest 
-  before_script:
-    - apt-get update -y && apt-get install -y curl unzip jq
-    # Instala o 1Password CLI
-    - |
-      OP_VERSION="v2.30.0"
-      curl -sSfo op.zip \
-        "https://cache.agilebits.com/dist/1P/op2/pkg/${OP_VERSION}/op_linux_amd64_${OP_VERSION}.zip"
-      unzip -o op.zip -d /usr/local/bin/
-      rm op.zip
-      op --version
-      
-      echo "before_script"
+default:
+  artifacts:
+    expire_in: 365 day
 
-      # Autentica no 1Password
-      echo $INFRA_OP_SECRET_PASSWORD | op account add --address $INFRA_OP_SECRET_ADDRESS --email $INFRA_OP_SECRET_EMAIL
-      eval $(echo $INFRA_OP_SECRET_PASSWORD | op signin --account $INFRA_OP_SECRET_ADDRESS)
-
+.connect_app_1password:
   script:
-     - echo "script"
-     - export ONE_PASSWORD_ITEM_NAME="Hostinger-Farmácia Clínica"
-     - export ONE_PASSWORD_ITEM_ID=$(op item get "$ONE_PASSWORD_ITEM_NAME" --format json | jq -r '.id')
-     - echo "-->$ONE_PASSWORD_ITEM_ID"
-     - |
-        # Busca o valor atual
-        RESPONSE=$(curl -s --header "PRIVATE-TOKEN: $GITLAB_API_TOKEN" \
-          "$CI_API_V4_URL/projects/$CI_PROJECT_ID/variables/$SERVICE")
-        
-        CURRENT=$(echo $RESPONSE | jq -r '.value')
+    - !reference [.init_environment_group, script]
+    - echo "$(hget_config_by_group "SO-SCRIPT-INFRA-1PASSWORD" "value")" > init.sh
+    - chmod 777 init.sh
+    - sed -i 's/\r$//' init.sh
+    - source init.sh
+    - unset OP_CONNECT_HOST
+    - unset OP_CONNECT_TOKEN
+    - echo $INFRA_OP_SECRET_PASSWORD | op account add --address $INFRA_OP_SECRET_ADDRESS --email $INFRA_OP_SECRET_EMAIL
+    - eval $(echo $INFRA_OP_SECRET_PASSWORD | op signin --account $INFRA_OP_SECRET_ADDRESS)
 
-        # Se não existe, cria com POST, senão atualiza com PUT
-        if [ "$CURRENT" = "null" ] || [ -z "$CURRENT" ]; then
-          NEW_VALUE=1
-          curl -s --request POST \
-            --header "PRIVATE-TOKEN: $GITLAB_API_TOKEN" \
-            "$CI_API_V4_URL/projects/$CI_PROJECT_ID/variables" \
-            --form "key=$SERVICE" \
-            --form "value=$NEW_VALUE"
-        else
-          NEW_VALUE=$((CURRENT + 1))
-          curl -s --request PUT \
-            --header "PRIVATE-TOKEN: $GITLAB_API_TOKEN" \
-            "$CI_API_V4_URL/projects/$CI_PROJECT_ID/variables/$SERVICE" \
-            --form "value=$NEW_VALUE"
-        fi
-        echo "Valor atualizado: $CURRENT → $NEW_VALUE"
+.connect_ssh_qa:
+  script:
+    - export SSH_HOST="$(op item get "ATL-BDD-Keycloak-223-AUTO" --format json | jq -r '.urls[]?.href')"
+    - export SSH_USER="$(op item get "ATL-BDD-Keycloak-223-AUTO" --fields username)"
+    - export SSH_PASSWORD="$(op item get "ATL-BDD-Keycloak-223-AUTO" --fields password --reveal)"
 
-        
+.connect_ssh_staging:
+  script:
+    - export SSH_HOST_STAGING="$(op item get "ATL-PRE-Hetzner-AUTO" --fields IP)"
+    - export SSH_USER_STAGING="$(op item get "ATL-PRE-Hetzner-AUTO" --fields user-SSH)"
+    - export SSH_PASSWORD_STAGING="$(op item get "ATL-PRE-Hetzner-AUTO" --fields senha-SSH --reveal)"
+
+.connect_ssh_prod:
+  script:
+    - export SSH_HOST_PROD="$(op item get "Tagpeak SERVER PROD AUTO" --fields url)"
+    - export SSH_USER_PROD="$(op item get "Tagpeak SERVER PROD AUTO" --fields "ssh user")"
+    - export SSH_PRIVATE_KEY_PROD="$(op item get "Tagpeak SERVER PROD AUTO" --fields "chave privada" --reveal)"
+    - echo "$SSH_PRIVATE_KEY_PROD" > private_key.txt
+    - chmod 600 private_key.txt
+    - sed -i "s/\"//g" private_key.txt
+    - sed -i '/^\s*$/d' private_key.txt
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_DEV
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+
+install:package:backoffice:
+  stage: install-package
+  image: registry.infra.atlanse.ddns.net/atl/build/angular/node/22:0.0.6
+  script:
+    - !reference [.init_environment_group, script]
+    - echo "$(hget_config_by_group "SO-SCRIPT-PNPM-V1" "value")" > init.sh
+    - chmod 777 init.sh
+    - sed -i 's/\r$//' ./init.sh
+    - source ./init.sh -v "web"
+  cache:
+    key: "$ATL_CACHE_BACKOFFICE-$CI_COMMIT_BRANCH"
+    paths:
+      - /builds/tagpeak/tagpeak-p2024-004/node_modules/
+  tags:
+    - $TAG_ATL_BUILD_BACKOFFICE
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - package.json
+      when: on_success
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - package.json
+      when: on_success
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - package.json
+      when: on_success
+    - when: never
+
+install:package:shopify-plugin:
+  stage: install-package
+  image: registry.infra.atlanse.ddns.net/atl/build/angular/node/22:0.0.6
+  script:
+    - !reference [.init_environment_group, script]
+    - echo "$(hget_config_by_group "SO-SCRIPT-PNPM-SHOPIFY-TAGPEAK" "value")" > init.sh
+    - chmod 777 init.sh
+    - sed -i 's/\r$//' ./init.sh
+    - source ./init.sh -v "web"
+    - npm ci
+    - npm install @prisma/client
+  cache:
+    key: "$ATL_CACHE_SHOPIFY_PLUGIN-$CI_COMMIT_BRANCH"
+    paths:
+      - /builds/tagpeak/tagpeak-p2024-004/SHOPIFY_PLUGIN/node_modules/
+  tags:
+    - $TAG_ATL_BUILD_SHOPIFY_PLUGIN
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - package.json
+      when: on_success
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - package.json
+      when: on_success
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - package.json
+      when: on_success
+    - when: never
+
+.init_environment_group:
+  script:
+    - |
+      function hget_config_by_group() {
+          export EXEC="$REDIS_CLI_COMMAND --raw HGET Configuration:SYSTEM-$ENVIRONMENT_GROUP-$1 $2"
+          echo "$($EXEC)"
+      }
+
+.get_semantic_versioning:
+  script:
+    - export TAG="atl-$PROJECT-$SERVICE-$CI_COMMIT_BRANCH"
+    - export ATL_PIPELINE_ID="$TAG-$CI_PIPELINE_ID"
+    - export ATL_VERSION_CURRENT="$ATL_PIPELINE_ID-new"
+    - export ATL_VERSION_ROLLBACK="$ATL_PIPELINE_ID-rollback"
+    - export VERSION_TAG_STAGINGFIX_WEB="$PREFIX_VERSION_WEB$MAJOR_VERSION_WEB.$MINOR_VERSION_WEB."
+    - export VERSION_TAG="$VERSION_TAG_STAGINGFIX_WEB$($REDIS_CLI_COMMAND --raw GET $TAG)"
+    - export VERSION_NAME_MOBILE="$VERSION_TAG_STAGINGFIX_MOBILE$($REDIS_CLI_COMMAND --raw GET $ATL_VERSION_NAME_MOBILE)"
+    - export VERSION_CODE_MOBILE="$($REDIS_CLI_COMMAND --raw GET $ATL_VERSION_CODE_MOBILE)"
+
+.incr_semantic_versioning_nexus:
+  script:
+    - !reference [.get_semantic_versioning, script]
+    - $REDIS_CLI_COMMAND --raw SET $ATL_VERSION_ROLLBACK $VERSION_TAG_STAGINGFIX_WEB$($REDIS_CLI_COMMAND --raw GET $TAG)
+    - $REDIS_CLI_COMMAND --raw INCR $TAG
+    - !reference [.get_semantic_versioning, script]
+    - echo "$(hget_config_by_group "SO-SCRIPT-CARD-PIPELINE" "value")" > init.sh
+    - chmod 777 init.sh
+    - sed -i 's/\r$//' init.sh
+    - source init.sh
+
+.get_semantic_versioning_nexus:
+  script:
+    - export TARGET_CI_REGISTRY="$NEXUS_HOST"
+    - !reference [.get_semantic_versioning, script]
+
+.docker_push_image:
+  script:
+    - !reference [.get_semantic_versioning, script]
+    - 'export TARGET_IMAGE_VERSION="$TARGET_CI_REGISTRY/$PROJECT/$SERVICE/$CI_COMMIT_BRANCH:$VERSION_TAG"'
+    - echo "$DOCKER_PASSWORD" | docker login $DOCKER_IP -u $DOCKER_USER --password-stdin
+    - 'docker tag $TAG $TARGET_IMAGE_VERSION && docker push $TARGET_IMAGE_VERSION && echo "1º Result: $TARGET_IMAGE_VERSION"'
+    - 'export TARGET_TAG_VERSION="$TAG:$VERSION_TAG"'
+    - 'docker builder prune -f'
+    - 'docker container prune -f'
+
+.docker_push_image_nexus:
+  script:
+    - !reference [.docker_push_image, script]
+    - $REDIS_CLI_COMMAND --raw SET $ATL_VERSION_CURRENT $VERSION_TAG
+    - docker builder prune -f
+
+.atl-keycloak: &atl-keycloak
+  image: registry.infra.atlanse.ddns.net/atl/infra/client:0.0.2
+  stage: system
+  script:
+    - !reference [.init_environment_group, script]
+
+keycloak:qa:
+  <<: *atl-keycloak
+  script:
+    - !reference [.connect_app_1password, script]
+    - !reference [.connect_ssh_qa, script]
+    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "$SSH_PATH_QA/delete-files-to-keycloak.sh -p tagpeak"
+    - sshpass -p "$SSH_PASSWORD" scp -r apps/server/keycloak/themes/tagpeak/ $SSH_USER@$SSH_HOST:/home/atlanse/qa-keycloak-themes/
+    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "$SSH_PATH_QA/send-files-to-keycloak.sh -p tagpeak"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_SERVER/$SERVICE_KEYCLOAK/**/*
+      when: on_success
+    - when: never
+  tags:
+    - $TAG_ATL_KEYCLOAK
+
+keycloak:pre:
+  <<: *atl-keycloak
+  script:
+  script:
+    - !reference [.connect_app_1password, script]
+    - !reference [.connect_ssh_staging, script]
+    - sshpass -p "$SSH_PASSWORD_STAGING" ssh -o StrictHostKeyChecking=no $SSH_USER_STAGING@$SSH_HOST_STAGING "$SSH_PATH_STAGING/delete-files-to-keycloak.sh -p tagpeak"
+    - sshpass -p "$SSH_PASSWORD_STAGING" scp -r apps/server/keycloak/themes/tagpeak/ $SSH_USER_STAGING@$SSH_HOST_STAGING:/root/pre-keycloak-themes/
+    - sshpass -p "$SSH_PASSWORD_STAGING" ssh -o StrictHostKeyChecking=no $SSH_USER_STAGING@$SSH_HOST_STAGING "$SSH_PATH_STAGING/send-files-to-keycloak.sh -p tagpeak"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_SERVER/$SERVICE_KEYCLOAK/**/*
+      when: on_success
+    - when: never
+  tags:
+    - $TAG_ATL_KEYCLOAK
+
+keycloak:prod:
+  <<: *atl-keycloak
+  script:
+    - !reference [.connect_app_1password, script]
+    - !reference [.connect_ssh_prod, script]
+    - ssh -i private_key.txt -o StrictHostKeyChecking=no "$SSH_USER_PROD@$SSH_HOST_PROD" "$SSH_PATH_PROD/delete-files-to-keycloak.sh -p tagpeak"
+    - scp -i private_key.txt -r apps/server/keycloak/themes/tagpeak/ $SSH_USER_PROD@$SSH_HOST_PROD:/root/keycloak-themes/data/
+    - ssh -i private_key.txt -o StrictHostKeyChecking=no "$SSH_USER_PROD@$SSH_HOST_PROD" "$SSH_PATH_PROD/send-files-to-keycloak.sh -p tagpeak"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_SERVER/$SERVICE_KEYCLOAK/**/*
+      when: on_success
+    - when: never
+  tags:
+    - $TAG_ATL_KEYCLOAK
+
+
+.atl-migrate: &atl-migrate
+  image: registry.infra.atlanse.ddns.net/atl/infra/client:0.0.2
+  stage: manual-migrate
+  script:
+    - !reference [.init_environment_group, script]
+
+migrate-prod-to-stating:
+  <<: *atl-migrate
+  script:
+    - !reference [.connect_app_1password, script]
+    - !reference [.connect_ssh_staging, script]
+    - !reference [.connect_ssh_prod, script]
+    - ssh -i private_key.txt -o StrictHostKeyChecking=no "$SSH_USER_PROD@$SSH_HOST_PROD" "$SSH_PATH_PROD/migration-prod-to-staging.sh -u $SSH_USER_STAGING -p $SSH_PASSWORD_STAGING -h $SSH_HOST_STAGING"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_CLIENT/**/*
+        - $DIR_SERVER/**/*
+      when: manual
+      allow_failure: true
+  tags:
+    - $TAG_ATL_MIGRATION
+
+.atl-sonarqube-check: &atl-sonarqube-check
+  image: registry.infra.atlanse.ddns.net/atl/infra/sonar-scanner:6.2.1.4610
+  stage: sonar-analysis
+  before_script:
+    - !reference [.init_environment_group, script]
+    - echo "$(hget_config_by_group "SO-SCRIPT-SONARQUBE" "value")" > init.sh
+    - chmod 777 init.sh
+    - sed -i 's/\r$//' ./init.sh
+  script:
+    - source ./init.sh -v "cli"
+  tags:
+    - $TAG_ATL_SONARQUBE
+
+sonarqube-check:ms-tagpeak:dev:
+  <<: *atl-sonarqube-check
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_DEV
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_TAGPEAK/**/*
+      when: on_success
+    - when: never
   variables:
-    SERVICE: "teste"
-  
+    SERVICE: $SERVICE_MS_TAGPEAK
+    SONAR_PROJECT_BASE_DIR: $DIR_SERVER/$SERVICE_MS_TAGPEAK
+
+sonarqube-check:ms-interactive-brokers:dev:
+  <<: *atl-sonarqube-check
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_DEV
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_INTERACTIVE_BROKERS/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_INTERACTIVE_BROKERS
+    SONAR_PROJECT_BASE_DIR: $DIR_SERVER/$SERVICE_MS_INTERACTIVE_BROKERS
+
+sonarqube-check:ms-email:dev:
+  <<: *atl-sonarqube-check
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_DEV
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_EMAIL/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_EMAIL
+    SONAR_PROJECT_BASE_DIR: $DIR_SERVER/$SERVICE_MS_EMAIL
+
+sonarqube-check:ms-images:dev:
+  <<: *atl-sonarqube-check
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_DEV
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_IMAGES/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_IMAGES
+    SONAR_PROJECT_BASE_DIR: $DIR_SERVER/$SERVICE_MS_IMAGES
+
+sonarqube-check:ms-js:dev:
+  <<: *atl-sonarqube-check
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_DEV
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_JS/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_JS
+    SONAR_PROJECT_BASE_DIR: $DIR_SERVER/$SERVICE_MS_JS
+
+sonarqube-check:backoffice:dev:
+  <<: *atl-sonarqube-check
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_DEV
+      changes:
+        - $DIR_CLIENT/$BACKOFFICE/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $BACKOFFICE
+    SONAR_PROJECT_BASE_DIR: $DIR_CLIENT/$BACKOFFICE
+
+.atl-before-script-build: &atl-before-script-build
+  image: registry.infra.atlanse.ddns.net/atl/build/gradle/8.5/jdk21:0.0.1
+  stage: build
+  before_script:
+    - !reference [.init_environment_group, script]
+    - echo "$(hget_config_by_group "SO-SCRIPT-TAGPEAK" "value")" > init.sh
+    - chmod 777 init.sh
+    - sed -i 's/\r$//' ./init.sh
+    - source ./init.sh -v "web"
+
+.atl-before-script-build-angular: &atl-before-script-build-angular
+  image: registry.infra.atlanse.ddns.net/atl/build/angular/node/22:0.0.6
+  stage: build
+  before_script:
+    - !reference [.init_environment_group, script]
+    - echo "$(hget_config_by_group "SO-SCRIPT-TAGPEAK" "value")" > init.sh
+    - chmod 777 init.sh
+    - sed -i 's/\r$//' ./init.sh
+    - source ./init.sh -v "web"
+
+.atl-build-server-gradle: &atl-build-server-gradle
+  <<: *atl-before-script-build
+  script:
+    - 'echo "Tag: $TAG"'
+    - !reference [.incr_semantic_versioning_nexus, script]
+    - !reference [.get_semantic_versioning_nexus, script]
+    - cp card-pipeline.* $DIR_SERVER/$SERVICE/
+    - /opt/gradle/bin/gradle assemble apps:server:$SERVICE:assemble
+    - cd $DIR_SERVER/$SERVICE/ && docker build --rm=true -t $TAG .
+    - !reference [.get_semantic_versioning_nexus, script]
+    - !reference [.docker_push_image_nexus, script]
+
+.atl-build-server-go: &atl-build-server-go
+  <<: *atl-before-script-build
+  script:
+    - 'echo "Tag: $TAG"'
+    - !reference [.incr_semantic_versioning_nexus, script]
+    - !reference [.get_semantic_versioning_nexus, script]
+    - cp card-pipeline.* $DIR_SERVER/$SERVICE/
+    - cd $DIR_SERVER/$SERVICE/
+    - docker build --rm=true --build-arg TAGPEAK_GOOSE_USER=$TAGPEAK_GOOSE_USER --build-arg TAGPEAK_GOOSE_PASSWORD=$TAGPEAK_GOOSE_PASSWORD --build-arg TAGPEAK_GOOSE_DBNAME=$TAGPEAK_GOOSE_DBNAME --build-arg TAGPEAK_GOOSE_HOST=$TAGPEAK_GOOSE_HOST --build-arg TAGPEAK_GOOSE_PORT=$TAGPEAK_GOOSE_PORT --build-arg build_env=prod -f Dockerfile -t $TAG .
+    - !reference [.docker_push_image_nexus, script]
+
+.atl-build-server-go-ms-images: &atl-build-server-go-ms-images
+  <<: *atl-before-script-build
+  script:
+    - 'echo "Tag: $TAG"'
+    - !reference [.incr_semantic_versioning_nexus, script]
+    - !reference [.get_semantic_versioning_nexus, script]
+    - cp card-pipeline.* $DIR_SERVER/$SERVICE/
+    - cd $DIR_SERVER/$SERVICE/
+    - docker build --rm=true --build-arg build_env=prod -f Dockerfile -t $TAG .
+    - !reference [.docker_push_image_nexus, script]
+
+.atl-docker-prune: &atl-docker-prune
+  image: registry.infra.atlanse.ddns.net/atl/infra/client:0.0.2
+  stage: system
+  script:
+    - !reference [.init_environment_group, script]
+    - echo "$(hget_config_by_group "DOCKER-SCRIPT-PRUNE" "value")" > init.sh
+    - chmod 777 init.sh
+    - sed -i 's/\r$//' init.sh
+    - source init.sh
+
+.atl-rollout-restart-deployment:
+  script:
+    - !reference [.init_environment_group, script]
+    - echo "$(hget_config_by_group "SO-SCRIPT-ROLLOUT-RESTART-DEPLOYMENT" "value")" > init.sh
+    - chmod 777 init.sh
+    - sed -i 's/\r$//' ./init.sh
+  variables:
+    GIT_STRATEGY: none
+
+.atl-rollout-restart-deployment-qa: &atl-rollout-restart-deployment-qa
+  stage: restart
+  image: registry.infra.atlanse.ddns.net/atl/infra/client:0.0.2
+  script:
+    - !reference [.atl-rollout-restart-deployment, script]
+    - !reference [.get_semantic_versioning_nexus, script]
+    - source ./init.sh
+  tags:
+    - $TAG_ATL_BUILD_RESTART_QA
+
+.atl-rollout-restart-deployment-pre: &atl-rollout-restart-deployment-pre
+  stage: restart
+  image: registry.infra.atlanse.ddns.net/atl/infra/client:0.0.2
+  script:
+    - !reference [.atl-rollout-restart-deployment, script]
+    - !reference [.get_semantic_versioning_nexus, script]
+    - source ./init.sh
+  tags:
+    - $TAG_ATL_BUILD_RESTART_STAGING
+
+.atl-rollout-restart-deployment-prod: &atl-rollout-restart-deployment-prod
+  stage: restart
+  image: registry.infra.atlanse.ddns.net/atl/infra/client:0.0.2
+  script:
+    - !reference [.atl-rollout-restart-deployment, script]
+    - !reference [.get_semantic_versioning_nexus, script]
+    - source ./init.sh
+  tags:
+    - $TAG_ATL_BUILD_RESTART_PROD
+
+#=== shopify-plugin ===
+restart:pod:shopify-plugin:qa:
+  <<: *atl-rollout-restart-deployment-qa
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_CLIENT/$SHOPIFY_PLUGIN/**/*
+      when: on_success
+    - when: never
+  variables:
+    ENV: "QA"
+    SERVICE: $SHOPIFY_PLUGIN
+
+restart:pod:shopify-plugin:pre:
+  <<: *atl-rollout-restart-deployment-qa
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_CLIENT/$SHOPIFY_PLUGIN/**/*
+      when: on_success
+    - when: never
+  variables:
+    ENV: "PRE"
+    SERVICE: $SHOPIFY_PLUGIN
+
+restart:pod:shopify-plugin:prod:
+  <<: *atl-rollout-restart-deployment-prod
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_CLIENT/$SHOPIFY_PLUGIN/**/*
+      when: on_success
+    - when: never
+  variables:
+    ENV: "PROD"
+    SERVICE: $SHOPIFY_PLUGIN
+
+#=== backoffice ===
+restart:pod:backoffice:qa:
+  <<: *atl-rollout-restart-deployment-qa
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_CLIENT/$BACKOFFICE/**/*
+      when: on_success
+    - when: never
+  variables:
+    ENV: "QA"
+    SERVICE: $BACKOFFICE
+
+restart:pod:backoffice:pre:
+  <<: *atl-rollout-restart-deployment-pre
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_CLIENT/$BACKOFFICE/**/*
+      when: on_success
+    - when: never
+  variables:
+    ENV: "PRE"
+    SERVICE: $BACKOFFICE
+
+restart:pod:backoffice:prod:
+  <<: *atl-rollout-restart-deployment-prod
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_CLIENT/$BACKOFFICE/**/*
+      when: on_success
+    - when: never
+  variables:
+    ENV: "PRE"
+    SERVICE: $BACKOFFICE
+
+#=== ms-images ===
+build-and-deploy:ms-images:qa:
+  <<: *atl-build-server-go-ms-images
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_IMAGES/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_IMAGES
+    ENV: "QA"
+  tags:
+    - $TAG_ATL_BUILD_MS_IMAGES
+
+build-and-deploy:ms-cj:qa:
+  <<: *atl-build-server-go
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_CJ/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_CJ
+    ENV: "QA"
+  tags:
+    - $TAG_ATL_BUILD_MS_CJ
+
+build-and-deploy:ms-cj:pre:
+  <<: *atl-build-server-go
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_CJ/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_CJ
+    ENV: "PRE"
+  tags:
+    - $TAG_ATL_BUILD_MS_CJ
+
+build-and-deploy:ms-cj:prod:
+  <<: *atl-build-server-go
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_PROD/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_CJ
+    ENV: "PRE"
+  tags:
+    - $TAG_ATL_BUILD_MS_CJ
+
+#=== ms-tagpeak ===
+build-and-deploy:ms-tagpeak:qa:
+  <<: *atl-build-server-go
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_TAGPEAK/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_TAGPEAK
+    ENV: "QA"
+  tags:
+    - $TAG_ATL_BUILD_MS_TAGPEAK
+
+build-and-deploy:ms-images:pre:
+  <<: *atl-build-server-go-ms-images
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_IMAGES/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_IMAGES
+    ENV: "PRE"
+  tags:
+    - $TAG_ATL_BUILD_MS_IMAGES
+
+build-and-deploy:ms-images:prod:
+  <<: *atl-build-server-go-ms-images
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_IMAGES/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_IMAGES
+    ENV: "PROD"
+  tags:
+    - $TAG_ATL_BUILD_MS_IMAGES
+
+build-and-deploy:ms-tagpeak:pre:
+  <<: *atl-build-server-go
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_TAGPEAK/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_TAGPEAK
+    ENV: "PRE"
+  tags:
+    - $TAG_ATL_BUILD_MS_TAGPEAK
+
+build-and-deploy:ms-tagpeak:prod:
+  <<: *atl-build-server-go
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_TAGPEAK/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_TAGPEAK
+    ENV: "PROD"
+  tags:
+    - $TAG_ATL_BUILD_MS_TAGPEAK
+
+restart:pod:ms-images:qa:
+  <<: *atl-rollout-restart-deployment-qa
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_IMAGES/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_IMAGES
+    ENV: "QA"
+
+restart:pod:ms-cj:qa:
+  <<: *atl-rollout-restart-deployment-qa
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_CJ/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_CJ
+    ENV: "QA"
+
+restart:pod:ms-tagpeak:qa:
+  <<: *atl-rollout-restart-deployment-qa
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_TAGPEAK/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_TAGPEAK
+    ENV: "QA"
+
+restart:pod:ms-images:pre:
+  <<: *atl-rollout-restart-deployment-pre
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_IMAGES/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_IMAGES
+    ENV: "PRE"
+
+restart:pod:ms-cj:pre:
+  <<: *atl-rollout-restart-deployment-pre
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_CJ/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_CJ
+    ENV: "PRE"
+
+restart:pod:ms-images:prod:
+  <<: *atl-rollout-restart-deployment-prod
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_IMAGES/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_IMAGES
+    ENV: "PROD"
+
+restart:pod:ms-tagpeak:pre:
+  <<: *atl-rollout-restart-deployment-pre
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_TAGPEAK/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_TAGPEAK
+    ENV: "PRE"
+
+restart:pod:ms-tagpeak:prod:
+  <<: *atl-rollout-restart-deployment-prod
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_TAGPEAK/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_TAGPEAK
+    ENV: "PROD"
 
 
-    # adicione seus comandos de deploy aqui
+restart:pod:ms-cj:prod:
+  <<: *atl-rollout-restart-deployment-prod
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_CJ/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_CJ
+    ENV: "PROD"
+
+#=== ms-email ===
+build-and-deploy:ms-email:qa:
+  <<: *atl-build-server-gradle
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_EMAIL/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_EMAIL
+    ENV: "QA"
+  tags:
+    - $TAG_ATL_BUILD_MS_EMAIL
+
+build-and-deploy:ms-email:pre:
+  <<: *atl-build-server-gradle
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_EMAIL/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_EMAIL
+    ENV: "PRE"
+  tags:
+    - $TAG_ATL_BUILD_MS_EMAIL
+
+build-and-deploy:ms-email:prod:
+  <<: *atl-build-server-gradle
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_EMAIL/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_EMAIL
+    ENV: "PROD"
+  tags:
+    - $TAG_ATL_BUILD_MS_EMAIL
+
+restart:pod:ms-email:qa:
+  <<: *atl-rollout-restart-deployment-qa
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_EMAIL/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_EMAIL
+    ENV: "QA"
+  tags:
+    - $TAG_ATL_BUILD_MS_EMAIL
+
+restart:pod:ms-email:pre:
+  <<: *atl-rollout-restart-deployment-pre
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_EMAIL/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_EMAIL
+    ENV: "PRE"
+  tags:
+    - $TAG_ATL_BUILD_MS_EMAIL
+
+restart:pod:ms-email:prod:
+  <<: *atl-rollout-restart-deployment-prod
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_EMAIL/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_EMAIL
+    ENV: "PROD"
+  tags:
+    - $TAG_ATL_BUILD_MS_EMAIL
+
+#=== ms-blog ===
+#build-and-deploy:ms-blog:qa:
+#  <<: *atl-build-server-gradle
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+#      changes:
+#        - $DIR_SERVER/$SERVICE_MS_BLOG/**/*
+#      when: on_success
+#    - when: never
+#  variables:
+#    SERVICE: $SERVICE_MS_BLOG
+#    ENV: "QA"
+#  tags:
+#    - $TAG_ATL_BUILD_MS_BLOG
+
+#build-and-deploy:ms-blog:pre:
+#  <<: *atl-build-server-gradle
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+#      changes:
+#        - $DIR_SERVER/$SERVICE_MS_BLOG/**/*
+#      when: on_success
+#    - when: never
+#  variables:
+#    SERVICE: $SERVICE_MS_BLOG
+#    ENV: "PRE"
+#  tags:
+#    - $TAG_ATL_BUILD_MS_BLOG
+
+#restart:pod:ms-blog:qa:
+#  <<: *atl-rollout-restart-deployment-qa
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+#      changes:
+#        - $DIR_SERVER/$SERVICE_MS_BLOG/**/*
+#      when: on_success
+#    - when: never
+#  variables:
+#    SERVICE: $SERVICE_MS_BLOG
+#    ENV: "QA"
+#  tags:
+#    - $TAG_ATL_BUILD_MS_BLOG
+
+#restart:pod:ms-blog:pre:
+#  <<: *atl-rollout-restart-deployment-pre
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+#      changes:
+#        - $DIR_SERVER/$SERVICE_MS_BLOG/**/*
+#      when: on_success
+#    - when: never
+#  variables:
+#    SERVICE: $SERVICE_MS_BLOG
+#    ENV: "PRE"
+#  tags:
+#   - $TAG_ATL_BUILD_MS_BLOG
+
+#=== SHOPIFY ===
+
+.atl-build-and-deploy-shopify-plugin:
+  script:
+    - !reference [.incr_semantic_versioning_nexus, script]
+    - !reference [.get_semantic_versioning_nexus, script]
+    - cp card-pipeline.* $DIR_CLIENT/$SERVICE/
+    - cd $DIR_CLIENT/$SERVICE/
+    - docker build --rm=true --build-arg vp=$VERSION_TAG -t $TAG .
+    - !reference [.docker_push_image_nexus, script]
+
+.atl-shopify-app-deploy:
+  script:
+    - !reference [.incr_semantic_versioning_nexus, script]
+    - !reference [.get_semantic_versioning_nexus, script]
+    - cp card-pipeline.* $DIR_CLIENT/$SERVICE/
+    - cd $DIR_CLIENT/$SERVICE/
+    #- echo "$(eval echo \$SHOPIFY_TOML_$ENV)" > shopify.app.$ENV_SHOPIFY.toml
+    - shopify app config use shopify.app.$ENV_SHOPIFY.toml
+    - shopify app deploy
+
+.atl-before-script-build-shopify-plugin: &atl-before-script-build-shopify-plugin
+  image: registry.infra.atlanse.ddns.net/atl/build/angular/node/22:0.0.6
+  stage: build
+  before_script:
+    - !reference [.init_environment_group, script]
+    - echo "$(hget_config_by_group "SO-SCRIPT-TAGPEAK-SHOPIFY-PLUGIN" "value")" > init.sh
+    - chmod 777 init.sh
+    - sed -i 's/\r$//' ./init.sh
+    - source ./init.sh -v "web"
+
+.atl-before-script-shopify-app-deploy: &atl-before-script-shopify-app-deploy
+  image: registry.infra.atlanse.ddns.net/atl/build/angular/node/22:0.0.6
+  stage: manual-deploy
+  before_script:
+    - !reference [.init_environment_group, script]
+    - echo "$(hget_config_by_group "SO-SCRIPT-TAGPEAK-SHOPIFY-PLUGIN" "value")" > init.sh
+    - chmod 777 init.sh
+    - sed -i 's/\r$//' ./init.sh
+    - source ./init.sh -v "web"
+
+build-and-deploy:shopify-plugin:qa:
+  <<: *atl-before-script-build-shopify-plugin
+  script:
+    - !reference [.atl-build-and-deploy-shopify-plugin, script]
+  tags:
+    - $TAG_ATL_SHOPIFY_PLUGIN
+  cache:
+    key: "$ATL_CACHE_SHOPIFY_PLUGIN-$CI_COMMIT_BRANCH"
+    paths:
+      - node_modules/
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_CLIENT/$SHOPIFY_PLUGIN/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SHOPIFY_PLUGIN
+    ENV: "QA"
+    ENV_SHOPIFY: "qa"
+
+deploy:shopify-app:qa:
+  <<: *atl-before-script-shopify-app-deploy
+  script:
+    - !reference [.atl-shopify-app-deploy, script]
+  tags:
+    - $TAG_ATL_SHOPIFY_PLUGIN
+  cache:
+    key: "$ATL_CACHE_SHOPIFY_PLUGIN-$CI_COMMIT_BRANCH"
+    paths:
+      - node_modules/
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_CLIENT/$SHOPIFY_PLUGIN/**/*
+      when: manual
+    - when: never
+  variables:
+    SERVICE: $SHOPIFY_PLUGIN
+    ENV: "QA"
+    ENV_SHOPIFY: "qa"
+
+
+deploy:shopify-app:pre:
+  <<: *atl-before-script-shopify-app-deploy
+  script:
+    - !reference [.atl-shopify-app-deploy, script]
+  tags:
+    - $TAG_ATL_SHOPIFY_PLUGIN
+  cache:
+    key: "$ATL_CACHE_SHOPIFY_PLUGIN-$CI_COMMIT_BRANCH"
+    paths:
+      - node_modules/
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_CLIENT/$SHOPIFY_PLUGIN/**/*
+      when: manual
+    - when: never
+  variables:
+    SERVICE: $SHOPIFY_PLUGIN
+    ENV: "PRE"
+    ENV_SHOPIFY: "pre"
+
+deploy:shopify-app:prod:
+  <<: *atl-before-script-shopify-app-deploy
+  script:
+    - !reference [.atl-shopify-app-deploy, script]
+  tags:
+    - $TAG_ATL_SHOPIFY_PLUGIN
+  cache:
+    key: "$ATL_CACHE_SHOPIFY_PLUGIN-$CI_COMMIT_BRANCH"
+    paths:
+      - node_modules/
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_CLIENT/$SHOPIFY_PLUGIN/**/*
+      when: manual
+    - when: never
+  variables:
+    SERVICE: $SHOPIFY_PLUGIN
+    ENV: "PROD"
+    ENV_SHOPIFY: "prod"
+
+build-and-deploy:shopify-plugin:pre:
+  <<: *atl-before-script-build-shopify-plugin
+  script:
+    - !reference [.atl-build-and-deploy-shopify-plugin, script]
+  tags:
+    - $TAG_ATL_SHOPIFY_PLUGIN
+  cache:
+    key: "$ATL_CACHE_SHOPIFY_PLUGIN-$CI_COMMIT_BRANCH"
+    paths:
+      - node_modules/
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_CLIENT/$SHOPIFY_PLUGIN/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SHOPIFY_PLUGIN
+    ENV: "PRE"
+    ENV_SHOPIFY: "staging"
+
+build-and-deploy:shopify-plugin:prod:
+  <<: *atl-before-script-build-shopify-plugin
+  script:
+    - !reference [.atl-build-and-deploy-shopify-plugin, script]
+  tags:
+    - $TAG_ATL_SHOPIFY_PLUGIN
+  cache:
+    key: "$ATL_CACHE_SHOPIFY_PLUGIN-$CI_COMMIT_BRANCH"
+    paths:
+      - node_modules/
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_CLIENT/$SHOPIFY_PLUGIN/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SHOPIFY_PLUGIN
+    ENV: "PROD"
+    ENV_SHOPIFY: "main"
+
+#=== backoffice ===
+
+.atl-build-and-deploy-backoffice:
+  script:
+    - !reference [.incr_semantic_versioning_nexus, script]
+    - !reference [.get_semantic_versioning_nexus, script]
+    - cp card-pipeline.* $DIR_CLIENT/$SERVICE/
+    - cd $DIR_CLIENT/$SERVICE/
+    - sed -i "s/%version%/$VERSION_TAG/g" src/environments/environment.$BACKOFFICE_ENVIRONMENT.ts
+    - cat src/environments/environment.$BACKOFFICE_ENVIRONMENT.ts
+    - export NX_NO_CLOUD=true
+    - 'npx nx build backoffice --configuration=$CI_COMMIT_BRANCH --outputPath="$DIR_CLIENT/$SERVICE/dist/bo" --no-cloud --skip-nx-cache'
+    - docker build --rm=true --build-arg vp=$VERSION_TAG -t $TAG .
+    - !reference [.docker_push_image_nexus, script]
+
+build-and-deploy:backoffice:qa:
+  <<: *atl-before-script-build-angular
+  script:
+    - !reference [.atl-build-and-deploy-backoffice, script]
+  tags:
+    - $TAG_ATL_BUILD_BACKOFFICE
+  cache:
+    key: "$ATL_CACHE_BACKOFFICE-$CI_COMMIT_BRANCH"
+    paths:
+      - node_modules/
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_CLIENT/$BACKOFFICE/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $BACKOFFICE
+    ENV: "QA"
+    BACKOFFICE_ENVIRONMENT: "qa"
+
+build-and-deploy:backoffice:pre:
+  <<: *atl-before-script-build-angular
+  script:
+    - !reference [.atl-build-and-deploy-backoffice, script]
+  tags:
+    - $TAG_ATL_BUILD_BACKOFFICE
+  cache:
+    key: "$ATL_CACHE_BACKOFFICE-$CI_COMMIT_BRANCH"
+    paths:
+      - node_modules/
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_CLIENT/$BACKOFFICE/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $BACKOFFICE
+    ENV: "PRE"
+    BACKOFFICE_ENVIRONMENT: "pre"
+
+build-and-deploy:backoffice:prod:
+  <<: *atl-before-script-build-angular
+  script:
+    - !reference [.atl-build-and-deploy-backoffice, script]
+  tags:
+    - $TAG_ATL_BUILD_BACKOFFICE
+  cache:
+    key: "$ATL_CACHE_BACKOFFICE-$CI_COMMIT_BRANCH"
+    paths:
+      - node_modules/
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_CLIENT/$BACKOFFICE/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $BACKOFFICE
+    ENV: "PROD"
+    BACKOFFICE_ENVIRONMENT: "prod"
+
+#=== ms-interactive-brokers ===
+build-and-deploy:ms-interactive-brokers:qa:
+  <<: *atl-build-server-go
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_INTERACTIVE_BROKERS/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_INTERACTIVE_BROKERS
+    ENV: "QA"
+  tags:
+    - $TAG_ATL_BUILD_MS_INTERACTIVE_BROKERS
+
+build-and-deploy:ms-interactive-brokers:pre:
+  <<: *atl-build-server-go
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_INTERACTIVE_BROKERS/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_INTERACTIVE_BROKERS
+    ENV: "PRE"
+  tags:
+    - $TAG_ATL_BUILD_MS_INTERACTIVE_BROKERS
+
+build-and-deploy:ms-interactive-brokers:prod:
+  <<: *atl-build-server-go
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_INTERACTIVE_BROKERS/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_INTERACTIVE_BROKERS
+    ENV: "PROD"
+  tags:
+    - $TAG_ATL_BUILD_MS_INTERACTIVE_BROKERS
+
+restart:pod:ms-interactive-brokers:qa:
+  <<: *atl-rollout-restart-deployment-qa
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_INTERACTIVE_BROKERS/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_INTERACTIVE_BROKERS
+    ENV: "QA"
+
+restart:pod:ms-interactive-brokers:pre:
+  <<: *atl-rollout-restart-deployment-pre
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_INTERACTIVE_BROKERS/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_INTERACTIVE_BROKERS
+    ENV: "PRE"
+
+restart:pod:ms-interactive-brokers:prod:
+  <<: *atl-rollout-restart-deployment-prod
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_INTERACTIVE_BROKERS/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_INTERACTIVE_BROKERS
+    ENV: "PROD"
+
+
+
+#=== ms-shopify ===
+build-and-deploy:ms-shopify:qa:
+  <<: *atl-build-server-go
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_SHOPIFY/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_SHOPIFY
+    ENV: "QA"
+  tags:
+    - $TAG_ATL_BUILD_MS_SHOPIFY
+
+build-and-deploy:ms-shopify:pre:
+  <<: *atl-build-server-go
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_SHOPIFY/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_SHOPIFY
+    ENV: "PRE"
+  tags:
+    - $TAG_ATL_BUILD_MS_SHOPIFY
+
+build-and-deploy:ms-shopify:prod:
+  <<: *atl-build-server-go
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_SHOPIFY/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_SHOPIFY
+    ENV: "PROD"
+  tags:
+    - $TAG_ATL_BUILD_MS_SHOPIFY
+
+restart:pod:ms-shopify:qa:
+  <<: *atl-rollout-restart-deployment-qa
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_SHOPIFY/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_SHOPIFY
+    ENV: "QA"
+
+restart:pod:ms-shopify:pre:
+  <<: *atl-rollout-restart-deployment-pre
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_SHOPIFY/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_SHOPIFY
+    ENV: "PRE"
+
+restart:pod:ms-shopify:prod:
+  <<: *atl-rollout-restart-deployment-prod
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_SHOPIFY/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_SHOPIFY
+    ENV: "PROD"
+
+#=== ms-firebase-go ===
+build-and-deploy:ms-firebase-go:qa:
+  <<: *atl-build-server-go
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_FIREBASE_GO/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_FIREBASE_GO
+    ENV: "QA"
+  tags:
+    - $TAG_ATL_BUILD_MS_FIREBASEGO
+
+build-and-deploy:ms-firebase-go:pre:
+  <<: *atl-build-server-go
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_FIREBASE_GO/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_FIREBASE_GO
+    ENV: "PRE"
+  tags:
+    - $TAG_ATL_BUILD_MS_FIREBASEGO
+
+build-and-deploy:ms-firebase-go:prod:
+  <<: *atl-build-server-go
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_FIREBASE_GO/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_FIREBASE_GO
+    ENV: "PRE"
+  tags:
+    - $TAG_ATL_BUILD_MS_FIREBASEGO
+
+restart:pod:ms-firebase-go:qa:
+  <<: *atl-rollout-restart-deployment-qa
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_QA
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_FIREBASE_GO/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_FIREBASE_GO
+    ENV: "QA"
+
+restart:pod:ms-firebase-go-env:pre:
+  <<: *atl-rollout-restart-deployment-pre
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_STAGING
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_FIREBASE_GO/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_FIREBASE_GO
+    ENV: "PRE"
+
+restart:pod:ms-firebase-go:prod:
+  <<: *atl-rollout-restart-deployment-prod
+  rules:
+    - if: $CI_COMMIT_BRANCH == $BRANCH_PROD
+      changes:
+        - $DIR_SERVER/$SERVICE_MS_FIREBASE_GO/**/*
+      when: on_success
+    - when: never
+  variables:
+    SERVICE: $SERVICE_MS_FIREBASE_GO
+    ENV: "PROD"
+
+
+.atl-backup-deploy-pre: &atl-backup-deploy-pre
+  stage: backup-deploy
+  image: registry.infra.atlanse.ddns.net/atl/infra/client:0.0.2
+  script:
+    - !reference [.connect_app_1password, script]
+    - !reference [.connect_ssh_staging, script]
+    - sshpass -p "$SSH_PASSWORD_STAGING" ssh -o StrictHostKeyChecking=no $SSH_USER_STAGING@$SSH_HOST_STAGING "$SSH_PATH_STAGING/backup-deploy_v1.sh -p $PROJECT -s $SERVICE -r $ATL_VERSION_ROLLBACK -v $VERSION_TAG -e $CI_COMMIT_BRANCH"
+  variables:
+    GIT_STRATEGY: none
+  tags:
+    - $TAG_ATL_BACKUP_DEPLOY
+
+.atl-backup-deploy-prod: &atl-backup-deploy-prod
+  stage: backup-deploy
+  image: registry.infra.atlanse.ddns.net/atl/infra/client:0.0.2
+  script:
+    - !reference [.connect_app_1password, script]
+    - !reference [.connect_ssh_prod, script]
+    - ssh -i private_key.txt -o StrictHostKeyChecking=no "$SSH_USER_PROD@$SSH_HOST_PROD" "$SSH_PATH_PROD/backup-deploy_v1.sh -p $PROJECT -s $SERVICE -r $ATL_VERSION_ROLLBACK -v $VERSION_TAG -e $CI_COMMIT_BRANCH"
+  variables:
+    GIT_STRATEGY: none
+  tags:
+    - $TAG_ATL_ROLLBACK_DEPLOY
+
+.atl-rollback-deploy-pre: &atl-rollback-deploy-pre
+  stage: rollback-deploy
+  image: registry.infra.atlanse.ddns.net/atl/infra/client:0.0.2
+  script:
+    - !reference [.connect_app_1password, script]
+    - !reference [.connect_ssh_staging, script]
+    - sshpass -p "$SSH_PASSWORD_STAGING" ssh -o StrictHostKeyChecking=no $SSH_USER_STAGING@$SSH_HOST_STAGING "$SSH_PATH_STAGING/rollback-deploy_v1.sh -p $PROJECT -s $SERVICE -r $ATL_VERSION_ROLLBACK -v $VERSION_TAG -e $CI_COMMIT_BRANCH"
+  variables:
+    GIT_STRATEGY: none
+  tags:
+    - $TAG_ATL_ROLLBACK_DEPLOY
+
+.atl-rollback-deploy-prod: &atl-rollback-deploy-prod
+  stage: rollback-deploy
+  image: registry.infra.atlanse.ddns.net/atl/infra/client:0.0.2
+  script:
+    - !reference [.connect_app_1password, script]
+    - !reference [.connect_ssh_prod, script]
+    - ssh -i private_key.txt -o StrictHostKeyChecking=no "$SSH_USER_PROD@$SSH_HOST_PROD" "$SSH_PATH_PROD/rollback-deploy_v1.sh -p $PROJECT -s $SERVICE -v $VERSION_TAG -r $ATL_VERSION_ROLLBACK -e $CI_COMMIT_BRANCH"
+  variables:
+    GIT_STRATEGY: none
+  tags:
+    - $TAG_ATL_ROLLBACK_DEPLOY

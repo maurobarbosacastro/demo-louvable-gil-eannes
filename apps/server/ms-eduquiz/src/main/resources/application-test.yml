@@ -1,0 +1,62 @@
+micronaut:
+    application:
+        name: msEduquiz
+    security:
+        authentication: bearer
+        token:
+            jwt:
+                enabled: true
+                signatures:
+                    jwks:
+                        keycloak:
+                            url: http://${KEYCLOAK_HOST:CHANGE_ME}:${KEYCLOAK_PORT:CHANGE_ME}/auth/realms/${KEYCLOAK_REALM:CHANGE_ME}/protocol/openid-connect/certs
+        oauth2.clients.keycloak:
+            grant-type: password
+            #      client-id: micronaut5
+            client-id: ${KEYCLOAK_CLIENT_ID:CHANGE_ME}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET:CHANGE_ME}
+            authorization:
+                url: http://${KEYCLOAK_HOST:CHANGE_ME}:${KEYCLOAK_PORT:CHANGE_ME}/auth/realms/${KEYCLOAK_REALM:CHANGE_ME}/protocol/openid-connect/auth
+        enabled: false
+    router:
+        static-resources:
+            swagger:
+                paths: classpath:META-INF/swagger
+                mapping: /swagger/**
+            swagger-ui:
+                mapping: /swagger-ui/**
+                paths: classpath:META-INF/swagger/views/swagger-ui
+netty:
+    default:
+        allocator:
+            max-order: 3
+datasource:
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password: sa
+jpa:
+    default:
+        properties:
+            hibernate:
+                hbm2ddl:
+                    auto: create
+liquibase:
+    datasources:
+        default:
+            change-log: 'classpath:db/liquibase-changelog.xml'
+files:
+    directory: "./.temp/ms-eduquiz/files"
+    file-type:
+        image:
+            directory: images
+            size: 5MB
+            allowed-formats: [ "image/png", "image/jpg", "image/jpeg" ]
+        video:
+            directory: videos
+            size: 40MB
+            allowed-formats: [ "video/mp4" ]
+        document:
+            directory: documents
+            size: 5MB
+            allowed-formats: [ "application/pdf" ]

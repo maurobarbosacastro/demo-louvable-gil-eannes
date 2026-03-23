@@ -1,0 +1,48 @@
+<div class="flex flex-col">
+
+    <div class="flex flex-col items-center justify-center gap-y-8">
+        <img class="w-[14rem] h-[5.3rem]" src="assets/images/logo/logo.svg" alt="Tagpeak logo">
+
+        <span class="text-[20px] leading-[23px] text-project-lavender my-[20px] font-bold">
+            {{ 'settings.dialog-currency.title' | transloco }}</span>
+
+        <div class="text-[16px] leading-[17px] text-[#7A7B92] text-center">
+            {{ 'settings.dialog-currency.message' | transloco }}
+        </div>
+
+        <div class="text-[16px] leading-[17px] text-[#7A7B92] text-center text-pretty">
+            {{ 'settings.dialog-currency.message2' | transloco }}
+        </div>
+
+        <div>
+            <tagpeak-custom-dropdown [placeholder]="'Select Currency'" #dropdownComponent
+                                     [$options]="currencies"
+                                     [value]="getCurrencyValue(formControl.value)"
+                                     [control]="formControl"
+                                     [css]="styleDropdown"
+                                     [iconCheckOption]="iconCheckOption"
+                                     [showDefaultValue]="false"
+                                     [iconResetValue]="false"
+                                     [customListTemplate]="customListUserTemplate"/>
+
+            <ng-template #customListUserTemplate let-value="value">
+                <div
+                    class="flex items-center gap-2 p-2 cursor-pointer hover:bg-[#4237DA33] rounded hover:text-project-youngBlue justify-between"
+                    (click)="setCurrencyValue(value); dropdownComponent.isOpen = false">
+                    <div class="flex justify-center items-center gap-2">
+                        <mat-icon [svgIcon]="value.iconName" class="icon-size-4"></mat-icon>
+                        <span>{{ value.label }}</span>
+                    </div>
+                    @if (formControl.value?.value === value.value) {
+                        <mat-icon svgIcon="check" class="icon-size-4 icon-color"></mat-icon>
+                    }
+                </div>
+            </ng-template>
+        </div>
+
+        <button class="darkButton text-center items-center justify-center mt-[20px] mb-[30px]" (click)="save()">
+            {{ 'misc.save' | transloco }}
+        </button>
+    </div>
+
+</div>

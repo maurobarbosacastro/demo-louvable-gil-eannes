@@ -1,0 +1,26 @@
+@if ($isMenuOpen()) {
+    <div
+        class="flex flex-col gap-7 border-t border-project-brand-500 w-full p-5"
+        @slideInTop
+        @slideOutTop
+    >
+        <div class="flex justify-between text-[15px] text-project-licorice-500">
+            @for (menu of menuList; track menu.value) {
+                <div class="flex items-center gap-1 cursor-pointer" (click)="goToRoute(menu)">
+                    <span
+                        [ngClass]="{'font-semibold': $currentMenu()?.value === menu.value}">{{ menu.label | transloco }}</span>
+                    @if (menu.icon) {
+                        <mat-icon [svgIcon]="menu.icon" class="icon-size-3.5"/>
+                    }
+                </div>
+            }
+        </div>
+        <div class="w-full">
+            <button
+                class="btn bg-project-licorice-500 text-white w-full py-1.5 rounded font-normal text-base min-h-9 h-9"
+                (click)="goToRoute(menuList[0])">
+                {{ 'dashboard.new-purchase' | transloco }}
+            </button>
+        </div>
+    </div>
+}

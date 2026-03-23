@@ -1,0 +1,230 @@
+<div class="my-8 bg-project-sideMenu border border-project-waterloo p-5 lg:p-8 rounded-[20px]">
+    <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center gap-4">
+            <span class="text-lg text-project-licorice-900">{{ 'cashback.bulk-update' | transloco }}</span>
+            @if (containStatusRequired()) {
+                <span class="text-2xl text-project-licorice-500">-</span>
+                <span class="text-2xl text-project-licorice-500">Total:  <span class="text-2xl font-bold text-project-waterloo">{{ getCashbacksSelectedAmount() | currency: 'EUR' : 'symbol-narrow' : '1.2-2' }}</span></span>
+            }
+        </div>
+        <mat-icon svgIcon="close-modal" class="icon-size-5 cursor-pointer" (click)="clearBulk()"></mat-icon>
+    </div>
+
+    @if (isMobile()) {
+        <form [formGroup]="bulkForm" class="mt-5">
+
+            <div class="flex flex-col w-full justify-center gap-5 mt-8">
+
+                <div class="flex gap-2">
+                    <label class="form-control border-b border-[#7A7B924D] w-1/2">
+                        <div class="label p-0">
+                        <span
+                            class="text-md text-project-licorice-500">{{ 'cashback.details.price-day-zero' | transloco }}</span>
+                        </div>
+                        <input type="text" formControlName="priceDayZero"
+                               class="input px-0 w-full bg-project-sideMenu border-none rounded-none"/>
+                    </label>
+
+                    <label class="form-control border-b border-[#7A7B924D] w-1/2">
+                        <div class="label p-0">
+                        <span
+                            class="text-md text-project-licorice-500">{{ 'cashback.details.override-price' | transloco }}</span>
+                        </div>
+                        <input type="text" formControlName="overridePrice"
+                               class="input px-0 w-full border-none rounded-none bg-project-sideMenu"/>
+                    </label>
+                </div>
+
+                <div class="flex gap-2">
+                    <label class="form-control border-b border-[#7A7B924D] w-1/2">
+                        <div class="label p-0">
+                        <span
+                            class="text-md text-project-licorice-500">{{ 'cashback.details.initial-date' | transloco }}</span>
+                        </div>
+                        <input type="text" [matDatepicker]="pickerStart" (click)="pickerStart.open()"
+                               readonly formControlName="initialDate" [max]="bulkForm.value.endDate"
+                               class="input px-0 w-full border-none rounded-none cursor-pointer bg-project-sideMenu"/>
+                        <mat-datepicker #pickerStart class="custom-picker"></mat-datepicker>
+                    </label>
+
+                    <label class="form-control border-b border-[#7A7B924D] w-1/2">
+                        <div class="label p-0">
+                        <span
+                            class="text-md text-project-licorice-500">{{ 'cashback.details.end-date' | transloco }}</span>
+                        </div>
+                        <input type="text" [matDatepicker]="pickerEnd" (click)="pickerEnd.open()"
+                               readonly formControlName="endDate" [min]="bulkForm.value.initialDate"
+                               class="input px-0 w-full border-none rounded-none cursor-pointer bg-project-sideMenu"/>
+                        <mat-datepicker #pickerEnd class="custom-picker"></mat-datepicker>
+                    </label>
+                </div>
+
+                <div class="flex gap-2">
+                    <label class="form-control border-b border-[#7A7B924D] w-1/2">
+                        <div class="label p-0">
+                            <span class="text-md text-project-licorice-500">{{ 'cashback.details.isin' | transloco }}</span>
+                        </div>
+                        <input type="text" formControlName="isin"
+                               class="input px-0 w-full border-none rounded-none bg-project-sideMenu"/>
+                    </label>
+                    <label class="form-control border-b border-[#7A7B924D] w-1/2">
+                        <div class="label p-0">
+                            <span class="text-md text-project-licorice-500">{{ 'cashback.details.conid' | transloco }}</span>
+                        </div>
+                        <input type="text" formControlName="conid"
+                               class="input px-0 w-full border-none rounded-none bg-project-sideMenu"/>
+                    </label>
+                </div>
+
+                <div class="w-full">
+                    <label class="form-control border-b border-[#7A7B924D]">
+                        <div class="label p-0 leading-none">
+                        <span
+                            class="text-md text-project-licorice-500">{{ 'cashback.details.status' | transloco }}</span>
+                        </div>
+                        <div class="dropdown">
+                            <div tabindex="0" role="button" class="m-1">
+                                <label class="flex items-center gap-2 w-full">
+                                    <input type="text" formControlName="status"
+                                           [value]="getStatus() | transloco"
+                                           class="input px-0 w-full border-none rounded-none cursor-pointer bg-project-sideMenu"
+                                           readonly placeholder="{{ 'cashback.details.choose-status' | transloco }}"/>
+                                    <mat-icon svgIcon="arrow_drop_down"></mat-icon>
+                                </label>
+                            </div>
+                            <ul tabindex="0" class="dropdown-content menu bg-white rounded-box z-10 w-full p-2 shadow mt-1">
+                                @for (status of status; track status.value) {
+                                    <li class="w-full hover:bg-[#4237DA33] rounded hover:text-project-youngBlue">
+                                        <a class="flex justify-between"
+                                           (click)="setFormControlValue('status', status.value)">
+                                            {{ status.label | transloco }}
+                                            @if (bulkForm.value?.status?.includes(status.value)) {
+                                                <mat-icon svgIcon="check" class="icon-size-4 icon-color"></mat-icon>
+                                            }
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="flex justify-end w-full">
+                    <button class="btn bg-project-licorice-900 text-white text-lg font-normal w-fit"
+                            (click)="updateBulk()">{{ 'misc.update' | transloco }}
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    } @else {
+        <form [formGroup]="bulkForm" class="mt-5">
+
+            <div class="flex w-full justify-center gap-5 mt-8">
+
+                <div class="flex flex-col justify-center w-full gap-5">
+                    <label class="form-control border-b border-[#7A7B924D]">
+                        <div class="label p-0">
+                        <span
+                            class="text-md text-project-licorice-500">{{ 'cashback.details.price-day-zero' | transloco }}</span>
+                        </div>
+                        <input type="text" formControlName="priceDayZero"
+                               class="input px-0 w-full bg-project-sideMenu border-none rounded-none"/>
+                    </label>
+
+                    <label class="form-control border-b border-[#7A7B924D]">
+                        <div class="label p-0 leading-none">
+                        <span
+                            class="text-md text-project-licorice-500">{{ 'cashback.details.status' | transloco }}</span>
+                        </div>
+                        <div class="dropdown">
+                            <div tabindex="0" role="button" class="m-1">
+                                <label class="flex items-center gap-2 w-full">
+                                    <input type="text" formControlName="status"
+                                           [value]="getStatus() | transloco"
+                                           class="input px-0 w-full border-none rounded-none cursor-pointer bg-project-sideMenu"
+                                           readonly placeholder="{{ 'cashback.details.choose-status' | transloco }}"/>
+                                    <mat-icon svgIcon="arrow_drop_down"></mat-icon>
+                                </label>
+                            </div>
+                            <ul tabindex="0" class="dropdown-content menu bg-white rounded-box z-10 w-full p-2 shadow mt-1">
+                                @for (status of status; track status.value) {
+                                    <li class="w-full hover:bg-[#4237DA33] rounded hover:text-project-youngBlue">
+                                        <a class="flex justify-between"
+                                           (click)="setFormControlValue('status', status.value)">
+                                            {{ status.label | transloco }}
+                                            @if (bulkForm.value?.status?.includes(status.value)) {
+                                                <mat-icon svgIcon="check" class="icon-size-4 icon-color"></mat-icon>
+                                            }
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="flex flex-col justify-center w-full gap-5">
+                    <label class="form-control border-b border-[#7A7B924D]">
+                        <div class="label p-0">
+                        <span
+                            class="text-md text-project-licorice-500">{{ 'cashback.details.initial-date' | transloco }}</span>
+                        </div>
+                        <input type="text" [matDatepicker]="pickerStart" (click)="pickerStart.open()"
+                               readonly formControlName="initialDate" [max]="bulkForm.value.endDate"
+                               class="input px-0 w-full border-none rounded-none cursor-pointer bg-project-sideMenu"/>
+                        <mat-datepicker #pickerStart class="custom-picker"></mat-datepicker>
+                    </label>
+
+                    <div class="flex flex-row items-center gap-5">
+                        <label class="form-control border-b border-[#7A7B924D] w-full">
+                            <div class="label p-0">
+                                <span class="text-md text-project-licorice-500">{{ 'cashback.details.isin' | transloco }}</span>
+                            </div>
+                            <input type="text" formControlName="isin"
+                                   class="input px-0 w-full border-none rounded-none bg-project-sideMenu"/>
+                        </label>
+                        <label class="form-control border-b border-[#7A7B924D] w-full">
+                            <div class="label p-0">
+                                <span class="text-md text-project-licorice-500">{{ 'cashback.details.conid' | transloco }}</span>
+                            </div>
+                            <input type="text" formControlName="conid"
+                                   class="input px-0 w-full border-none rounded-none bg-project-sideMenu"/>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex flex-col justify-center w-full gap-5">
+                    <label class="form-control border-b border-[#7A7B924D]">
+                        <div class="label p-0">
+                        <span
+                            class="text-md text-project-licorice-500">{{ 'cashback.details.end-date' | transloco }}</span>
+                        </div>
+                        <input type="text" [matDatepicker]="pickerEnd" (click)="pickerEnd.open()"
+                               readonly formControlName="endDate" [min]="bulkForm.value.initialDate"
+                               class="input px-0 w-full border-none rounded-none cursor-pointer bg-project-sideMenu"/>
+                        <mat-datepicker #pickerEnd class="custom-picker"></mat-datepicker>
+                    </label>
+
+                    <label class="form-control border-b border-[#7A7B924D]">
+                        <div class="label p-0">
+                        <span
+                            class="text-md text-project-licorice-500">{{ 'cashback.details.override-price' | transloco }}</span>
+                        </div>
+                        <input type="text" formControlName="overridePrice"
+                               class="input px-0 w-full border-none rounded-none bg-project-sideMenu"/>
+                    </label>
+                </div>
+
+                <div class="flex items-end ml-10">
+                    <button class="btn bg-project-licorice-900 text-white text-lg font-normal w-fit"
+                            (click)="updateBulk()" >
+                        <span *ngIf="lockButton" class="loading loading-spinner loading-md text-white"></span>
+                        <span *ngIf="!lockButton">{{ 'misc.update' | transloco }}</span>
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    }
+</div>

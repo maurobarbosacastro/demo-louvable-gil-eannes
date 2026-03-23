@@ -1,0 +1,26 @@
+<div class="flex flex-col">
+
+    <div class="flex flex-col items-center justify-center">
+        <img class="w-[14rem] h-[5.3rem]" src="assets/images/Login/account-verified.svg" alt="Account verified">
+
+        <span class="text-[18px] leading-[23px] text-[#32334C] my-[20px]">
+            {{ 'account-verified.title' | transloco }}</span>
+
+        <span class="text-[13px] leading-[17px] text-[#7A7B92] text-center">
+            {{ 'account-verified.message' | transloco }}
+        </span>
+
+        <button class="darkButton text-center items-center justify-center mt-[20px] mb-[30px]" (click)="closeAndSkipOnboarding()">
+            {{ 'account-verified.button-label' | transloco }}
+        </button>
+    </div>
+
+    <div class="flex justify-between border-t border-t-[#F6F3F4] pt-1">
+        <span class="text-[12px] leading-[15.6px] text-[#7A7B92] flex items-center">
+            {{ 'account-verified.footer-message' | transloco }}
+        </span>
+
+        <mat-icon class="cursor-pointer" (click)="closeAndGoToOnboarding()" [svgIcon]="'arrow-right'" />
+    </div>
+
+</div>

@@ -1,0 +1,38 @@
+host: localhost:8080
+info:
+  contact: {}
+  description: Description
+  title: ms-shopify Swagger API
+  version: "1.0"
+paths:
+  /hello:
+    get:
+      consumes:
+      - application/json
+      description: Get Hello
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Hello, World!
+          schema:
+            type: string
+      summary: Get Hello
+      tags:
+      - Users -> Groups in swagger
+  /hellos:
+    get:
+      consumes:
+      - application/json
+      description: Get Hellos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Hello, World!
+          schema:
+            type: string
+      summary: Get Hellos
+      tags:
+      - ""
+swagger: "2.0"

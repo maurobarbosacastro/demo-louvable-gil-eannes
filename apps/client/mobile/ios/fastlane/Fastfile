@@ -1,0 +1,315 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+
+default_platform(:ios)
+
+# Global configuration
+$scheme = "Runner"
+
+# Helper methods
+def get_config_value(key)
+    CredentialsManager::AppfileConfig.try_fetch_value(key)
+end
+
+def get_ipa_name(key)
+    "#{key}.ipa"
+end
+
+def create_gitlab_auth_token
+    username = ENV['GITLAB_USERNAME']
+    token = ENV['GITLAB_ACCESS_TOKEN']
+
+    if username.nil? || token.nil?
+        UI.user_error!("GitLab credentials missing. Set GITLAB_USERNAME and GITLAB_ACCESS_TOKEN environment variables.")
+    end
+
+    Base64.strict_encode64("#{username}:#{token}")
+end
+
+def create_api_key
+    app_store_connect_api_key(
+        key_id: ENV["APPLE_CONNECTION_API_KEY_ID"],
+        key_filepath: ENV["APPLE_CONNECTION_API_KEY_PATH"],
+        issuer_id: ENV["APPLE_CONNECTION_API_ISSUER_ID"],
+        duration: ENV["APPLE_CONNECTION_API_DURATION"] || "1200",
+        in_house: false
+    )
+end
+
+def setup_keychain
+    unlock_keychain(
+        path: ENV["KEYCHAIN_PATH"],
+        password: ENV["KEYCHAIN_PASSWORD"]
+    )
+end
+
+def import_apple_certificates
+    UI.message(" Importing Apple certificates...")
+
+    sh("curl -o /tmp/AppleWWDRCAG3.cer https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer")
+    import_certificate(
+        certificate_path: "/tmp/AppleWWDRCAG3.cer",
+        keychain_path: ENV["KEYCHAIN_PATH"],
+        keychain_password: ENV['KEYCHAIN_PASSWORD']
+    )
+    sh("rm -f /tmp/AppleWWDRCAG3.cer")
+end
+
+def setup_match_certificates(type = "appstore")
+    UI.message(" Setting up Match certificates for #{type}...")
+
+    setup_keychain
+
+    match(
+        type: type,
+        app_identifier: get_config_value(:app_identifier),
+        keychain_name: ENV["KEYCHAIN_NAME"],
+        force: true,
+        force_for_new_devices: true,
+        git_basic_authorization: create_gitlab_auth_token,
+        api_key: create_api_key
+    )
+end
+
+def configure_manual_code_signing
+    UI.message("⚙️ Configuring manual code signing...")
+
+    # Sync code signing (this uses Match certificates)
+    sync_code_signing(
+        readonly: false,
+        keychain_name: ENV["KEYCHAIN_NAME"]
+    )
+
+    # Disable automatic code signing
+    disable_automatic_code_signing(
+        path: ENV["APP_XCODE_PROJ"],
+        team_id: ENV["TEAM_ID"]
+    )
+
+    # Set manual code signing identity
+    update_code_signing_settings(
+        use_automatic_signing: false,
+        path: ENV["APP_XCODE_PROJ"],
+        code_sign_identity: "iPhone Distribution"
+    )
+
+    # Update provisioning profile
+    update_project_provisioning(
+        xcodeproj: ENV["APP_XCODE_PROJ"],
+        profile: get_provisioning_profile_path("appstore"),
+        build_configuration: "Release",
+        target_filter: $scheme,
+        code_signing_identity: "iPhone Distribution"
+    )
+
+    UI.success("✅ Manual code signing configured")
+end
+
+def get_provisioning_profile_path(type = "appstore")
+    app_id = get_config_value(:app_identifier)
+
+    case type
+    when "appstore"
+        profile_name = "AppStore_#{app_id}.mobileprovision"
+    when "development"
+        profile_name = "Development_#{app_id}.mobileprovision"
+    when "adhoc"
+        profile_name = "AdHoc_#{app_id}.mobileprovision"
+    end
+
+    # Full path to the provisioning profile
+    ios_project_profiles_dir = File.expand_path("../")
+    profile_path = File.join(ios_project_profiles_dir, profile_name)
+
+    # Check if file exists, if not search for it
+    unless File.exist?(profile_path)
+        UI.message(" Searching for provisioning profile...")
+        profiles_dir = File.expand_path("~/Library/MobileDevice/Provisioning Profiles/")
+        profile_files = Dir.glob("#{profiles_dir}/*.mobileprovision")
+
+        profile_files.each do |file|
+            if file.include?(app_id) || file.include?($scheme || "")
+                profile_path = file
+                break
+            end
+        end
+    end
+
+    UI.message(" Using provisioning profile: #{profile_path}")
+    profile_path
+end
+
+def setup_certificates_and_provisioning
+    UI.message(" Setting up certificates and provisioning profiles...")
+
+    # Import Apple certificates
+    import_apple_certificates
+
+    # Setup Match certificates
+    setup_match_certificates
+
+    # Configure manual code signing
+    configure_manual_code_signing
+
+    # Get additional certificates and provisioning profiles
+    api_key = create_api_key
+    get_certificates(
+        username: ENV["FASTLANE_USER"],
+        keychain_path: ENV["KEYCHAIN_PATH"],
+        api_key: api_key
+    )
+    get_provisioning_profile(
+        username: ENV["FASTLANE_USER"],
+        api_key: api_key
+    )
+
+    UI.success("✅ All certificates and provisioning profiles configured")
+end
+
+def setup_build_environment
+    UI.message("️ Setting up build environment...")
+
+    sh("cd ../../ && fvm flutter pub get")
+    sh("cd ../../ && fvm flutter pub run build_runner build --delete-conflicting-outputs")
+    setup_certificates_and_provisioning
+    versioning
+    cocoapods(clean_install: true)
+
+    UI.success("✅ Build environment ready")
+end
+
+def build_flutter_ios(target_file, scheme_name = nil)
+    UI.message("️ Building Flutter iOS app with target: #{target_file}")
+
+    # Set scheme if provided
+    $scheme = scheme_name if scheme_name
+
+    # Setup complete build environment
+    setup_build_environment
+
+    # Build Flutter
+    sh("cd ../../ && fvm flutter build ios --no-codesign -t #{target_file}")
+
+    # Build iOS app
+    build_app(
+        export_method: "app-store",
+        scheme: $scheme
+    )
+
+    UI.success("✅ Flutter iOS build completed for #{$scheme}")
+end
+
+platform :ios do
+    desc "Update version and build number"
+    lane :versioning do
+        increment_build_number(
+            build_number: ENV["IOS_BUILD_NUMBER"]
+        )
+        increment_version_number(
+            version_number: ENV["IOS_VERSION_NUMBER"]
+        )
+    end
+
+    desc "Import Apple certificates to keychain"
+    lane :import_certificate_to_keychain do
+        import_apple_certificates
+    end
+
+    desc "Setup Match certificates and keychain"
+    lane :unlock_keychain_match do
+        setup_match_certificates
+    end
+
+    desc "Get certificates and provisioning profiles"
+    lane :check_and_find_certificates_and_provisioning_profile do
+        setup_match_certificates
+
+        api_key = create_api_key
+        get_certificates(
+            username: ENV["FASTLANE_USER"],
+            keychain_path: ENV["KEYCHAIN_PATH"],
+            api_key: api_key
+        )
+        get_provisioning_profile(
+            username: ENV["FASTLANE_USER"],
+            api_key: api_key
+        )
+    end
+
+    desc "Setup complete code signing with manual configuration"
+    lane :check_update_and_find_certificates_and_provisioning_profile do
+        setup_certificates_and_provisioning
+    end
+
+    desc "Build and upload QA build to TestFlight"
+    lane :qa do
+        begin
+            UI.message(" Starting QA build process...")
+
+            build_flutter_ios("lib/main_qa.dart", "Dev")
+
+            upload_to_testflight(
+                ipa: get_ipa_name("Dev"),
+                email: ENV["FASTLANE_USER"],
+                skip_waiting_for_build_processing: false
+            )
+
+            UI.success("✅ QA build successfully uploaded to TestFlight!")
+
+        rescue => exception
+            UI.error("❌ QA build failed: #{exception.message}")
+            raise exception
+        end
+    end
+
+    desc "Build staging build"
+    lane :pre do
+        begin
+            UI.message(" Starting staging build process...")
+
+            build_flutter_ios("lib/main_pre.dart", "Staging")
+
+            upload_to_testflight(
+                ipa: get_ipa_name("Staging"),
+                email: ENV["FASTLANE_USER"],
+                skip_waiting_for_build_processing: false
+            )
+
+            UI.success("✅ Staging build completed!")
+
+        rescue => exception
+            UI.error("❌ Staging build failed: #{exception.message}")
+            raise exception
+        end
+    end
+
+    desc "Build production release"
+    lane :prod do
+        begin
+            UI.message(" Starting production build process...")
+
+            build_flutter_ios("lib/main_prod.dart")
+
+            UI.success("✅ Production build completed!")
+
+        rescue => exception
+            UI.error("❌ Production build failed: #{exception.message}")
+            raise exception
+        end
+    end
+
+    # Utility lanes
+    desc "Setup certificates only"
+    lane :setup_certificates do |options|
+        type = options[:type] || "appstore"
+        setup_match_certificates(type)
+    end
+
+    desc "Clean build artifacts"
+    lane :clean do
+        sh("cd ../../ && fvm flutter clean")
+        sh("cd ../../ && rm -rf ios/Pods")
+        sh("cd ../../ && rm -rf ios/.symlinks")
+        UI.success("✅ Build artifacts cleaned")
+    end
+end

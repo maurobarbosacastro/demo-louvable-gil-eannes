@@ -1,0 +1,153 @@
+@defer (when $withdrawals()) {
+    <div class="w-full h-full">
+        <form [formGroup]="filterForm" class="flex lg:flex-row flex-col lg:gap-4 gap-2 lg:justify-end lg:items-center mt-2.5 lg:w-auto w-full">
+            <!-- Status-->
+            <tagpeak-custom-dropdown [placeholder]="'withdrawals-request.status'"
+                                     [$options]="$mappedStatus()"
+                                     [value]="getStatus(filterForm.value.status)"
+                                     [control]="statusControl"
+                                     [css]="styleDropdown"
+                                     [iconCheckOption]="iconCheckOption"
+                                     [showDefaultValue]="false"
+                                     (valueChangesEvent)="setFormControlName('status', $event)"
+
+            />
+            <!-- Start Date-->
+            <div class="lg:w-72 w-full">
+                <label class="input input-bordered flex items-center gap-2 w-full">
+                    <mat-icon svgIcon="calender" class="icon-size-5"></mat-icon>
+                    <input [matDatepicker]="pickerStart" (click)="pickerStart.open()" formControlName="startDate" class="custom-picker" readonly
+                           placeholder="{{ 'store-visits.date-from' | transloco }}" [max]="filterForm.value.endDate" />
+                    <mat-datepicker #pickerStart class="custom-picker"></mat-datepicker>
+                    @if (filterForm?.value?.startDate) {
+                        <mat-icon svgIcon="close-modal" class="icon-size-4 cursor-pointer" (click)="resetFormControl('startDate')"></mat-icon>
+                    }
+                </label>
+            </div>
+
+            <!-- End Date-->
+            <div class="lg:w-72 w-full">
+                <label class="input input-bordered flex items-center gap-2 w-full">
+                    <mat-icon svgIcon="arrow-right" class="icon-size-4"></mat-icon>
+                    <input [matDatepicker]="pickerEnd" (click)="pickerEnd.open()" formControlName="endDate"
+                           class="custom-picker" readonly
+                           placeholder="{{ 'store-visits.date-to' | transloco }}" [min]="filterForm.value.startDate" />
+                    <mat-datepicker #pickerEnd></mat-datepicker>
+                    @if (filterForm?.value?.endDate) {
+                        <mat-icon svgIcon="close-modal" class="icon-size-4 cursor-pointer mr-2"
+                                  (click)="resetFormControl('endDate')"></mat-icon>
+                    }
+                </label>
+            </div>
+        </form>
+
+        @if ($withdrawalsSelected().length > 0) {
+            <div class="flex lg:flex-row flex-col lg:justify-between lg:items-center mt-2.5">
+                <span class="text-2xl text-project-licorice-500 pl-2">Total: <span class="text-2xl font-bold text-project-waterloo">{{ getAmountWithdrawal() | currency: 'EUR' : 'symbol-narrow' : '1.2-2' }}</span></span>
+
+                <div class="flex justify-between lg:justify-end gap-5">
+                    <button
+                        class="py-2.5 px-10 border border-project-red bg-white  text-project-red rounded  textButton flex justify-center cursor-pointer my-4"
+                        (click)="updateBulkWithdrawalRequest(StatusEnum.REJECTED)">
+                        {{ 'withdrawals-request.buttons.reject' | transloco }}
+                    </button>
+                    <button
+                        class="py-2.5 px-10 border border-green-600 text-white bg-green-600 rounded  textButton flex justify-center cursor-pointer my-4"
+                        (click)="updateBulkWithdrawalRequest(StatusEnum.COMPLETED)">
+                        {{ 'withdrawals-request.buttons.accept' | transloco }}
+
+                    </button>
+                </div>
+            </div>
+        }
+
+        <div class="mt-10">
+            @if ($withdrawals().length > 0) {
+                <atl-ng-table *ngIf="$tableConfig()"
+                              class="custom-table"
+                              id="table"
+                              [tableConfiguration]="$tableConfig()"
+                              [bodyCustomTemplate]="bodyCustomTemplate"
+                              [totalPages]="total"
+                              [totalSize]="totalSize"
+                              [resetPaginator]="page$ | async"
+                              (onSortAndPageChange)="onSortAndPageChange($event)"
+                              (onActionClick)="editCashoutRequest($event)"/>
+
+                <ng-template #bodyCustomTemplate let-implicit>
+                    @switch (implicit.column.id) {
+                        @case ('checkbox') {
+                            @if (implicit.row.state == StatusEnum.PENDING) {
+                                <div class="flex items-center">
+                                    <input type="checkbox" [checked]="validateCheckboxValue(implicit.row.id)"
+                                           class="checkbox checkbox-sm rounded border-black [--chkbg:white] [--chkfg:black]" (click)="selectWithdrawal(implicit.row)"/>
+                                </div>
+                            }
+                        }
+                        @case ('uuid') {
+                            <span [matTooltip]="implicit.rowVal"
+                                  [cdkCopyToClipboard]="implicit.rowVal" (click)="informCopy()"
+                                  class="block overflow-hidden overflow-ellipsis whitespace-nowrap w-24 cursor-copy">
+                                {{ implicit.rowVal}}
+                            </span>
+                        }
+                        @case ('user') {
+                            <span>{{ implicit.rowVal }} ({{ implicit.row.email }})</span>
+                        }
+                        @case ('paymentMethod') {
+                            <span>{{ implicit?.rowVal }}</span>
+                        }
+                        @case ('iban') {
+                            <span>{{ implicit?.rowVal }}</span>
+                        }
+                        <!-- Paypal is unavailable right now -->
+                        <!--@case ('paypalEmail') {
+                            <span>{{ implicit.rowVal }}</span>
+                        }-->
+                        @case ('completionDate') {
+                                <span>{{ implicit?.rowVal | date: 'yyyy-MM-dd'}}</span>
+                        }
+                        @case ('note') {
+                            <span class="block overflow-hidden overflow-ellipsis whitespace-nowrap w-30">{{ implicit.rowVal }}</span>
+                        }
+                        @case ('state') {
+                            @if (implicit.rowVal === StatusEnum.COMPLETED) {
+                                <tagpeak-status-container [$status]="StatusEnum.PAID"/>
+                            } @else if (implicit.rowVal === StatusEnum.REJECTED) {
+                                <tagpeak-status-container [$status]="StatusEnum.REJECTED"/>
+                            } @else {
+                                <tagpeak-status-container [$status]="implicit.rowVal"/>
+                            }
+                        }
+                        @case ('customActions') {
+                            <div class="flex gap-1.5">
+                                <button class="btn bg-white text-project-youngBlue border-project-youngBlue text-md font-normal min-h-9 h-9 rounded px-2" (click)="editCashoutRequest(implicit)">
+                                    <mat-icon svgIcon="pencil" class="icon-size-4"></mat-icon>
+                                </button>
+                                <button class="btn bg-white text-project-red border-project-red text-md font-normal min-h-9 h-9 rounded px-2" (click)="deleteCashoutRequest(implicit)">
+                                    <mat-icon svgIcon="trash" class="icon-size-4"></mat-icon>
+                                </button>
+                            </div>
+                        }
+
+                    }
+                </ng-template>
+            } @else {
+                <div class="flex flex-col gap-5 mt-8">
+                <span class="text-xl text-project-licorice-900 font-semibold">
+                    {{ 'store-visits.nothing-here' | transloco }}
+                </span>
+                    <span class="text-md text-project-waterloo w-80">
+                    {{ 'cashout-request.nothing-here-body' | transloco }}
+                </span>
+                </div>
+            }
+
+        </div>
+    </div>
+
+} @loading (minimum 400ms) {
+    <div class=" w-full min-h-[27.5rem] flex justify-center items-center">
+        <span class="loading loading-spinner loading-lg text-project-licorice-500"></span>
+    </div>
+}

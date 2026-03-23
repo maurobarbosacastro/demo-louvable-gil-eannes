@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0y4gxe7" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.42.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+  <bpmn:collaboration id="Collaboration_0pswfl0">
+    <bpmn:participant id="Participant_09tt2rj" name="MS-TAGPEAK" processRef="PRE_notification-dispatcher" />
+  </bpmn:collaboration>
+  <bpmn:process id="PRE_notification-dispatcher" name="Notification Dispatcher" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_1st73bl</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1xnp9hn</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1st73bl" sourceRef="StartEvent_1" targetRef="Activity_0xv8tm1">
+      <bpmn:extensionElements />
+    </bpmn:sequenceFlow>
+    <bpmn:callActivity id="Activity_0xv8tm1" name="Send email">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="PRE_send-email" propagateAllChildVariables="false" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1st73bl</bpmn:incoming>
+      <bpmn:outgoing>Flow_1vjdn5e</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1xnp9hn" sourceRef="StartEvent_1" targetRef="Activity_0f7yp3g" />
+    <bpmn:endEvent id="Event_0j6lebt">
+      <bpmn:incoming>Flow_1vjdn5e</bpmn:incoming>
+      <bpmn:incoming>Flow_0dpqj03</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1vjdn5e" sourceRef="Activity_0xv8tm1" targetRef="Event_0j6lebt" />
+    <bpmn:serviceTask id="Activity_0f7yp3g" name="Send Notification">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="PRE_send-notification-action" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xnp9hn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0dpqj03</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0dpqj03" sourceRef="Activity_0f7yp3g" targetRef="Event_0j6lebt" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0pswfl0">
+      <bpmndi:BPMNShape id="Participant_09tt2rj_di" bpmnElement="Participant_09tt2rj" isHorizontal="true">
+        <dc:Bounds x="132" y="82" width="568" height="328" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="182" y="222" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07weife_di" bpmnElement="Activity_0xv8tm1">
+        <dc:Bounds x="330" y="140" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0j6lebt_di" bpmnElement="Event_0j6lebt">
+        <dc:Bounds x="622" y="222" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0f7yp3g_di" bpmnElement="Activity_0f7yp3g">
+        <dc:Bounds x="330" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1st73bl_di" bpmnElement="Flow_1st73bl">
+        <di:waypoint x="218" y="240" />
+        <di:waypoint x="274" y="240" />
+        <di:waypoint x="274" y="180" />
+        <di:waypoint x="330" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xnp9hn_di" bpmnElement="Flow_1xnp9hn">
+        <di:waypoint x="218" y="240" />
+        <di:waypoint x="274" y="240" />
+        <di:waypoint x="274" y="320" />
+        <di:waypoint x="330" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vjdn5e_di" bpmnElement="Flow_1vjdn5e">
+        <di:waypoint x="430" y="180" />
+        <di:waypoint x="526" y="180" />
+        <di:waypoint x="526" y="240" />
+        <di:waypoint x="622" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dpqj03_di" bpmnElement="Flow_0dpqj03">
+        <di:waypoint x="430" y="320" />
+        <di:waypoint x="526" y="320" />
+        <di:waypoint x="526" y="240" />
+        <di:waypoint x="622" y="240" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

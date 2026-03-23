@@ -1,0 +1,926 @@
+{
+    "welcome-back": "Welcome back",
+    "users": {
+        "users": "Users",
+        "account-details": "User account details",
+        "general-data": "General data",
+        "plan": "Plan:",
+        "country": "Country:",
+        "email": "Email:",
+        "personal-data": "Personal data",
+        "age": "Age:",
+        "gender": "Gender:",
+        "block": "Block user",
+        "unblock": "Unlock user",
+        "block-modal": "This user will no longer be able to comment. Block the user?",
+        "unblock-modal": "This user will be able to comment again. Unblock the user?",
+        "blocked": "Blocked",
+        "new": "New User",
+        "success": "Profile picture updated successfully",
+        "error": "Error updating profile picture",
+        "success-email-confirmation": "Email verified. Sign in and start shopping!"
+    },
+    "misc": {
+        "save": "Save",
+        "cancel": "Cancel",
+        "yes": "Yes",
+        "no": "No",
+        "search": "Search",
+        "submit": "Submit",
+        "update": "Update",
+        "select": "Select",
+        "selected": "Selected",
+        "select-all": "Select all",
+        "more": "more",
+        "got-it": "Got it",
+        "file-too-large": "File too large, maximum file size is 5MB",
+        "confirm": "Confirm",
+        "accept": "Accept",
+        "reject": "Reject"
+    },
+    "table": {
+        "no-content": "No content",
+        "actions": {
+            "edit": "Edit",
+            "delete": "Delete",
+            "add": "Add",
+            "duplicate": "Duplicate",
+            "view": "View"
+        }
+    },
+    "button": {
+        "previous": "Previous",
+        "next": "Next"
+    },
+    "auth": {
+        "sign-up-title": "Join Tagpeak today",
+        "sign-up-subtitle": "Already have an account?",
+        "create-account": "Create account",
+        "or-sign-up": "or sign up with",
+        "name": "Name",
+        "name-required": "Name is required",
+        "name-invalid": "Please enter the first and last name",
+        "password-invalid": "The password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character.",
+        "check-your-email": "Check your e-mail!",
+        "confirmation-required": "We’ve sent you a confirmation e-mail to finalise your signup. Please do check the spam folder.",
+        "processing": "Processing",
+        "redirected": "You will be redirected to the application in",
+        "sign-in-title": "Welcome back!",
+        "sign-in-subtitle": "Need an account?",
+        "sign-up-here": "Sign up here",
+        "remember-me": "Remember me",
+        "forgot-password": "Forgot password?",
+        "forgot-password-subtitle": "No worries, we'll send you reset instructions.",
+        "login": "Login",
+        "or-login-with": "or login with",
+        "wrong-credentials": "Wrong Email or Password",
+        "email": "Email",
+        "password": "Password",
+        "your": "Your",
+        "email-required": "Email is required",
+        "email-invalid": "Email is invalid",
+        "password-required": "Password is required",
+        "currency-required": "Currency is required",
+        "reset": "Reset",
+        "check-email": "Check your e-mail!",
+        "check-email-subtitle": "We’ve sent you an e-mail to reset your password. Please also check the spam folder.",
+        "need_reset_password": "You need to reset your password. We have sent you an email to reset it.",
+        "carousel": {
+            "button-back": "Back to website",
+            "new": "NEW",
+            "refer-earn": "Refer & Earn",
+            "slide1": {
+                "title": "More friends, more money",
+                "subtitle": "The more the merrier — everything is better when shared and Tagpeak is no exception. Invite your friends, grow your network and get a % on their cashback forever."
+            },
+            "slide2": {
+                "title": "Cash in at any time.",
+                "subtitle": "Want to cash in on your rewards? You have the power to withdraw at any time, sending the funds directly to your bank account."
+            },
+            "slide3": {
+                "title": "New partnerships added",
+                "subtitle": "We are proud to welcome the following brands to the Tagpeak family.  We are excited about the opportunities these new partnerships bring — start shopping now and watch your rewards grow!"
+            }
+        },
+        "currency": "Currency",
+        "currency-warning": "(It's not possible to change the currency after the account is created)",
+        "email-taken": "This email is already registered. Try logging in instead.",
+        "profile-completion-title": "Complete your profile",
+        "profile-completion-subtitle": "Please complete your profile to continue",
+        "referral-not-valid":  "This referral link is not valid. Please try another or you can still sign up without referral"
+    },
+    "email": {
+        "template-header": "Templates",
+        "new-template": "New template",
+        "add-template": "Add new template",
+        "edit-template": "Edit template",
+        "save": "Save",
+        "cancel": "Cancel",
+        "click-to-copy": "Click to copy",
+        "new-placeholder": "Add template name",
+        "code-placeholder": "Code (only editable on creation)",
+        "name-required": "Template name is required"
+    },
+    "settings": {
+        "profile": "Profile",
+        "display-name": "Display name",
+        "date-of-birth": "Date of birth",
+        "edit": "Edit",
+        "change": "Change",
+        "display-name-required": "Display name is required",
+        "country": "Country",
+        "withdrawal-settings": "Withdrawal settings",
+        "privacy": "Privacy",
+        "saved": "Profile saved",
+        "error-saving": "Error saving profile",
+        "no-country": "No country yet",
+        "no-date-of-birth": "No date yet",
+        "dialog-currency": {
+            "title": "Thank you!",
+            "message": "Thank you for choosing Tagpeak to enhance your shopping experience.",
+            "message2": "Since you did not have an account with us, we created one for you and set the default currency to Euro (€).\n\nPlease choose your preferred currency now, as this selection cannot be changed later.",
+            "reload_info": "The current window will be reloaded in 10 seconds to take into consideration this change. Reload any other window open to see the changes in effect."
+        }
+    },
+    "toaster": {
+        "success": "Success",
+        "error": "Error",
+        "info": "Information"
+    },
+    "account-verified": {
+        "title": "Account verified!",
+        "message": "Welcome to Tagpeak. Browse our partner brands, make a purchase and start earning rewards that grow over time.",
+        "button-label": "Let's go!",
+        "footer-message": "How does it work?"
+    },
+    "onboarding": {
+        "slide1": {
+            "title": "Welcome to Tagpeak!",
+            "message": "Earn every time you shop online with a financial reward paid by brands. Earn high-potential cashback ranging from 0% to 100%, all made possible through strategic investments in the financial markets.",
+            "button": "But how does it work?"
+        },
+        "slide2": {
+            "title": "Shop and earn. It’s free.",
+            "message": "Start by shopping at any of our partner stores. As you shop, we seamlessly track your transaction, earning a commission from our valued partners. No extra costs. The investment is financed by the brands you shop.",
+            "button": "Got it!"
+        },
+        "slide3": {
+            "title": "Your daily updates.",
+            "message": "Each reward will move every day, depending on the investment performance. As with any investment, it does not go well every time and you may end up with a reward of 0%. But remember, you did not pay extra for the product or service you bought.",
+            "button": "Got it!"
+        },
+        "slide4": {
+            "title": "Cash in at any time.",
+            "message": "Want to cash in on your rewards? You have the power to withdraw at any time, sending the funds directly to your bank account.",
+            "button": "Got it!"
+        },
+        "slide5": {
+            "title": "More friends, more money",
+            "message": "The more the merrier — everything is better when shared and Tagpeak is no exception. Invite your friends, grow your network and get a % on their cashback forever.",
+            "button": "Start shopping!"
+        }
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "filters": "Filter By",
+        "tabs": {
+            "your-rewards": "Your Rewards",
+            "store-visits": "Store Visits",
+            "balance": "Balance"
+        },
+        "new-purchase": "Shop Now",
+        "table": {
+            "store": "Store",
+            "price-paid": "Price paid",
+            "stop-date": "Stop date",
+            "current-reward": "Current Reward",
+            "status": "Status"
+        },
+        "days-left": "days left",
+        "stop": "Stop",
+        "purchased-on": "Purchased on",
+        "nothing-here": "Nothing here for now",
+        "first-purchase": "Make your first purchase from our partner stores and follow here your cash reward evolution!",
+        "details": {
+            "revisit-store": "Shop again",
+            "order-total-price": "Order total price",
+            "stop-anytime": "You can stop at anytime!",
+            "stop-anytime-info": "Whenever you feel comfortable with your reward, you can press the “Stop” Button and collect your reward. Or, you can wait and maybe win more.",
+            "ref": "Ref ID"
+        },
+        "stop-confirmation": {
+            "title": "Stop this reward?",
+            "body": "Cash Reward will stop moving and we will confirm the final amount within 2 business days.",
+            "confirm": "Yes, stop",
+            "footer-message": "Read our FAQs for more information",
+            "success": "Request was sent to admin for stopping.",
+            "error": "Error when requesting to send to admin to stop."
+        },
+        "info-card": {
+            "title": "Reach <span class=\"text-project-youngBlue\">{{membership}}</span>  status and unlock more earnings",
+            "body": "Spend {{valueSpend}} to reach {{membership}} to unlock and collect your rewards and more. ",
+            "body-info": "How to reach next level?",
+            "spent": "spent",
+            "goal": "goal",
+            "last-membership-title": "You reached the <span class=\"text-project-youngBlue\">Gold</span> status",
+            "last-membership-body": "You reached the last level of membership. You can continue to earn rewards."
+        }
+    },
+    "reward-summary": {
+        "live-rewards": "Live Rewards",
+        "available-withdraw": "Available for withdrawal",
+        "withdraw": "Withdraw",
+        "win": "Win up to 10% of your friends cashback once they start purchasing.",
+        "how-it-works": " How does this work?"
+    },
+    "status": {
+        "PENDING": "Tracked",
+        "TRACKED": "Tracked",
+        "VALIDATED": "Validated",
+        "REJECTED": "Rejected",
+        "LIVE": "Live",
+        "PAID": "Paid",
+        "FINISHED": "Finished",
+        "STOPPED": "Stopped",
+        "EXPIRED": "Expired",
+        "COMPLETED": "Completed",
+        "REQUESTED": "Requested",
+        "CONFIRMED": "Confirmed",
+        "CANCELLED": "Canceled",
+        "ACTIVE": "Active",
+        "INACTIVE": "Inactive",
+        "alt": {
+            "PENDING": "Pending",
+            "VALIDATED": "Validated",
+            "REJECTED": "Rejected"
+        },
+        "withdrawal": {
+            "PENDING": "Pending",
+            "COMPLETED": "Paid",
+            "REJECTED": "Rejected"
+        },
+        "description": {
+            "TRACKED": "We've successfully tracked your transaction. Now we have to wait for the partner store to validate it. This does not depend on us and may take a few days or weeks.",
+            "VALIDATED": "Your transaction has been confirmed by the partner store and your cash reward will be launched in the next 2 working days.",
+            "LIVE": "Our investments are currently live. Your reward may move every day until the Stop Date or until you press the Stop button.",
+            "EXPIRED": "The investment period has passed. The final reward will be added to your balance within 2 working days.",
+            "FINISHED": "Congratulations! This cash reward is now available for withdrawal.",
+            "STOPPED": "You have successfully stopped your cash reward. It will become available within 2 working days.",
+            "REQUESTED": "This cash reward is part of a withdrawal request already submitted.",
+            "PAID": "This cash reward has been already withdrawn successfully.",
+            "REJECTED": "Your transaction has been rejected by the partner store."
+        }
+    },
+    "country": {
+        "countries": "Countries",
+        "country": "Country",
+        "no-country": "No country",
+        "new-country": "New country",
+        "edit-country": "Edit country",
+        "abbreviation": "Abbreviation",
+        "abbreviation-required": "Country abbreviation is required",
+        "name": "Name",
+        "name-required": "Country name is required",
+        "enabled": "Enabled",
+        "enabled-required": "Country enabled is required",
+        "currency": "Currency",
+        "currency-required": "Currency is required",
+        "country-created": "Country created",
+        "country-create-error": "Error creating country",
+        "country-updated": "Country updated",
+        "country-update-error": "Error updating country",
+        "country-deleted": "Country deleted",
+        "country-delete-error": "Error deleting country"
+    },
+    "store-visits": {
+        "title": "Store Visits",
+        "select-store": "Select Store",
+        "date-from": "Date from",
+        "date-to": "Date to",
+        "nothing-here": "Nothing here for now",
+        "nothing-here-body": "You have not visited any store yet. This place is for you to track past store visits.",
+        "no-results": "No results found.",
+        "no-results-body": "We haven’t found any visits with those terms.",
+        "table": {
+            "ref": "Ref ID",
+            "store-name": "Store Name",
+            "purchased": "Purchased",
+            "date-time": "Date & Time"
+        },
+        "search-name": "Search by name",
+        "reference": "Reference",
+        "encoded-reference": "Full Encoded Ref"
+    },
+    "balance-withdrawals": {
+        "nothing-here": "No results found.",
+        "nothing-here-body": "You have not yet withdrawn any reward.",
+        "table": {
+            "id": "ID",
+            "cash-out-amount": "Cashout Amount",
+            "status": "Status",
+            "payment-date": "Payment Date",
+            "payment-note": "Payment Note",
+            "date-requested": "Date Requested"
+        },
+        "available-rewards": "Available Rewards",
+        "rewards": "Rewards",
+        "referrals": "Referrals",
+        "withdrawals": "Withdrawals",
+        "withdraw": "Withdraw",
+        "withdrawals-settings": "Withdrawals settings",
+        "withdrawals-settings-mobile": "Settings",
+        "paid-rewards": "Paid Rewards",
+        "cannot-withdrawal": "You have not reached threshold limit of {{value}} for Withdrawal.",
+        "success-create": "Your withdrawal requested will be processed in the next 2 business days.",
+        "error-create": "Something went wrong, please try again later.",
+        "confirmation-withdrawal": {
+            "title": "Are you sure you want to make a withdrawal?",
+            "message": "Your withdrawal requested will be processed in the next 2 business days."
+        }
+    },
+    "cashback": {
+        "title": "Cashback",
+        "tabs": {
+            "manage-cashback": "Manage Cashback",
+            "cashout-request": "Cashout Request"
+        },
+        "search-store": "Search by store name",
+        "search-user": "Search by user",
+        "search-store-visit": "Search by reference",
+        "bulk-update": "Bulk Update",
+        "table": {
+            "id": "ID",
+            "exit-store-user": "Exit Id - Store - User Email",
+            "exit-id": "Exit Id",
+            "source-id": "Source Id",
+            "store-name": "Store Name",
+            "user-email": "User Email",
+            "date": "Date",
+            "title": "Title",
+            "order-value": "Order Value",
+            "network-commission": "Network Commission",
+            "current-reward": "Current Reward",
+            "price-day-0": "Price Day 0",
+            "isin": "ISIN/Conid",
+            "conid": "Interactive Brokers Conid",
+            "status": "Status",
+            "actions": "Actions",
+            "history": "History"
+        },
+        "details": {
+            "title-details": "Edit Manage Cashback",
+            "exit-click": "Exit Click",
+            "validate-it": "Validate it",
+            "currency": "Currency",
+            "price-day-zero": "Price on day 0",
+            "initial-date": "Initial Date",
+            "end-date": "End Date",
+            "isin": "ISIN",
+            "conid": "Interactive Brokers Conid",
+            "title": "Title",
+            "details": "Details",
+            "order-value": "Order Value",
+            "network-commission": "Network Commission",
+            "cashback": "Cashback",
+            "order-date": "Order Date",
+            "status": "Status",
+            "override-price": "Override Price",
+            "unit": "Unit",
+            "current-cash-reward": "Current Cash Reward",
+            "choose-status": "Choose Status",
+            "ref-valid": "Exit Click is valid",
+            "ref-invalid": "Exit Click is invalid"
+        },
+        "success-update": "Cashback updated with success!",
+        "error-update": "Error when updating the cashback!",
+        "delete-cashback": {
+            "title": "Delete this cashback?",
+            "body": "This action can not be undone.",
+            "confirm": "Yes, delete"
+        },
+        "success-delete": "Cashback deleted with success!",
+        "error-delete": "Error when deleting the cashback!"
+    },
+    "cashout-request": {
+        "table": {
+            "id": "ID",
+            "user": "User",
+            "payment-method": "Payment Method",
+            "iban": "IBAN",
+            "paypal-email": "Paypal Email",
+            "payment-date": "Payment Date",
+            "note": "Note",
+            "status": "Status",
+            "actions": "Actions"
+        },
+        "nothing-here-body": "No client requested a cashout.",
+        "details": {
+            "title": "Edit Cashout Request",
+            "payment-details": "Payment Details",
+            "payment-method": "Payment Method",
+            "bank-name": "Bank Name",
+            "bank-address": "Bank Address",
+            "bank-account-title": "Bank Account Title",
+            "iban": "IBAN Number",
+            "country": "Country",
+            "cashout-value": "Cashout Value",
+            "status": "Status",
+            "requested-date": "Requested Date",
+            "payment-date": "Payment Date",
+            "note": "Note",
+            "vat-number": "Fiscal Identification Number",
+            "bank-country": "Bank country"
+        },
+        "success-update": "Cashout Request updated with success!",
+        "error-update": "Error when updating the Cashout Request!",
+        "delete-cashout-request": {
+            "title": "Delete this cashout request?",
+            "body": "This action can not be undone.",
+            "confirm": "Yes, delete"
+        },
+        "success-delete": "Cashout Request deleted with success!",
+        "error-delete": "Error when deleting the Cashout Request!"
+    },
+    "partner": {
+        "partners": "Sources",
+        "edit-partner": "Edit Source",
+        "new-partner": "New Source",
+        "name": "Name",
+        "code": "Code",
+        "eCommercePlatform": "eCommerce Platform",
+        "commissionRate": "Commission Rate",
+        "validationPeriod": "Validation Period",
+        "deepLink": "Deep Link",
+        "deepLinkIdentifier": "Deep Link Identifier",
+        "subIdentifier": "Sub Identifier",
+        "percentageTagpeak": "Percentage Tagpeak",
+        "percentageInvested": "Percentage Invested",
+        "name-required": "Name is required",
+        "name-invalid": "Name is not valid",
+        "eCommercePlatform-required": "eCommerce Platform is required",
+        "eCommercePlatform-invalid": "eCommerce Platform is not valid",
+        "commissionRate-required": "Commission Rate is required",
+        "commissionRate-invalid": "Commission Rate is not valid",
+        "commissionRate-min": "Commission Rate must be greater than 0%",
+        "commissionRate-max": "Commission Rate must be less than 100%",
+        "validationPeriod-required": "Validation Period is required",
+        "validationPeriod-invalid": "Validation Period is not valid",
+        "deepLink-required": "Deep Link is required",
+        "deepLink-invalid": "Deep Link is not valid",
+        "deepLinkIdentifier-required": "Deep Link Identifier is required",
+        "deepLinkIdentifier-invalid": "Deep Link Identifier is not valid",
+        "subIdentifier-required": "Sub Identifier is required",
+        "subIdentifier-invalid": "Sub Identifier is not valid",
+        "percentageTagpeak-required": "Percentage Tagpeak is required",
+        "percentageTagpeak-invalid": "Percentage Tagpeak is not valid",
+        "percentageTagpeak-min": "Percentage Tagpeak must be greater than 0%",
+        "percentageTagpeak-max": "Percentage Tagpeak must be less than 100%",
+        "percentageInvested-required": "Percentage Invested is required",
+        "percentageInvested-invalid": "Percentage Invested is not valid",
+        "percentageInvested-min": "Percentage Invested must be greater than 0%",
+        "percentageInvested-max": "Percentage Invested must be less than 100%",
+        "partner-created": "Source created",
+        "partner-create-error": "Error creating source",
+        "partner-updated": "Source updated",
+        "partner-update-error": "Error updating source",
+        "partner-deleted": "Source deleted",
+        "partner-delete-error": "Error deleting Source"
+    },
+    "languages": {
+        "title": "Languages",
+        "new-language": "New language",
+        "table": {
+            "name": "Name",
+            "code": "Code"
+        },
+        "details": {
+            "new-title": "New Language",
+            "edit-title": "Edit Language",
+            "code": "Code",
+            "name": "Name",
+            "code-required": "Code is required",
+            "code-invalid": "Code is not valid",
+            "name-required": "Name is required",
+            "name-invalid": "Name is not valid"
+        },
+        "success-create": "Language created with success!",
+        "success-update": "Language updated with success!",
+        "success-delete": "Language deleted with success!",
+        "error-create": "Error creating the Language!",
+        "error-update": "Error updating the Language!",
+        "error-delete": "Error deleting the Language!"
+    },
+    "categories": {
+        "title": "Categories",
+        "new-category": "New Category",
+        "table": {
+            "code": "Code",
+            "name": "Name"
+        },
+        "details": {
+            "new-title": "New Category",
+            "edit-title": "Edit Category",
+            "code": "Code",
+            "name": "Name",
+            "code-required": "Code is required",
+            "name-required": "Name is required"
+        },
+        "success-create": "Category created with success!",
+        "success-update": "Category updated with success!",
+        "success-delete": "Category deleted with success!",
+        "error-create": "Error when creating the Category!",
+        "error-update": "Error when updating the Category!",
+        "error-delete": "Error when deleting the Category!"
+    },
+    "store": {
+        "stores": "Stores",
+        "new-store": "New Store",
+        "edit-store": "Edit Store",
+        "store-name": "Store Name",
+        "export-excel": "Export Excel",
+        "upload-excel": "Upload Excel",
+        "success-create": "Store created with success!",
+        "error-create": "Error when creating the Store!",
+        "success-update": "Store updated with success!",
+        "error-update": "Error when updating the Store!",
+        "delete-store": "Are you sure you want to delete the Store?",
+        "field-required": "Field is required",
+        "success-delete": "Store deleted with success!",
+        "error-delete": "Error when deleting the Store!",
+        "error-export": "Error exporting the stores file!",
+        "error-get-logo": "Error getting the logo from the url",
+				"position-not-unique": "This position is taken.",
+        "name": "Name",
+        "logo": "Logo",
+        "logoTip": "We will try to get a logo from this url",
+        "logoTipError": "It was not possible to get a logo from this url",
+        "banner": "Banner",
+        "short-description": "Short Description",
+        "description": "Description",
+        "slug": "Slug",
+        "partner_identity": "Store identity on source platform",
+        "initial-reward": "Initial Reward",
+        "average-reward-activation-time": "Average Reward Activation Time",
+        "state": {
+            "state": "State",
+            "inactive": "Inactive",
+            "active": "Active"
+        },
+        "keywords": "Keywords",
+        "affiliate-link": "Affiliate Link",
+        "store-url": "Store Url",
+        "terms-and-conditions": "Terms and Conditions",
+        "cashback-type": "Cashback Type",
+        "cashback-value": "Cashback Value",
+        "percentage-cashout": "Percentage Cashout",
+        "transaction-fee": "Override Transaction Fee",
+        "transaction-fee-placeholder": "Override the transaction fee for this store. Default is {{value}}%",
+        "meta-title": "Meta Title",
+        "meta-keywords": "Meta Keywords",
+        "meta-description": "Meta Description",
+				"position": "Position",
+        "select-countries": "Select Countries",
+        "select-categories": "Select Categories",
+        "country": "Country",
+        "category": "Category",
+        "language": "Language",
+        "affiliate-partner": "Affiliate Source",
+        "cashback-type-options": {
+            "percentage": "Percentage",
+            "fixed": "Fixed"
+        },
+        "upload-csv": "Upload Stores CSV File",
+        "insert-file": "Please insert the CSV file"
+    },
+    "image-upload": {
+        "image-title": "Drag and drop an image",
+        "image-description": "Only JPG or PNG files are allowed",
+        "upload": "Upload"
+    },
+    "stores": {
+        "header": {
+            "our-brand": "Our Brand",
+            "for-shoppers": "For Shoppers",
+            "for-partners": "For Partners",
+            "about": "About"
+        },
+        "join-tagpeak": "Join Tagpeak today",
+        "search-title": "Find a partner store",
+        "country-placeholder": "Choose your country",
+        "category-placeholder": "Choose category",
+        "search": "Search",
+        "select-country": "Select your country to see available stores.",
+        "no-stores-found": "No stores were found.",
+        "my-dashboard": "My Dashboard",
+        "sort-list": {
+            "latest-stores": "Latest Stores",
+            "title": "By Title",
+            "most-popular": "Most popular"
+        },
+        "stores-available": "Stores available in",
+        "sort-by": "Sort By",
+        "how-it-works": "How it works",
+        "make-purchase": "Make a purchase from a partner store.",
+        "we-invest": "We invest a % of the price you paid.",
+        "follow-investment": "Follow the investment performance.",
+        "receive-cash": "Receive the cash reward at any time.",
+        "for-shoppers": "For shoppers",
+        "about-us": "About us",
+        "explore": "Explore",
+        "footer": {
+            "title": "Start earning like never before.",
+            "sub-title": "Get insights about Tagpeak. Stay updated about our new partnerships and products.",
+            "info": {
+                "tagpeak": "Tagpeak",
+                "about": "About",
+                "contact-us": "Contact Us",
+                "for-partners": "For Partners",
+                "for-employees": "For Employees",
+                "news": "News",
+                "platform": "Platform",
+                "login": "Login",
+                "our-brands": "Our brands",
+                "faqs": "FAQs",
+                "legal": "Legal",
+                "terms-conditions": "Terms and Conditions",
+                "privacy-policy": "Privacy policy"
+            },
+            "follow-us": "Follow Us",
+            "enter-email": "Enter e-mail address..."
+        },
+        "details": {
+            "go-to-store": "Go to store",
+            "average-time": "Average time to activate reward",
+            "inital-price": "Initial reward amount",
+            "after-stay": "after your stay",
+            "potential-to-grow": "with potential to grow",
+            "make-purchase": "Make a purchase from one of our partner brands.",
+            "brands-pay": "Brands pay us an agreed %, which we invest in the financial markets.",
+            "follow-dash": "Follow everything on your dashboard and cash out anytime.",
+            "brand": "About the Brand",
+            "available-cash": "Available cash rewards products or categories",
+            "store-text": "Click the \"Go to store\" button to visit the partner store.",
+            "cookies-text": "Always accept cookies before purchasing.",
+            "blockers-text": "Remove/disable any blockers that might affect cookies acceptance.",
+            "complete-text": "Complete your purchase in the same browser tab or page opened, within a reasonable timeframe.",
+            "shop-now": "Shop now",
+            "dialog": {
+                "confirm": "Please confirm you have read and understood the instructions to make sure your purchase is valid.",
+                "not-show": "Do not show for another 30 days.",
+                "back": "Back"
+            }
+        }
+    },
+    "modal-delete": {
+        "title": "Delete this item?",
+        "body": "This action can not be undone."
+    },
+    "public-store": {
+        "country-find": {
+            "message": "We have located you in {{value}}. You can change countries in the country filter."
+        }
+    },
+    "referrals": {
+        "referrals": "Referrals",
+        "tabs": {
+            "your-referrals": "Your referrals",
+            "how-it-works": "How it works"
+        },
+        "title": "Refer & Earn",
+        "copy": "Copy referral link",
+        "your-referrals": {
+            "earnings": "Your earnings from referrals",
+            "your-friends": "Refer your friends to have the chance to win more than {{value}}",
+            "win": "Win up to 10% of your friends cashback once they start purchasing. How does this work?",
+            "nothing-here": "Nothing here for now",
+            "nothing-here-subtitle": "Invite your friends, share your referral link and get a % on their cashback forever.",
+            "link-clicks": "Link clicks",
+            "registered-referrals": "Registered referrals",
+            "referrals-who-made-a-purchase": "Referrals who made a purchase",
+            "revenue": "My Revenue",
+            "total-generated": "Total Generated By Referrals. ({{currency}})"
+        },
+        "how-it-works": {
+            "status": "Status",
+            "your-benefits": "Your benefits",
+            "friends-benefits": "Your friends' benefits",
+            "what-need": "What do you need to do?",
+            "sign-up": "Sign-up",
+            "referral1": "referral* or spend",
+            "referral5": "referrals* or spend",
+            "more-cash": "More cash rewards from your",
+            "purchases": "purchases",
+            "share-friends": "A share of your friends' cash rewards",
+            "cash-brands": "Cash Rewards as listed",
+            "brands": " on “Our Brands”",
+            "member-rewards": "Member rewards",
+            "status-recommended": "Status they get when recommended by you",
+            "silver": "Silver",
+            "gold": "Gold",
+            "member": "Member",
+            "notes": "Notes",
+            "notes-text": "A successful referral means someone who registered with your referral link and made a transaction successfully. If you reach Silver or Gold, you will win 5% or 10% of your friends' all-time cash rewards forever.\nStandard cash reward percentage for Members can be found on each partner store page at our website."
+        }
+    },
+    "withdrawal-settings": {
+        "add-payment-method": "Add payment method",
+        "no-payment-methods": "No payment methods added yet.",
+        "no-payment-methods-body": "You can add a payment method to your account to be able to withdraw your cash rewards.",
+        "account": "Account",
+        "details": {
+            "title": "Add new payment method",
+            "sub-title": "Fill out the payment details below.",
+            "payment-method": "Select Payment Method",
+            "bank-name": "Bank name",
+            "bank-address": "Bank address",
+            "bank-country": "Bank country",
+            "country": "Country",
+            "bank-account-title": "Bank Account Title",
+            "iban": "IBAN Account Number",
+            "iban-statement": "To confirm this account, please upload your IBAN Confirmation Statement",
+            "iban-statement-confirmation": "IBAN confirmation statement",
+            "upload": "Upload",
+            "vat-number": "Fiscal Identification Number"
+        },
+        "delete-payment": "Delete this method payment?",
+        "delete-payment-body": "This action can not be undone.",
+        "success-delete": "Payment method deleted with success!",
+        "error-delete": "Error deleting the payment method!",
+        "vat-number": "Fiscal Identification Number",
+        "vat-number-placeholder": "Enter your Fiscal Identification Number",
+        "vat-number-required": "Fiscal Identification Number is required",
+        "vat-number-invalid": "Fiscal Identification Number is invalid",
+        "iban-pattern-error": "IBAN is invalid",
+        "iban-error-min-length": "IBAN needs to have 15 characters",
+        "iban-error-max-length": "IBAN needs to between 15 characters and 34 characters"
+    },
+    "withdrawals-request": {
+        "title": "Withdrawals Request",
+        "status": "Status",
+        "details": {
+            "title": "Withdrawal Request",
+            "requested-by": "Requested By",
+            "amount": "Amount",
+            "request-date": "Request Date",
+            "bank-name": "Bank Name",
+            "bank-address": "Bank Address",
+            "country": "Country",
+            "bank-account-title": "Bank Account Title",
+            "iban": "IBAN",
+            "state": "State",
+            "completion-date": "Completion Date"
+        },
+        "buttons": {
+            "accept": "Accept",
+            "reject": "Reject"
+        },
+        "accept-success": "Withdrawal accepted successfully",
+        "reject-success": "Withdrawal rejected successfully",
+        "error-accept": "Error accepting the withdrawal",
+        "error-reject": "Error rejecting the withdrawal"
+    },
+    "privacy-details": {
+        "introduction": {
+            "title": "Introduction",
+            "body": "These Website Standard Terms and Conditions written on this webpage shall manage your use of our website, TagPeak accessible at https://tagpeak.com.",
+            "sub-body": "Minors or people below 15 years old are not allowed to use this Website."
+        },
+        "intellectual-property-rights": {
+            "title": "Intellectual Property Rights",
+            "body": "Other than the content you own, under these Terms, TagPeak and/or its licensors own all the intellectual property rights and materials contained in this Website. You are granted limited license only for purposes of viewing the material contained on this Website.",
+            "sub-body": "You are granted limited license only for purposes of viewing the material contained on this Website."
+        },
+        "restrictions": {
+            "title": "Restrictions",
+            "body": "You are specifically restricted from all of the following:",
+            "body-specification": {
+                "1": "publishing any Website material in any other media;",
+                "2": "selling, sublicensing and/or otherwise commercializing any Website material;",
+                "3": "publicly performing and/or showing any Website material;",
+                "4": "using this Website in any way that is or may be damaging to this Website;",
+                "5": "using this Website contrary to applicable laws and regulations, or in any way may cause harm to the Website, or to any person or business entity;",
+                "6": "engaging in any data mining, data harvesting, data extracting or any other similar activity in relation to this Website;",
+                "7": "using this Website to engage in any advertising or marketing."
+            },
+            "sub-body": "Certain areas of this Website are restricted from being access by you and TagPeak may further restrict access by you to any areas of this Website, at any time, in absolute discretion. Any user ID and password you may have for this Website are confidential and you must maintain confidentiality as well."
+        },
+        "your-content": {
+            "title": "Your Content",
+            "body": "In these Website Standard Terms and Conditions, \"Your Content\" shall mean any audio, video text, images or other material you choose to display on this Website. By displaying Your Content, you grant TagPeak a non-exclusive, worldwide irrevocable, sub licensable license to use, reproduce, adapt, publish, translate and distribute it in any and all media.",
+            "sub-body": "Your Content must be your own and must not be invading any third-party's rights. TagPeak reserves the right to remove any of Your Content from this Website at any time without notice."
+        },
+        "no-warranty": {
+            "title": "No warranties",
+            "body": "This Website is provided \"as is,\" with all faults, and TagPeak express no representations or warranties, of any kind related to this Website or the materials contained on this Website. Also, nothing contained on this Website shall be interpreted as advising you."
+        },
+        "limitation-liability": {
+            "title": "Limitation of liability",
+            "body": "In no event shall TagPeak, nor any of its officers, directors and employees, shall be held liable for anything arising out of or in any way connected with your use of this Website whether such liability is under contract. TagPeak, including its officers, directors and employees shall not be held liable for any indirect, consequential or special liability arising out of or in any way related to your use of this Website."
+        },
+        "indemnification": {
+            "title": "Indemnification",
+            "body": "You hereby indemnify to the fullest extent TagPeak from and against any and/or all liabilities, costs, demands, causes of action, damages and expenses arising in any way related to your breach of any of the provisions of these Terms."
+        },
+        "severability": {
+            "title": "Severability",
+            "body": "If any provision of these Terms is found to be invalid under any applicable law, such provisions shall be deleted without affecting the remaining provisions herein."
+        },
+        "variation": {
+            "title": "Variation of Terms",
+            "body": "TagPeak is permitted to revise these Terms at any time as it sees fit, and by using this Website you are expected to review these Terms on a regular basis."
+        },
+        "assignment": {
+            "title": "Assignment",
+            "body": "The TagPeak is allowed to assign, transfer, and subcontract its rights and/or obligations under these Terms without any notification. However, you are not allowed to assign, transfer, or subcontract any of your rights and/or obligations under these Terms."
+        },
+        "entire-agreement": {
+            "title": "Entire Agreement",
+            "body": "These Terms constitute the entire agreement between TagPeak and you in relation to your use of this Website, and supersede all prior agreements and understandings."
+        },
+        "governing-law": {
+            "title": "Governing Law & Jurisdiction",
+            "body": "These Terms will be governed by and interpreted in accordance with the laws of the State of us, and you submit to the non-exclusive jurisdiction of the state and federal courts located in us for the resolution of any disputes."
+        }
+    },
+    "configurations": {
+        "title": "Configurations",
+        "edit-title": "Edit configuration",
+        "table": {
+            "id": "ID",
+            "name": "Name",
+            "code": "Code",
+            "value": "Value",
+            "type": "Type",
+            "actions": "Actions"
+        },
+        "details": {
+            "name": "Name",
+            "value": "Value",
+            "name-required": "Name is required",
+            "name-invalid": "Please enter a valid name",
+            "value-required": "Value is required",
+            "value-invalid": "Please enter a valid value"
+        }
+    },
+    "membership-level": {
+        "/membership_levels/base": "Member",
+        "/membership_levels/silver": "Silver",
+        "/membership_levels/gold": "Gold",
+        "/membership_levels/influencer": "Influencer"
+    },
+    "reward": {
+        "by-referral": "Referral Bonus",
+        "commission": "Referral Commission"
+    },
+    "warning": {
+        "lost-session": "Your session has expired, please login again"
+    },
+    "dashboard-admin": {
+        "title": "Dashboard",
+        "total-validated-cashback": "Total Validated Cashback",
+        "total-stopped-cashback": "Total Stopped Cashback",
+        "total-paid-cashback": "Total Paid Cashback",
+        "total-requested-cashback": "Total Requested Cashback",
+        "indicators-section": "Indicators compare per values",
+        "total-users": "Total Users",
+        "active-users": "Active Users",
+        "transactions": "Transactions",
+        "total-gmv": "Total GMV",
+        "avg-transaction": "AVG Transaction",
+        "total-revenue": "Total Revenue",
+        "last-month": "last month",
+        "last-12-months": "last 12 months",
+        "current-month": "current month",
+        "all-time": "All Time",
+        "statistics-by-month": "Statistics by Month",
+        "reward-currency": "Rewards by currency",
+        "view-vouchers": "View Vouchers",
+        "view-deals": "View Deals",
+        "view-all-stores": "View all stores",
+        "filter-by-year": "Filter by year",
+        "month-counts": {
+            "january": "January",
+            "february": "February",
+            "march": "March",
+            "april": "April",
+            "may": "May",
+            "june": "June",
+            "july": "July",
+            "august": "August",
+            "september": "September",
+            "october": "October",
+            "november": "November",
+            "december": "December"
+        }
+    },
+    "bug-report": {
+        "success": "Your ticket has been created successfully",
+        "error": "Error creating ticket"
+    },
+    "admin-stores": {
+        "tabs": {
+            "list": "Stores",
+            "approvals": "Approvals"
+        }
+    }
+}

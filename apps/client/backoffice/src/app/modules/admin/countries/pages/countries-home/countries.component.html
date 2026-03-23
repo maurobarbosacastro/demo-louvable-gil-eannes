@@ -1,0 +1,23 @@
+<div class="w-full px-4 my-5 lg:px-16 lg:mt-8">
+    <div class="flex justify-between max-h-[74px]">
+        <span class="flex items-center justify-center text-3xl">{{ 'country.countries' | transloco }}</span>
+        <button
+            class="py-2.5 px-10 bg-project-licorice-500 text-white rounded  textButton flex justify-center cursor-pointer my-4"
+            (click)="openEditCountryDialog()">
+            {{ 'country.new-country' | transloco }}
+        </button>
+    </div>
+    <div class="mt-16">
+        <atl-ng-table *ngIf="tableConfiguration"
+                      class="custom-table"
+                      id="table"
+                      [tableConfiguration]="tableConfiguration"
+                      [totalPages]="total"
+                      [totalSize]="totalSize"
+                      [resetPaginator]="page$ | async"
+                      (onActionClick)="clickTableAction($event)"
+                      (onSortAndPageChange)="onSortAndPageChange($event)"
+        >
+        </atl-ng-table>
+    </div>
+</div>

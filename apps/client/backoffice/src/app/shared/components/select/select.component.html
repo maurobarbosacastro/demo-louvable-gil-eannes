@@ -1,0 +1,48 @@
+<div class="dropdown dropdown-end w-full h-12 z-[51]">
+    <label tabindex="0"
+           class="btn bg-white select-display !flex-nowrap" [ngClass]="{ 'bg-project-lightgray text-grayInput': disable,
+           'shadow-red-500': required}" (click)="disable ? open = false : open = true" [class.rounded-b-none]="open">
+        <ng-container *ngIf="currentValue.value">
+            <ng-container *ngIf="currentValue.value.icons !== undefined">
+                <div class="flex items-center text-black">
+                    <ng-container *ngFor="let item of currentValue.value.label; let i = index">
+                        <mat-icon
+                            class="icon-display icon-purple"
+                            [svgIcon]='currentValue.value.icons[i]'
+                        >
+                        </mat-icon>
+                        <span class="mr-2" [id]="'item_'+i">{{item}}</span>
+                    </ng-container>
+                </div>
+            </ng-container>
+            <div *ngIf="currentValue.value.icons === undefined"
+                 class="text-black font-normal " id="currentValue">{{ currentValue.value.label | transloco }}</div>
+        </ng-container>
+        <div *ngIf="!currentValue.value" class="text-black font-normal" id="placeholder">{{placeholder}}</div>
+        <div>
+            <mat-icon svgIcon="heroicons_outline:chevron-down" class="text-project-lightGray" id="mat-icon"></mat-icon>
+        </div>
+    </label>
+    <ul *ngIf="open" tabindex="0" [ngClass]="{'dropdown-content-upwards': openUpwards}"
+        class="dropdown-content block menu shadow-[0px_3px_4px_rgba(0,0,0,0.15)] bg-white rounded-xl w-[100%] h-[200] left-[4px]" [class.rounded-t-none]="open"
+        style="max-height: 200px; overflow-y: auto;">
+        <li *ngIf="emptyOption" (click)="unfocus(null)" class="text-accent"><a class="pt-1.5 pb-1.5">-</a></li>
+        <ng-container *ngFor="let option of options">
+            <li *ngIf="option.icons === undefined" (click)="unfocus(option)"><a class="pt-1.5 pb-1.5">{{option.label[0] | transloco}}</a></li>
+            <li *ngIf="option.icons !== undefined" (click)="unfocus(option)">
+                <a class="pt-1.5 pb-1.5 flex">
+                    <ng-container *ngFor="let item of option.label; let i = index">
+                        <div class="flex items-center">
+                            <mat-icon
+                                class="icon-display"
+                                [svgIcon]='option.icons[i]'
+                            >
+                            </mat-icon>
+                            <span>{{item}}</span>
+                        </div>
+                    </ng-container>
+                </a>
+            </li>
+        </ng-container>
+    </ul>
+</div>

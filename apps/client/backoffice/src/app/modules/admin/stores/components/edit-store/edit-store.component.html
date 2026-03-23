@@ -1,0 +1,585 @@
+<div class="flex flex-col justify-between h-full overflow-x-hidden px-2 pt-2 pb-8">
+
+    <div>
+        <div class="flex justify-end mb-15">
+            <mat-icon svgIcon="close-modal" class="cursor-pointer" (click)="closeModal()"></mat-icon>
+        </div>
+
+        <h2 class="text-4xl text-project-licorice-500">{{ $isEdit() ? ('store.edit-store' | transloco) : ('store.new-store' | transloco) }}</h2>
+        <form [formGroup]="storeForm" class="mt-8">
+            <div class="flex flex-col">
+
+
+                <!-- Country field -->
+                <label for="name"
+                       class="block text-project-waterloo font-normal text-md">{{ 'store.country' | transloco }}
+                    * </label>
+                <tagpeak-checkbox-group
+                    [$data]="$countries()"
+                    [$placeholder]="'store.select-countries' | transloco"
+                    [$error]="countryControl.hasError('required') && !countryControl.untouched"
+                    ($onSelectedValues)="onCountrySelected($event)"
+                />
+
+                <!--  Language field-->
+                <div class="mb-6">
+                    <label class="block text-project-waterloo font-normal text-md">
+                        {{ 'store.language' | transloco }}
+                    </label>
+                    <div class="relative">
+                        <select
+                            [formControl]="languageControl"
+                            tagpeakInputStyle
+                            class="flex justify-between h-8">
+                            <option value="" disabled selected>Select Language</option>
+                            @for (language of $languages(); track language) {
+                                <option
+                                    value="{{language.code}}"> {{ language.name }}
+                                </option>
+                            }
+                        </select>
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(languageControl.hasError('required') ) && !languageControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--  Category field-->
+                <label for="name"
+                       class="block text-project-waterloo font-normal text-md">{{ 'store.category' | transloco }}
+                    * </label>
+                <tagpeak-checkbox-group
+                    [$data]="$categories()"
+                    [$placeholder]="'store.select-categories' | transloco"
+                    [$error]="categoryControl.hasError('required') && !categoryControl.untouched"
+                    ($onSelectedValues)="onCategorySelected($event)"
+                />
+
+                <!-- Name field -->
+                <div class="mb-6">
+                    <label for="name"
+                           class="block text-project-waterloo font-normal text-md">{{ 'store.name' | transloco }}
+                        * </label>
+                    <div class="relative">
+                        <input type="text" id="name"
+                               placeholder="{{ 'store.name' | transloco }}"
+                               [formControl]="nameControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': nameControl.hasError('required')  && !nameControl.untouched}"
+                               tagpeakInputStyle>
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(nameControl.hasError('required') ) && !nameControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-x-4">
+                    <!-- Slug field -->
+                    <div class="mb-6">
+                        <label for="slug"
+                               class="block text-project-waterloo font-normal text-md">{{ 'store.slug' | transloco }}
+                            * </label>
+                        <div class="relative">
+                            <input type="text" id="slug"
+                                   placeholder="{{ 'store.slug' | transloco }}"
+                                   [formControl]="urlSlugControl"
+                                   [ngClass]="{'border-project-red placeholder:text-project-red': urlSlugControl.hasError('required')  && !urlSlugControl.untouched}"
+                                   tagpeakInputStyle>
+
+                            <div class="absolute right-0 top-0 flex ">
+                                <div class="tooltip tooltip-error tooltip-left"
+                                     [attr.data-tip]="'store.field-required' | transloco">
+                                    <mat-icon
+                                        *ngIf="(urlSlugControl.hasError('required') ) && !urlSlugControl.untouched"
+                                        class="icon-size-4 cursor-pointer text-project-red"
+                                        [svgIcon]="'error'"
+                                    ></mat-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Store Url field -->
+                    <div class="mb-6">
+                        <label for="storeURL"
+                               class="block text-project-waterloo font-normal text-md">{{ 'store.store-url' | transloco }}</label>
+                        <div class="relative">
+                            <input type="text" id="storeURL"
+                                   placeholder="http://www.booking.com, booking.com, http://booking.com"
+                                   [formControl]="storeUrlControl"
+                                   [ngClass]="{'border-project-red placeholder:text-project-red': storeUrlControl.hasError('required')  && !storeUrlControl.untouched}"
+                                   tagpeakInputStyle>
+
+                            <div class="absolute right-0 top-0 flex ">
+                                <div class="tooltip tooltip-error tooltip-left"
+                                     [attr.data-tip]="'store.field-required' | transloco">
+                                    <mat-icon
+                                        *ngIf="(storeUrlControl.hasError('required') ) && !storeUrlControl.untouched"
+                                        class="icon-size-4 cursor-pointer text-project-red"
+                                        [svgIcon]="'error'"
+                                    ></mat-icon>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!$logoNotAvailable()" class="text-sm text-project-lavender">
+                            {{ 'store.logoTip' | transloco }}
+                        </div>
+                        <div *ngIf="$logoNotAvailable()" class="text-sm text-project-red">
+                            {{ 'store.logoTipError' | transloco }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logo field -->
+                <div class="mb-6">
+                    <label
+                        class="block text-project-waterloo font-normal text-md mb-2">{{ 'store.logo' | transloco }}</label>
+                    <image-picker
+                        id="picker"
+                        (imageOutput)="outputImage($event)"
+                        (error)="$errorLogo.set($event)"
+                        [image]="logoControl.value"
+                        [disabled]="false"
+                        [required]="false"
+                        [$isLoading]="$isLoading()"
+                    ></image-picker>
+                    <div class="text-sm text-project-red" *ngIf="$errorLogo()">
+                        {{ $errorLogo() }}
+                    </div>
+                </div>
+
+
+                <!-- Banner field -->
+                <div class="mb-6">
+                    <label
+                        class="block text-project-waterloo font-normal text-md mb-2">{{ 'store.banner' | transloco }}</label>
+                    <image-picker
+                        id="pickerBanner"
+                        (imageOutput)="outputImageBanner($event)"
+                        (error)="$errorBanner.set($event)"
+                        [image]="bannerControl.value"
+                        [disabled]="false"
+                        [required]="false"
+                    ></image-picker>
+                    <div class="text-sm text-project-red" *ngIf="$errorBanner()">
+                        {{ $errorBanner() }}
+                    </div>
+                </div>
+
+
+                <div class="grid grid-cols-2 gap-x-4 mb-6">
+                    <!-- Partner field -->
+                    <div>
+                        <label class="block text-project-waterloo font-normal text-md">
+                            {{ 'store.affiliate-partner' | transloco }} *
+                        </label>
+                        <div class="relative">
+                            <select
+                                [formControl]="affiliatePartnerControl"
+                                tagpeakInputStyle
+                                class="flex justify-between h-8">
+                                <option value="" disabled selected>Select Source</option>
+                                @for (affiliatePartner of $affiliatePartners(); track affiliatePartner) {
+                                    <option
+                                        value="{{affiliatePartner.code}}"> {{ affiliatePartner.name }}
+                                    </option>
+                                }
+                            </select>
+                            <div class="absolute right-0 top-0 flex ">
+                                <div class="tooltip tooltip-error tooltip-left"
+                                     [attr.data-tip]="'store.field-required' | transloco">
+                                    <mat-icon
+                                        *ngIf="(affiliatePartnerControl.hasError('required') ) && !affiliatePartnerControl.untouched"
+                                        class="icon-size-4 cursor-pointer text-project-red"
+                                        [svgIcon]="'error'"
+                                    ></mat-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Affiliate Partner Identity -->
+                    <div>
+                        <label for="partner_identity"
+                               class="block text-project-waterloo font-normal text-md">
+                            {{ 'store.partner_identity' | transloco }}
+                        </label>
+                        <div class="relative">
+                            <input type="text" id="partner_identity"
+                                   placeholder="{{ 'store.partner_identity' | transloco }}"
+                                   [formControl]="affiliatePartnerIdentityControl"
+                                   tagpeakInputStyle>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mb-6">
+                    <label for="affiliateLink"
+                           class="block text-project-waterloo font-normal text-md">
+                        {{ 'store.affiliate-link' | transloco }}
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="affiliateLink"
+                               placeholder="{{ 'store.affiliate-link' | transloco }}"
+                               [formControl]="affiliateLinkControl"
+                               tagpeakInputStyle>
+                    </div>
+                </div>
+
+
+                <!-- Short Description field -->
+                <div class="mb-6">
+                    <label for="shortDescription"
+                           class="block text-project-waterloo font-normal text-md">{{ 'store.short-description' | transloco }}</label>
+                    <div class="relative">
+                        <textarea type="text" id="shortDescription"
+                                  rows="3"
+                                  placeholder="{{ 'store.short-description' | transloco }}"
+                                  [formControl]="shortDescriptionControl"
+                                  [ngClass]="{'border-project-red placeholder:text-project-red': shortDescriptionControl.hasError('required')  && !shortDescriptionControl.untouched}"
+                                  tagpeakInputStyle></textarea>
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(shortDescriptionControl.hasError('required') ) && !shortDescriptionControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description field -->
+
+                <div class="mb-6">
+                    <label
+                        class="block text-project-waterloo font-normal text-md">{{ 'store.description' | transloco }}</label>
+                    <quill-editor class="w-full pb-2 pt-1" [formControl]="descriptionControl"
+                                  [modules]="modules"></quill-editor>
+
+                </div>
+
+
+                <!-- Terms and Conditions field -->
+                <div class="mb-6">
+                    <label
+                        class="block text-project-waterloo font-normal text-md">{{ 'store.terms-and-conditions' | transloco }}</label>
+                    <quill-editor class="w-full pb-2 pt-1" [formControl]="termsAndConditionsControl"
+                                  [modules]="modules"></quill-editor>
+                </div>
+
+                <!-- Keywords field -->
+                <div class="mb-6">
+                    <label for="keywords"
+                           class="block text-project-waterloo font-normal text-md">{{ 'store.keywords' | transloco }} </label>
+                    <div class="relative">
+                        <input type="text" id="keywords"
+                               placeholder="{{ 'store.keywords' | transloco }}"
+                               [formControl]="keywordsControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': keywordsControl.hasError('required')  && !keywordsControl.untouched}"
+                               tagpeakInputStyle>
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(keywordsControl.hasError('required') ) && !keywordsControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Cashback  Type field -->
+                <div class="mb-6">
+                    <label class="block text-project-waterloo font-normal text-md">
+                        {{ 'store.cashback-type' | transloco }} *
+                    </label>
+                    <div class="relative">
+                        <select
+                            [formControl]="cashbackTypeControl"
+                            tagpeakInputStyle
+                            class="flex justify-between h-8">
+                            <option value="" disabled selected>Select Cashback Type</option>
+                            @for (cashbackType of cashbackOptions; track cashbackType) {
+                                <option
+                                    value="{{cashbackType.value}}">{{ cashbackType.label | transloco }}
+                                </option>
+                            }
+                        </select>
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(cashbackTypeControl.hasError('required') ) && !cashbackTypeControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cashback Value field -->
+                <div class="mb-6">
+                    <label for="cashbackValue"
+                           class="block text-project-waterloo font-normal text-md">{{ 'store.cashback-value' | transloco }}
+                        * </label>
+                    <div class="relative">
+                        <input type="number" id="cashbackValue"
+                               placeholder="{{ 'store.cashback-value' | transloco }}"
+                               [formControl]="cashbackValueControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': cashbackValueControl.hasError('required')  && !cashbackValueControl.untouched}"
+                               tagpeakInputStyle>
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(cashbackValueControl.hasError('required') ) && !cashbackValueControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cashout Time -->
+                <div class="mb-6">
+                    <label for="cashoutTime"
+                           class="block text-project-waterloo font-normal text-md">{{ 'store.average-reward-activation-time' | transloco }}
+                        * </label>
+                    <div class="relative">
+                        <input type="text" id="cashoutTime"
+                               placeholder="{{ 'store.average-reward-activation-time' | transloco }}"
+                               [formControl]="averageRewardActivationTimeControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': averageRewardActivationTimeControl.hasError('required')  && !averageRewardActivationTimeControl.untouched}"
+                               tagpeakInputStyle>
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(averageRewardActivationTimeControl.hasError('required') ) && !averageRewardActivationTimeControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Percentage Cashout field -->
+                <div class="mb-6">
+                    <label for="perCashout"
+                           class="block text-project-waterloo font-normal text-md">{{ 'store.percentage-cashout' | transloco }}
+                        * </label>
+                    <div class="relative">
+                        <input type="number" id="perCashout"
+                               placeholder="{{ 'store.percentage-cashout' | transloco }}"
+                               [formControl]="percentageCashoutControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': percentageCashoutControl.hasError('required')  && !percentageCashoutControl.untouched}"
+                               tagpeakInputStyle>
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(percentageCashoutControl.hasError('required') ) && !percentageCashoutControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction Fee -->
+                <div class="mb-6">
+                    <label for="transactionFee"
+                           class="block text-project-waterloo font-normal text-md">{{ 'store.transaction-fee' | transloco }} </label>
+                    <div class="relative">
+                        <input type="number" id="transactionFee"
+                               [placeholder]="$overrideFeePlaceholder()"
+                               [formControl]="overrideFeeControl"
+                               [min]="0" [max]="100" step="0.01"
+                               tagpeakInputStyle>
+                    </div>
+                </div>
+
+                <!-- Meta Title field -->
+                <div class="mb-6">
+                    <label for="metaTitle"
+                           class="block text-project-waterloo font-normal text-md">{{ 'store.meta-title' | transloco }}</label>
+                    <div class="relative">
+                        <input type="text" id="metaTitle"
+                               placeholder="{{ 'store.meta-title' | transloco }}"
+                               [formControl]="metaTitleControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': metaTitleControl.hasError('required')  && !metaTitleControl.untouched}"
+                               tagpeakInputStyle>
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(metaTitleControl.hasError('required') ) && !metaTitleControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meta Keywords field -->
+                <div class="mb-6">
+                    <label for="metaKeywords"
+                           class="block text-project-waterloo font-normal text-md">{{ 'store.meta-keywords' | transloco }}</label>
+                    <div class="relative">
+                        <input type="text" id="metaKeywords"
+                               placeholder="{{ 'store.meta-keywords' | transloco }}"
+                               [formControl]="metaKeywordsControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': metaKeywordsControl.hasError('required')  && !metaKeywordsControl.untouched}"
+                               tagpeakInputStyle>
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(metaKeywordsControl.hasError('required') ) && !metaKeywordsControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meta Description field -->
+                <div class="mb-6">
+                    <label for="metaDescription"
+                           class="block text-project-waterloo font-normal text-md">{{ 'store.meta-description' | transloco }}</label>
+                    <div class="relative">
+                        <input type="text" id="metaDescription"
+                               placeholder="{{ 'store.meta-description' | transloco }}"
+                               [formControl]="metaDescriptionControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': metaDescriptionControl.hasError('required')  && !metaDescriptionControl.untouched}"
+                               tagpeakInputStyle>
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(metaDescriptionControl.hasError('required') ) && !metaDescriptionControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Position -->
+                <div class="mb-6">
+                    <label for="position"
+                           class="block text-project-waterloo font-normal text-md">{{ 'store.position' | transloco }} </label>
+                    <div class="relative">
+                        <input type="number" id="position"
+                               placeholder="{{ 'store.position' | transloco }}"
+                               [formControl]="positionControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': positionControl.hasError('position')}"
+                               [min]="0" [max]="10000" step="1"
+                               tagpeakInputStyle>
+
+                        <div class="absolute right-0 top-0 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.position-not-unique' | transloco">
+                                <mat-icon
+                                    *ngIf="(positionControl.hasError('position') )"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status field -->
+                @if (!$isApproval()) {
+                    <label class="label cursor-pointer">
+                        <span
+                            class="block text-project-waterloo font-normal text-md">{{ 'store.state.state' | transloco }}</span>
+                        <span class="flex items-center gap-2">
+                            {{ 'store.state.inactive' | transloco }}
+                            <input [formControl]="stateControl" id="enabled" type="checkbox"
+                                   class="toggle toggle-primary toggle-sm "
+                                   [ngClass]="stateControl.value == true ? 'bg-white [--tglbg:#4237DA] ' : 'bg-gray-500 [--tglbg:#FFFFFF]'"
+                                   checked="checked" />
+                            {{ 'store.state.active' | transloco }}
+
+                        </span>
+
+                    </label>
+                }
+
+            </div>
+        </form>
+
+    </div>
+
+</div>
+
+<div class="flex justify-between">
+    @if ($isApproval()) {
+        <button
+            class="py-2.5 px-10 border bg-project-red  text-white rounded  textButton flex justify-center cursor-pointer my-4"
+            (click)="reject()"
+        >
+            {{ 'misc.reject' | transloco }}
+        </button>
+
+        <button
+            class="py-2.5 px-10 bg-green-500 text-white rounded  textButton flex justify-center cursor-pointer my-4"
+            (click)="accept()"
+        >
+            {{ 'misc.accept' | transloco }}
+
+        </button>
+    } @else {
+        <button
+            class="py-2.5 px-10 border border-project-licorice-500 bg-white  text-project-licorice-500 rounded  textButton flex justify-center cursor-pointer my-4"
+            (click)="closeModal()">
+            {{ 'misc.cancel' | transloco }}
+        </button>
+        <button
+            class="py-2.5 px-10 bg-project-licorice-500 text-white rounded  textButton flex justify-center cursor-pointer my-4"
+            (click)="saveStore()">
+            {{ 'misc.save' | transloco }}
+
+        </button>
+    }
+</div>
+
+
+

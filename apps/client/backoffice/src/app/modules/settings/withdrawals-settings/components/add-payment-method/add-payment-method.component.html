@@ -1,0 +1,288 @@
+<div class="flex flex-col justify-between overflow-x-hidden w-full h-full p-2">
+
+    <div>
+        <div class="flex justify-end mb-15">
+            <mat-icon svgIcon="close-modal" class="cursor-pointer" (click)="closeModal()"></mat-icon>
+        </div>
+
+        <h2 class="lg:text-4xl text-3xl text-project-licorice-500">{{ 'withdrawal-settings.details.title' | transloco }}</h2>
+
+        <span class="text-[15px] text-project-waterloo mt-8">{{ 'withdrawal-settings.details.sub-title' | transloco }}</span>
+
+        <form [formGroup]="paymentMethodForm" class="flex flex-col mt-15 gap-4">
+            <!--  Payment Method field-->
+            <div class="mb-6">
+                <label class="block text-project-waterloo font-normal text-md">
+                    {{ 'withdrawal-settings.details.payment-method' | transloco }}
+                </label>
+                <div class="relative">
+                    <select
+                        [formControl]="paymentMethodControl"
+                        class="w-full flex justify-between pb-2 pt-1 border-b focus:outline-none  border-project-sideMenu text-project-licorice-500 cursor-pointer">
+                        <option [value]="null" disabled selected> {{ 'withdrawal-settings.details.payment-method' | transloco }}</option>
+                        @for (paymentMethod of $paymentMethods(); track paymentMethod.uuid) {
+                            <option [value]="paymentMethod.uuid"> {{ paymentMethod.name }} </option>
+                        }
+                    </select>
+                    <div class="absolute right-5 top-1.5 flex">
+                        <div class="tooltip tooltip-error tooltip-left"
+                             [attr.data-tip]="'store.field-required' | transloco">
+                            <mat-icon
+                                *ngIf="(paymentMethodControl.hasError('required') ) && !paymentMethodControl.untouched"
+                                class="icon-size-4 cursor-pointer text-project-red"
+                                [svgIcon]="'error'"
+                            ></mat-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if ($isBankSelected()()) {
+                <!-- Bank Name field -->
+                <div class="mb-6">
+                    <label for="bankName"
+                           class="block text-project-waterloo font-normal text-md">{{ 'withdrawal-settings.details.bank-name' | transloco }}
+                        * </label>
+                    <div class="relative">
+                        <input type="text" id="bankName"
+                               [formControl]="bankNameControl"
+                               [ngClass]="{'!border-project-red placeholder:text-project-red': bankNameControl.hasError('required')  && !bankNameControl.untouched}"
+                               class="w-full pb-2 pt-1 border-b placeholder:text-project-waterloo focus:outline-none  border-project-sideMenu text-project-licorice-500">
+
+                        <div class="absolute right-0 top-1.5 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(bankNameControl.hasError('required') ) && !bankNameControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bank Address field -->
+                <div class="mb-6">
+                    <label for="bankAddress"
+                           class="block text-project-waterloo font-normal text-md">{{ 'withdrawal-settings.details.bank-address' | transloco }}
+                        * </label>
+                    <div class="relative">
+                        <input type="text" id="bankAddress"
+                               [formControl]="bankAddressControl"
+                               [ngClass]="{'!border-project-red placeholder:text-project-red': bankAddressControl.hasError('required')  && !bankAddressControl.untouched}"
+                               class="w-full pb-2 pt-1 border-b placeholder:text-project-waterloo focus:outline-none  border-project-sideMenu text-project-licorice-500">
+
+                        <div class="absolute right-0 top-1.5 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(bankAddressControl.hasError('required') ) && !bankAddressControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bank Country field -->
+                <div class="mb-6">
+                    <label class="block text-project-waterloo font-normal text-md">
+                        {{ 'withdrawal-settings.details.bank-country' | transloco }} *
+                    </label>
+                    <div class="relative">
+                        <select
+                            [formControl]="bankCountryControl"
+                            class="w-full flex justify-between pb-2 pt-1 border-b focus:outline-none  border-project-sideMenu text-project-licorice-500 cursor-pointer"
+                            [ngClass]="{'!border-project-red placeholder:text-project-red': bankCountryControl.hasError('required')  && !bankCountryControl.untouched}">
+                            @for (country of $countries(); track country.uuid) {
+                                <option [value]="country.uuid">{{ country.name }}</option>
+                            }
+                        </select>
+                        <div class="absolute right-5 top-1.5 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(bankCountryControl.hasError('required') ) && !bankCountryControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bank Account Title -->
+                <div class="mb-6">
+                    <label for="bankAccountTitle"
+                           class="block text-project-waterloo font-normal text-md">{{ 'withdrawal-settings.details.bank-account-title' | transloco }}
+                        * </label>
+                    <div class="relative">
+                        <input type="text" id="bankAccountTitle"
+                               [formControl]="bankAccountTitleControl"
+                               [ngClass]="{'!border-project-red placeholder:text-project-red': bankAccountTitleControl.hasError('required')  && !bankAccountTitleControl.untouched}"
+                               class="w-full pb-2 pt-1 border-b placeholder:text-project-waterloo focus:outline-none  border-project-sideMenu text-project-licorice-500">
+
+                        <div class="absolute right-0 top-1.5 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(bankAccountTitleControl.hasError('required') ) && !bankAccountTitleControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IBAN Title -->
+                <div class="mb-6">
+                    <label for="iban"
+                           class="block text-project-waterloo font-normal text-md">{{ 'withdrawal-settings.details.iban' | transloco }}
+                        * </label>
+                    <div class="relative">
+                        <input type="text" id="iban"
+                               [formControl]="ibanControl"
+                               (input)="onIbanInput($event)"
+                               [ngClass]="{'!border-project-red placeholder:text-project-red': ibanControl.errors  && !ibanControl.untouched}"
+                               class="w-full pb-2 pt-1 border-b placeholder:text-project-waterloo focus:outline-none  border-project-sideMenu text-project-licorice-500">
+
+                        <div class="absolute right-0 top-1.5 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="errorMessageIban() | transloco">
+                                <mat-icon
+                                    *ngIf="(ibanControl.errors) && !ibanControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IBAN Statement -->
+                <div class="mb-6 flex justify-between" [ngClass]="ibanStatementControl.value ? 'gap-9' : 'gap-22'">
+                    <label for="iban-statement"
+                           class="block text-project-waterloo font-normal text-md max-w-60">{{ 'withdrawal-settings.details.iban-statement' | transloco }} *
+                        </label>
+                    <div class="relative">
+                        <input #fileInput type="file" id="iban-statement"
+                               (change)="handleSubmitFile($event)"
+                                accept="application/pdf"
+                               [formControl]="ibanStatementControl"
+                               class="pb-2 pt-1 focus:outline-none text-project-licorice-500 opacity-0 hidden">
+
+                        @if (ibanStatementControl.value) {
+                            <div class="flex gap-2.5 justify-center items-center">
+                                <div class="flex items-center justify-center p-2.5 gap-0.5 bg-project-youngBlue text-white rounded">
+                                    <mat-icon svgIcon="uploaded" class="icon-size-4 icon-color-file"></mat-icon>
+                                    <span>{{ibanStatement?.name}}</span>
+                                </div>
+
+                                <button class="rounded-full bg-[#4237DA33] p-1.5 w-10 h-10 flex justify-center items-center"
+                                        (click)="clearFile()">
+                                    <mat-icon svgIcon="close-modal" class="icon-size-4"></mat-icon>
+                                </button>
+                            </div>
+                        } @else {
+                            <button class="btn bg-white rounded border-project-licorice-500 justify-evenly gap-0.5 px-2.5 text-md w-22" (click)="fileInput.click()"
+                                    [ngClass]="{'border-project-red text-project-red': (ibanStatementControl.hasError('required') || ibanStatementControl.hasError('minLength'))  && !ibanStatementControl.untouched}">
+                                <mat-icon svgIcon="upload" class="icon-size-4"
+                                          [ngClass]="(ibanStatementControl.hasError('required') || ibanStatementControl.hasError('minLength'))  && !ibanStatementControl.untouched ? 'icon-color-file-error' : 'icon-color-upload'"></mat-icon>
+                                {{ 'withdrawal-settings.details.upload' | transloco }}
+                            </button>
+                        }
+                    </div>
+                </div>
+
+                <div class="divider divider-project-licorice-500 my-0"></div>
+
+                <!-- VAT Number -->
+                <div class="mb-6">
+                    <label for="vatNumber"
+                           class="block text-project-waterloo font-normal text-md">{{ 'withdrawal-settings.vat-number' | transloco }} *</label>
+                    <div class="relative">
+                        <input type="text" id="vatNumber"
+                               [formControl]="vatNumberControl"
+                               [ngClass]="{'border-project-red placeholder:text-project-red': !!vatNumberControl.errors  && !vatNumberControl.untouched}"
+                               class="w-full pb-2 pt-1 border-b placeholder:text-project-waterloo focus:outline-none  border-project-sideMenu text-project-licorice-500">
+
+                        <div class="absolute right-0 top-0">
+                            @if ($validateVat().activated) {
+                                @if ($validateVat().done) {
+                                    @if ($validateVat().valid) {
+                                        <mat-icon svgIcon="check" class="text-green-500"></mat-icon>
+                                    } @else {
+                                        <mat-icon svgIcon="wrong" class="text-red-500 scale-75"></mat-icon>
+                                    }
+                                } @else {
+                                    <span class="loading loading-spinner"></span>
+                                }
+                            }
+                        </div>
+
+                        <div class="absolute right-0 top-0 flex ">
+                            @if (!!vatNumberControl.errors && !vatNumberControl.untouched) {
+                                <div class="tooltip tooltip-error tooltip-left"
+                                     [attr.data-tip]="
+                                        vatNumberControl.hasError('required') ? ('withdrawal-settings.vat-number-required' | transloco) :
+                                        ('withdrawal-settings.vat-number-invalid' | transloco)
+                                    ">
+                                    <mat-icon
+                                        class="icon-size-4 cursor-pointer text-project-red"
+                                        [svgIcon]="'error'"
+                                    ></mat-icon>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Country field -->
+                <div class="mb-6">
+                    <label class="block text-project-waterloo font-normal text-md">
+                        {{ 'withdrawal-settings.details.country' | transloco }} *
+                    </label>
+                    <div class="relative">
+                        <select
+                            [formControl]="countyControl"
+                            class="w-full flex justify-between pb-2 pt-1 border-b focus:outline-none  border-project-sideMenu text-project-licorice-500 cursor-pointer"
+                            [ngClass]="{'!border-project-red placeholder:text-project-red': countyControl.hasError('required')  && !countyControl.untouched}">
+                            @for (country of $countries(); track country.uuid) {
+                                <option [value]="country.uuid">{{ country.name }}</option>
+                            }
+                        </select>
+                        <div class="absolute right-5 top-1.5 flex ">
+                            <div class="tooltip tooltip-error tooltip-left"
+                                 [attr.data-tip]="'store.field-required' | transloco">
+                                <mat-icon
+                                    *ngIf="(countyControl.hasError('required') ) && !countyControl.untouched"
+                                    class="icon-size-4 cursor-pointer text-project-red"
+                                    [svgIcon]="'error'"
+                                ></mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </form>
+
+    </div>
+
+</div>
+
+<div class="flex justify-between">
+    <button
+        class="py-2.5 px-10 border border-project-licorice-500 bg-white  text-project-licorice-500 rounded  textButton flex justify-center cursor-pointer my-4"
+        (click)="closeModal()">
+        {{ 'misc.cancel' | transloco }}
+    </button>
+    <button
+        class="py-2.5 px-10 bg-project-licorice-500 text-white rounded  textButton flex justify-center cursor-pointer my-4"
+        (click)="finalize()">
+        {{ 'misc.save' | transloco }}
+
+    </button>
+</div>

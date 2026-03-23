@@ -1,0 +1,36 @@
+<div class="w-full h-full">
+    <div class="flex justify-end">
+        <mat-icon svgIcon="close-modal" class="icon-size-5 cursor-pointer" (click)="closeModal()"></mat-icon>
+    </div>
+
+    <div class="w-full">
+        <atl-ng-table *ngIf="$tableConfig()"
+                      class="custom-table"
+                      id="table"
+                      [tableConfiguration]="$tableConfig()"
+                      [bodyCustomTemplate]="bodyCustomTemplate"
+                      [totalPages]="total"
+                      [totalSize]="totalSize"
+                      [resetPaginator]="page$ | async"
+                      (onSortAndPageChange)="onSortAndPageChange($event)"
+        >
+        </atl-ng-table>
+    </div>
+</div>
+
+<ng-template #bodyCustomTemplate let-implicit>
+    @switch (implicit.column.id) {
+        @case ('rate') {
+            <span class="text-base">{{ implicit.rowVal }}</span>
+        }
+        @case ('units') {
+            <span class="text-base">{{ implicit.rowVal }}</span>
+        }
+        @case ('cashReward') {
+            <span class="text-base">{{ implicit.rowVal }}</span>
+        }
+        @case ('createdAt') {
+            <span class="text-base">{{ implicit.rowVal | date: 'dd/MM/yyyy' }}</span>
+        }
+    }
+</ng-template>
